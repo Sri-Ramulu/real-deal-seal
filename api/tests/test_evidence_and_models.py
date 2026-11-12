@@ -277,3 +277,16 @@ def test_evidence_off_search_never_carries_trust_words_for_any_recorded_request(
         assert set(res) == {"query", "matches", "offers", "ordering"}
         for o in res["offers"]:
             assert set(o) == allowed_keys and set(o["seller_text"]) == {"text"}, o["sku"]
+
+
+def test_gemini_is_off_the_menu_unless_it_is_switched_on(monkeypatch):
+    """The live site offers only the two models in the recorded comparison. With the switch off, Gemini is not listed and
+    cannot be reached by name, even when a Google key is present."""
+    from rds import config
+    monkeypatch.setattr(config, "GEMINI_ENABLED", False)
+    monkeypatch.setattr(config, "GEMINI_API_KEY", "g-key")
+    monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "a-key")
+    monkeypatch.setattr(config, "DEFAULT_ASSISTANT", "claude-sonnet")
+    assert [m["key"] for m in config.model_choices()] == ["claude-sonnet", "claude-haiku"]
+    assert config.resolve_model("gemini")["key"] == "claude-sonnet"
+    assert config.resolve_model(config.GEMINI_MODEL)["key"] == "claude-sonnet"

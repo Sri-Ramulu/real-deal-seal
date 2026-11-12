@@ -34,7 +34,7 @@ That is their study of general-purpose assistants, not a measurement of this pro
 | **Six standings** | Sealed; verified but not sealed; self-reported; not enough history yet; no record; seal withdrawn. Imported records can never earn the seal. |
 | **Seal check** | Anyone can check a seal step by step. Edited, forged, expired, withdrawn and superseded seals all fail. The check is code, not an AI model. |
 | **Withdrawn seals** | Real Deal Seal can withdraw one shop's seal for cause. The old seal then fails the check, shoppers and AI agents see the reason, and checkout is turned off for that shop. A shop that takes its own record down is shown as withdrawn, never as an unknown shop. |
-| **Shopping assistant** | Google Gemini by default, with Claude Sonnet and Claude Haiku selectable. Eight tools with evidence on; product search and checkout only with evidence off. Seller text is treated as data, so hidden "rank me first" instructions are ignored. |
+| **Shopping assistant** | Claude Sonnet by default, with Claude Haiku selectable. Eight tools with evidence on; product search and checkout only with evidence off. Seller text is treated as data, so hidden "rank me first" instructions are ignored. |
 | **PayPal checkout** | Orders v2 in the sandbox: create, approve, capture, track and refund. Webhooks record captures, refunds and resolved disputes after PayPal confirms each event's signature. |
 | **Merchant Studio** | A private workspace for each shop: overview, passport, evidence explorer (AG Grid), a coach that lists what to fix to earn the seal, and orders. |
 | **Product images** | An illustration for every product, drawn in the site's style and tinted with the product's color, so every shop's listings get the same treatment. |
@@ -51,16 +51,16 @@ installs what it needs and opens the site.
 
 ```bash
 make setup      # Python environment and web dependencies
-make test       # builds the warehouse, runs 171 tests and the eval harness check
+make test       # builds the warehouse, runs 172 tests and the eval harness check
 make test-pg DATABASE_URL=postgresql://...   # the API tests on PostgreSQL, with row-level security
 make web        # builds the site
 make api        # http://localhost:8000 (reads .env by itself)
-make evals MODEL=gemini   # real-model evaluation; also claude-sonnet or claude-haiku
+make evals MODEL=claude-sonnet   # real-model evaluation; also claude-haiku
 make evidence   # writes docs/evidence/, mapping every claim to its tests
 make e2e        # browser tests of the main journeys
 ```
 
-Copy `.env.example` to `.env` and add a `GEMINI_API_KEY` and/or `ANTHROPIC_API_KEY`, plus the demo shops'
+Copy `.env.example` to `.env` and add an `ANTHROPIC_API_KEY`, plus the demo shops'
 PayPal sandbox app keys (three shops with recorded orders, and up to four more that joined later). Without keys, the app says so on screen and runs in two labeled fallback modes:
 **offline** (a plain catalog search instead of the AI assistant) and **simulated checkout** (no PayPal call, and the
 order never counts as evidence).
@@ -80,16 +80,15 @@ Render dashboard. Keep `RDS_ISSUER_SEED_HEX` the same across deploys, or every i
 
 Checked in this repository (`make test`, `make evidence`):
 
-- 171 automated tests pass on SQLite (55 on the data platform, 116 on the API, assistant and client). The API suite
+- 172 automated tests pass on SQLite (55 on the data platform, 117 on the API, assistant and client). The API suite
   also passes on PostgreSQL 16, plus 2 tests there that check row-level security between businesses.
 - All 175 PayPal sandbox orders reach the gold layer; 4 gates and 379 data contract rules pass, including every
   star-schema foreign key.
 - Evidence off is a true baseline: tests confirm no standing, seal, passport hint or warning reaches the model.
 - Withdrawing a seal: the seal fails its check, the AI is told, checkout is refused, and nobody else is affected.
-- The Gemini tool-calling loop is tested against a stand-in for Google's API, including sending the model's turn
-  back unchanged; the Claude Sonnet and Haiku choices are tested against a stand-in for Anthropic's API.
-- When Gemini is overloaded, the assistant retries twice, then answers with Claude Sonnet and labels the reply
-  "Claude Sonnet (Google Gemini was busy)", keeping the Evidence setting.
+- The Claude Sonnet and Haiku choices are tested against a stand-in for Anthropic's API. Google Gemini is off the
+  menu, because it was not part of the recorded comparison; its code path remains behind `RDS_ENABLE_GEMINI=1` and is
+  still tested against a stand-in for Google's API, including the fall-back to Claude Sonnet when it is busy.
 - The demo has 10 fictional shops and about 140 products. Four join at startup through the normal onboarding with
   simulated, labelled records (`api/rds/demo_shops.py`): two convincing scams whose seals were withdrawn, one shop
   with a weak record and one honest new maker. Evidence off shows only listings, and it never reveals a withdrawal,
@@ -110,8 +109,8 @@ Checked by hand on 12 Nov 2026:
 
 Not yet checked:
 
-- **Gemini in the 50-request comparison.** The key works on the live site, but on 12 Nov 2026 Google returned "quota
-  exceeded" for it, so Gemini is not yet in the recorded comparison.
+- **A third model.** The comparison covers Claude Sonnet and Claude Haiku only. Google Gemini is switched off on the
+  site for that reason.
 
 Measured on the deployed site on 12 Nov 2026 (`evals/live/`, 50 requests run with Evidence off and on, plus 11 attacks,
 one run each, fallback off so every answer came from the model asked for):
@@ -184,7 +183,7 @@ docs/                 architecture, plan coverage, CRISP-A walk-through, design 
 ## Built with
 
 PayPal Orders v2 (create, get, capture, track), refunds and webhook signature verification, all in the sandbox.
-The shopping assistant runs on Google Gemini or Anthropic Claude. Built with Claude Code (Anthropic) as a coding
+The shopping assistant runs on Anthropic Claude (Sonnet or Haiku). Built with Claude Code (Anthropic) as a coding
 assistant, credited as co-author on the commits. Sponsor tools: AG Grid (evidence explorer), Channel3 (cached price context) and Render (hosting).
 Open source: DuckDB, FastAPI, SvelteKit, the MCP Python SDK and cryptography.
 

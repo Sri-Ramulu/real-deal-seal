@@ -35,7 +35,7 @@
         <a class="big" href="/verify">Check a seal</a>
       </div>
     </div>
-    <p class="legal small">MIT license. The shopping assistant runs on Google Gemini or Anthropic Claude. Every shop on this site is fictional: Lydia Linen Co., Martha's Kitchen, Priscilla Canvas Works, Babel Home, Hearthline Home, Linen Palace, Violet &amp; Vine Home, Juniper &amp; Oak Goods, Copper Kettle Supply and Sage &amp; Stone Studio. The last four have real PayPal sandbox accounts and a simulated order history.</p>
+    <p class="legal small">MIT license. The shopping assistant runs on Anthropic Claude (Sonnet or Haiku). Every shop on this site is fictional: Lydia Linen Co., Martha's Kitchen, Priscilla Canvas Works, Babel Home, Hearthline Home, Linen Palace, Violet &amp; Vine Home, Juniper &amp; Oak Goods, Copper Kettle Supply and Sage &amp; Stone Studio. The last four have real PayPal sandbox accounts and a simulated order history.</p>
   </div>
 </footer>
 

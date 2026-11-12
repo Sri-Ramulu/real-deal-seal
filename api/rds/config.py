@@ -42,7 +42,10 @@ GEMINI_BASE = os.environ.get("GEMINI_BASE", "https://generativelanguage.googleap
 # Google's alias for its newest Flash model; pin a specific model id here for a fixed evaluation.
 GEMINI_MODEL = os.environ.get("RDS_GEMINI_MODEL", "gemini-flash-latest")
 HAIKU_MODEL = os.environ.get("RDS_HAIKU_MODEL", "claude-haiku-5-5")
-DEFAULT_ASSISTANT = os.environ.get("RDS_ASSISTANT", "gemini")
+# Google Gemini is off the menu: it was never measured in the recorded comparison (quota), so the site offers only the two
+# models that were. The code path stays, behind RDS_ENABLE_GEMINI=1, and is still covered by tests.
+GEMINI_ENABLED = os.environ.get("RDS_ENABLE_GEMINI", "0") == "1"
+DEFAULT_ASSISTANT = os.environ.get("RDS_ASSISTANT", "claude-sonnet")
 DEMO_SHOPS = os.environ.get("RDS_DEMO_SHOPS", "1") == "1"  # the four fictional shops in demo_shops.py join at startup
 REFRESH_HOURS = float(os.environ.get("RDS_REFRESH_HOURS", "24"))  # 0 turns the scheduled refresh off
 
@@ -54,11 +57,12 @@ MODEL_CHOICES = {
 
 
 def _has_key(provider: str) -> bool:
-    return bool(GEMINI_API_KEY if provider == "gemini" else ANTHROPIC_API_KEY)
+    return bool(GEMINI_API_KEY and GEMINI_ENABLED) if provider == "gemini" else bool(ANTHROPIC_API_KEY)
 
 
 def model_choices() -> list[dict]:
-    return [{"key": k, **v, "available": _has_key(v["provider"]), "default": k == DEFAULT_ASSISTANT} for k, v in MODEL_CHOICES.items()]
+    return [{"key": k, **v, "available": _has_key(v["provider"]), "default": k == DEFAULT_ASSISTANT} for k, v in MODEL_CHOICES.items()
+            if GEMINI_ENABLED or v["provider"] != "gemini"]
 
 
 def resolve_model(choice: str | None) -> dict | None:

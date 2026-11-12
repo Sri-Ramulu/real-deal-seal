@@ -17,7 +17,7 @@ shipments had tracking." Each fact says where it came from: PayPal's records, th
 demo. The facts are judged against published rules and signed as a Merchant Passport, so changing a single number makes
 the seal fail.
 
-An AI shopping assistant (Claude Sonnet, Claude Haiku or Google Gemini) reads the passport before it recommends a
+An AI shopping assistant (Claude Sonnet or Claude Haiku) reads the passport before it recommends a
 shop. An Evidence switch turns that off, so you can see what the same assistant picks from listings alone. The
 assistant can open a PayPal checkout, but only the shopper can approve it, and the server confirms the capture with
 PayPal before anything counts as paid.
@@ -30,7 +30,7 @@ warns shoppers, and checkout is turned off for that shop.
 
 - **PayPal:** Orders v2 in the sandbox (create, approve, capture, track, refund) across seven sandbox merchant accounts:
   three with 175 recorded orders, two more that take live sandbox payments, and two whose checkout is switched off because their seal is withdrawn, plus webhooks verified with PayPal before they're processed.
-- **AI:** one tool-using assistant with eight tools, on Google Gemini or Anthropic Claude. Code, not the model, decides
+- **AI:** one tool-using assistant with eight tools, on Anthropic Claude (Sonnet or Haiku). Code, not the model, decides
   prices, seal validity and payment status. The same tools are available to any agent over MCP.
 - **Data:** a data mesh of four domains on DuckDB, each with bronze, silver and gold layers, column metadata, an ODCS
   data contract and governed metrics. Gold is a star schema. Four quality gates and 379 contract rules run on every build.
@@ -55,7 +55,7 @@ comparison is fair. Making sure a shop that loses its seal is never shown as mer
 - All 600 recorded picks are public in an AG Grid explorer on the proof page: filter, sort, search or export them.
 - A side-by-side demo on the home page asks one question both ways, live, so anyone can see the difference in 20
   seconds.
-- 171 automated tests and 9 browser tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
+- 172 automated tests and 9 browser tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
 
 ## What we learned
 

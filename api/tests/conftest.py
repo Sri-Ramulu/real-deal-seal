@@ -7,6 +7,8 @@ os.environ["RDS_REFRESH_HOURS"] = "0"
 os.environ["RDS_DEMO_SHOPS"] = "0"  # tests that need the demo shops create them explicitly
 os.environ["RDS_NO_DOTENV"] = "1"
 os.environ["RDS_VAR_DIR"] = tempfile.mkdtemp(prefix="rds-test-")
+os.environ["RDS_ENABLE_GEMINI"] = "1"  # the Gemini code path stays tested although the live site leaves it off the menu
+os.environ.setdefault("RDS_ASSISTANT", "gemini")
 for _k in ("ANTHROPIC_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"):
     os.environ.pop(_k, None)
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
