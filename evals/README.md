@@ -13,8 +13,10 @@ Three layers, cheapest first. Code grades wherever it can; a model grades only w
 
 - **Run and checked in this repo:** the tau harness with the scripted `oracle` policy (12 of 12 tasks pass) and the scripted
   `naive` policy (0 of 12 pass). That proves the tasks are solvable and the graders can fail. It says nothing about a model.
-- **Recorded earlier, with the first version of the tools:** 50 paired tasks x 2 models and 10 attacks x 2 models
-  (`gold.fact_agent_choice`, `gold.fact_attack_run`). Sonnet 5.5 picked a small shop 25 of 50 times without evidence and 37 of 50 with it.
+- **Recorded live on 12 Nov 2026** (`evals/live/`): 50 paired requests and 11 attacks for Claude Sonnet and Claude Haiku,
+  run through the deployed site's chat API with fallback off, graded by `evals/live/grade.py` into
+  `data_platform/landing/agent/` (`gold.fact_agent_choice`, `gold.fact_attack_run`). Sonnet picked an honest small shop
+  9 of 50 times without evidence and 35 of 50 with it; shops whose seals were withdrawn fell from 34 picks to 0.
 - **Not yet run against this rebuild:** `--agent claude`, promptfoo and ArkSim. They need `ANTHROPIC_API_KEY` on the server
   (and a simulator model for ArkSim). Until they run, no claim in this repo rests on them.
 

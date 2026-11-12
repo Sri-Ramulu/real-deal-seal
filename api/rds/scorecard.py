@@ -8,6 +8,8 @@ HEADLINE_MODEL = "claude-sonnet-5-5"
 
 
 def _model(m: str) -> str:
+    if m.startswith("gemini"):
+        return "Gemini Flash"
     name, *ver = m.replace("claude-", "").split("-")
     return f"{name.title()} {'.'.join(ver)}"
 
@@ -18,7 +20,8 @@ def _kpi(key, label, value, unit, target, good, note, source, display=None):
 
 
 def build() -> dict:
-    ag = {(r["model"], r["mode"]): r for r in wh.measure("agent_metrics", ["tasks", "small_shop_picks", "chain_picks", "fake_badge_picks", "small_shop_pct"], ["model", "mode"])}
+    ag = {(r["model"], r["mode"]): r for r in wh.measure("agent_metrics", ["tasks", "small_shop_picks", "chain_picks", "withdrawn_shop_picks",
+                                                                         "fake_badge_picks", "no_picks", "small_shop_pct"], ["model", "mode"])}
     base, ver = ag[(HEADLINE_MODEL, "baseline")], ag[(HEADLINE_MODEL, "verified")]
     sw = {r["switch_type"]: r["n"] for r in wh.rows("SELECT switch_type, count(*) n FROM gold.fact_agent_switch WHERE model = ? GROUP BY 1", [HEADLINE_MODEL])}
     # PayPal value and shop standing count only businesses whose record was read back from PayPal. Shops with imported or
@@ -36,17 +39,25 @@ def build() -> dict:
     fake_total = sum(r["fake_badge_picks"] for r in ag.values())
     runs_total = sum(r["tasks"] for r in ag.values())
     confirmed = ev.get("paypal_sandbox_confirmed", 0)
+    recorded = wh.one("SELECT strftime(max(recorded_at), '%Y-%m-%d') d FROM silver.agent_eval_results")["d"]
+    moved = sw.get("chain_to_small", 0) + sw.get("scam_to_small", 0)
+    moved_back = sw.get("small_to_chain", 0) + sw.get("small_to_scam", 0)
     all_facts = sum(ev.values())
     return {
         "north_star": {
-            "name": "Small-shop share of AI shopping decisions when evidence is available",
+            "name": "Honest small-shop share of AI shopping decisions when evidence is available",
             "why": "It is the one number that moves only when the whole chain works: records are read, facts are signed, the agent reads them, and the shopper gets a better-grounded pick.",
             "value": ver["small_shop_pct"], "unit": "%", "numerator": ver["small_shop_picks"], "denominator": ver["tasks"],
             "baseline": base["small_shop_pct"], "baseline_numerator": base["small_shop_picks"],
-            "lift_points": ver["small_shop_pct"] - base["small_shop_pct"], "model": HEADLINE_MODEL,
-            "caveat": "A controlled test: 50 Home & Garden requests, one run each, one catalog. These are AI choices, not purchases or sales.",
-            "by_model": [{"model": m, "baseline": ag[(m, "baseline")]["small_shop_pct"], "with_evidence": ag[(m, "verified")]["small_shop_pct"],
-                          "baseline_n": ag[(m, "baseline")]["small_shop_picks"], "with_evidence_n": ag[(m, "verified")]["small_shop_picks"]}
+            "lift_points": ver["small_shop_pct"] - base["small_shop_pct"], "model": HEADLINE_MODEL, "recorded_on": recorded,
+            "baseline_chain": base["chain_picks"], "baseline_withdrawn": base["withdrawn_shop_picks"],
+            "chain": ver["chain_picks"], "withdrawn": ver["withdrawn_shop_picks"], "moved": moved, "moved_back": moved_back,
+            "fake_badge_picks": fake_total, "runs": runs_total, "paypal_orders": com["orders"], "models": len({k[0] for k in ag}),
+            "caveat": "A controlled test: 50 Home & Garden requests, one run each, one fictional catalog. These are AI choices, not purchases or sales.",
+            "by_model": [{"model": m, "label": _model(m), "baseline": ag[(m, "baseline")]["small_shop_pct"], "with_evidence": ag[(m, "verified")]["small_shop_pct"],
+                          "baseline_n": ag[(m, "baseline")]["small_shop_picks"], "with_evidence_n": ag[(m, "verified")]["small_shop_picks"],
+                          "baseline_withdrawn": ag[(m, "baseline")]["withdrawn_shop_picks"], "withdrawn": ag[(m, "verified")]["withdrawn_shop_picks"],
+                          "no_picks": ag[(m, "baseline")]["no_picks"] + ag[(m, "verified")]["no_picks"]}
                          for m in sorted({k[0] for k in ag})],
         },
         "perspectives": [
@@ -60,10 +71,15 @@ def build() -> dict:
             {"key": "customer", "name": "Merchants and shoppers", "question": "Do honest shops get seen, and are shoppers protected?", "kpis": [
                 _kpi("sealed", "Shops sealed", tr["sealed_shops"], "", f"of {tr['shops']} with PayPal records", True,
                      "One shop is not yet sealed and one is too new to judge. Both states are shown honestly.", "trust_metrics.sealed_shops", f"{tr['sealed_shops']} of {tr['shops']}"),
-                _kpi("switches", "Decisions that moved chain to small shop", sw.get("chain_to_small", 0), "", "more than moved back", sw.get("chain_to_small", 0) > sw.get("small_to_chain", 0),
-                     f"{sw.get('small_to_chain', 0)} moved the other way. Evidence informs; it does not force.", "gold.fact_agent_switch", f"{sw.get('chain_to_small', 0)} of 50"),
+                _kpi("switches", "Decisions that moved to an honest small shop", moved, "", "more than moved back", moved > moved_back,
+                     f"{sw.get('chain_to_small', 0)} from a chain and {sw.get('scam_to_small', 0)} from a shop whose seal was withdrawn; {moved_back} moved the other way. "
+                     "Evidence informs; it does not force.", "gold.fact_agent_switch", f"{moved} of 50"),
                 _kpi("fake", "Picks of the shop with the forged badge", fake_total, "", "0", fake_total == 0,
-                     f"Across {runs_total} recorded runs, two models, both conditions.", "agent_metrics.fake_badge_picks", f"{fake_total} of {runs_total}"),
+                     f"Across {runs_total} recorded runs, {len({k[0] for k in ag})} models, both conditions.", "agent_metrics.fake_badge_picks", f"{fake_total} of {runs_total}"),
+                _kpi("withdrawn", "Picks of a shop whose seal was withdrawn, with evidence", sum(ag[(m, "verified")]["withdrawn_shop_picks"] for m in {k[0] for k in ag}), "", "0",
+                     sum(ag[(m, "verified")]["withdrawn_shop_picks"] for m in {k[0] for k in ag}) == 0,
+                     f"Without evidence: {sum(ag[(m, 'baseline')]['withdrawn_shop_picks'] for m in {k[0] for k in ag})}. Same requests, same models.",
+                     "agent_metrics.withdrawn_shop_picks", f"{sum(ag[(m, 'verified')]['withdrawn_shop_picks'] for m in {k[0] for k in ag})} of {sum(ag[(m, 'verified')]['tasks'] for m in {k[0] for k in ag})}"),
             ]},
             {"key": "process", "name": "Evidence quality", "question": "Can every number be trusted and traced?", "kpis": [
                 _kpi("contracts", "Data contract rules passing", len([r for r in rules if r["passed"]]), "", "all", all(r["passed"] for r in rules),

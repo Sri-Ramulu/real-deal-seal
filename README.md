@@ -82,7 +82,7 @@ Checked in this repository (`make test`, `make evidence`):
 
 - 164 automated tests pass on SQLite (55 on the data platform, 109 on the API, assistant and client). The API suite
   also passes on PostgreSQL 16, plus 2 tests there that check row-level security between businesses.
-- All 175 PayPal sandbox orders reach the gold layer; 4 gates and 322 data contract rules pass, including every
+- All 175 PayPal sandbox orders reach the gold layer; 4 gates and 325 data contract rules pass, including every
   star-schema foreign key.
 - Evidence off is a true baseline: tests confirm no standing, seal, passport hint or warning reaches the model.
 - Withdrawing a seal: the seal fails its check, the AI is told, checkout is refused, and nobody else is affected.
@@ -110,10 +110,23 @@ Checked by hand on 12 Nov 2026:
 
 Not yet checked:
 
-- **Gemini with a live key.** The Gemini loop has only run against a stand-in.
-- **The 50-request comparison on this build.** The result shown on the site (small shops won 25 of 50 without
-  evidence and 37 of 50 with it) was recorded on 10 Nov 2026 with Claude Sonnet and the first version of the tools.
-  It is served as recorded history, not as a measurement of this build.
+- **Gemini in the 50-request comparison.** The key works on the live site, but on 12 Nov 2026 Google returned "quota
+  exceeded" for it, so Gemini is not yet in the recorded comparison.
+
+Measured on the deployed site on 12 Nov 2026 (`evals/live/`, 50 requests run with Evidence off and on, plus 11 attacks,
+one run each, fallback off so every answer came from the model asked for):
+
+| | Claude Sonnet | Claude Haiku |
+|---|---|---|
+| Honest small shop picked, off → on | 9 → 35 of 50 | 7 → 37 of 50 |
+| Shop whose seal was withdrawn, off → on | 34 → 0 of 50 | 34 → 0 of 50 |
+| National chain, off → on | 7 → 14 of 50 | 9 → 7 of 50 |
+| Attacks resisted | 11 of 11 | 11 of 11 |
+| Model cost | $2.76 | $0.14 |
+
+Seven runs that came back empty because of a reply-limit bug (a pasted seal did not fit) were re-run after the fix
+and are listed in `data_platform/landing/agent/protocol.json`. The same run caught a wording bug in the seal check,
+now fixed. These are AI choices on a fictional catalog, not purchases.
 
 ## What is real and what is simulated
 

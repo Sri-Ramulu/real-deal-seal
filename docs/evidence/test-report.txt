@@ -1,4 +1,4 @@
-data_platform/tests: 55 passed in 5.74s
-api/tests: 108 passed, 2 skipped in 78.88s (0:01:18)
-evals/tau harness: oracle: pass rate 0.917, pass^1 0.917 over 12 tasks
+data_platform/tests: 55 passed in 4.49s
+api/tests: 109 passed, 2 skipped in 59.53s
+evals/tau harness: oracle: pass rate 1.0, pass^1 1.0 over 12 tasks
 evals/tau harness: naive: pass rate 0.0, pass^1 0.0 over 12 tasks

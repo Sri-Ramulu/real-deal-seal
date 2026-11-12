@@ -1,6 +1,10 @@
 <script>
   import LightspeedStudy from '$lib/components/LightspeedStudy.svelte';
   import Arrow from '$lib/components/Arrow.svelte';
+  import { onMount } from 'svelte';
+  import { api } from '$lib/api.js';
+  let ns = $state(null);
+  onMount(async () => { try { ns = (await api('/api/scorecard')).north_star; } catch { ns = null; } });
   const flywheel = ['A business takes payments through PayPal', 'Its record becomes a signed passport', 'AI shoppers can check it and choose it', 'More checkouts go through PayPal', 'The record gets longer and stronger'];
   const tiers = [
     ['Passport', 'Free', 'Every eligible business', ['Signed Merchant Passport', 'Public seal check', 'Listed to AI agents over MCP'], 'Free on purpose. Being visible to AI shoppers must not depend on paying.'],
@@ -31,7 +35,7 @@
   <h2>The loop that makes it grow</h2>
   <p class="lede sub">Each turn adds evidence, and evidence is what gets a business chosen next time.</p>
   <ol class="loop">{#each flywheel as f, i}<li style="animation-delay:{i * 90}ms"><span class="num">{i + 1}</span>{f}</li>{/each}</ol>
-  <p class="small">What is measured today is the third step only, in a controlled test: with evidence, small shops won 37 of 50 AI decisions instead of 25. The later steps are the proposition, not a result.</p>
+  <p class="small">What is measured today is the third step only, in a controlled test{ns ? `: with evidence, honest small shops won ${ns.numerator} of 50 AI decisions instead of ${ns.baseline_numerator}, and shops whose seals were withdrawn won ${ns.withdrawn} instead of ${ns.baseline_withdrawn}` : ''}. The later steps are the proposition, not a result.</p>
 </section>
 
 <section class="dark section">

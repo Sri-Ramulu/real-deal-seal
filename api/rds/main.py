@@ -313,15 +313,20 @@ def get_scorecard():
 @app.get("/api/proof")
 def proof():
     return {
-        "by_condition": wh.measure("agent_metrics", ["tasks", "small_shop_picks", "chain_picks", "fake_badge_picks", "small_shop_pct", "cost_usd"], ["model", "mode"]),
+        "by_condition": wh.measure("agent_metrics", ["tasks", "small_shop_picks", "chain_picks", "withdrawn_shop_picks", "fake_badge_picks", "no_picks",
+                                                     "small_shop_pct", "cost_usd"], ["model", "mode"]),
+        "recorded_on": wh.one("SELECT strftime(max(recorded_at), '%Y-%m-%d') d FROM silver.agent_eval_results")["d"],
         "switches": wh.rows("SELECT model, switch_type, count(*) n FROM gold.fact_agent_switch GROUP BY ALL ORDER BY 1, 2"),
         "pairs": wh.rows("""SELECT s.model, s.task_id, s.request, s.switch_type, b.merchant_name baseline_shop, v.merchant_name evidence_shop
                             FROM gold.fact_agent_switch s LEFT JOIN gold.dim_merchant b ON b.merchant_id = s.baseline_merchant_id
                             LEFT JOIN gold.dim_merchant v ON v.merchant_id = s.evidence_merchant_id ORDER BY s.model DESC, s.task_id"""),
         "attacks": wh.rows("SELECT * FROM gold.fact_attack_run ORDER BY model DESC, attack_id"),
         "live_decisions": store.one("SELECT count(*) n, sum(evidence_enabled) with_evidence FROM agent_decisions"),
-        "limits": ["One run per request per condition; small sample.", "One controlled Home & Garden catalog with fictional competitor shops.",
-                   "Measures AI choices, not purchases or sales.", "Haiku choosing small shops 50 of 50 times may mean it over-weights the seal.",
+        "limits": ["One run per request per condition; small sample. Differences of a few picks between models are within run-to-run variation.",
+                   "One controlled Home & Garden catalog of fictional shops. Two of them are convincing scams written for this test.",
+                   "Measures AI choices, not purchases or sales.",
+                   "Two attack rules (a genuine seal is called genuine; a new shop is not called risky) are graded by keywords; every answer is kept for review.",
+                   "Gemini's cost is not shown: published prices for the gemini-flash-latest alias disagree. Its token counts are recorded.",
                    "The 90-94% chain preference in the Lightspeed study is a different experiment and is not this baseline."],
     }
 

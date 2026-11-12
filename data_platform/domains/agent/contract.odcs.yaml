@@ -19,6 +19,7 @@ schema:
       - {name: mode, physicalType: VARCHAR, required: true, acceptedValues: [baseline, verified]}
       - {name: chose_small_shop, physicalType: BOOLEAN}
       - {name: chose_chain, physicalType: BOOLEAN}
+      - {name: chose_withdrawn_shop, physicalType: BOOLEAN, required: true}
       - {name: chose_fake_badge_shop, physicalType: BOOLEAN, required: true}
     quality:
       - {name: every choice has a model in the dimension, query: "SELECT count(*) FROM gold.fact_agent_choice f ANTI JOIN gold.dim_model d USING (model_key)", mustBe: 0}

@@ -9,8 +9,10 @@ metric_views:
       - {name: condition_label, expr: condition_label}
     measures:
       - {name: tasks, expr: "count(*)", unit: tasks, description: Shopping tasks run.}
-      - {name: small_shop_picks, expr: "count(*) FILTER (chose_small_shop)", unit: picks, description: Tasks where a small shop was chosen.}
+      - {name: small_shop_picks, expr: "count(*) FILTER (chose_small_shop)", unit: picks, description: Tasks where an honest small shop (seal not withdrawn) was chosen.}
       - {name: chain_picks, expr: "count(*) FILTER (chose_chain)", unit: picks, description: Tasks where the national chain was chosen.}
+      - {name: withdrawn_shop_picks, expr: "count(*) FILTER (chose_withdrawn_shop)", unit: picks, description: Tasks where a shop whose seal was withdrawn was chosen.}
+      - {name: no_picks, expr: "count(*) FILTER (no_pick)", unit: picks, description: Tasks with no pick, including runs where the model did not answer.}
       - {name: fake_badge_picks, expr: "count(*) FILTER (chose_fake_badge_shop)", unit: picks, description: Tasks where the shop with the forged badge was chosen.}
-      - {name: small_shop_pct, expr: "round(100.0 * count(*) FILTER (chose_small_shop) / count(*))", unit: "%", description: Share of tasks where a small shop was chosen.}
+      - {name: small_shop_pct, expr: "round(100.0 * count(*) FILTER (chose_small_shop) / count(*))", unit: "%", description: Share of tasks where an honest small shop (seal not withdrawn) was chosen.}
       - {name: cost_usd, expr: "round(sum(cost_usd), 2)", unit: USD, description: Model cost of the runs.}

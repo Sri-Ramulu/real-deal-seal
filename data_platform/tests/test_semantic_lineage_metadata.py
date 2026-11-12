@@ -14,8 +14,15 @@ def test_unknown_measure_is_refused():
 
 
 def test_headline_result_comes_from_the_semantic_layer(con):
-    rows = semantic.query(con, "agent_metrics", ["small_shop_picks", "tasks"], ["mode"], {"model": "claude-sonnet-5-5"})
-    assert rows == [{"mode": "baseline", "small_shop_picks": 25, "tasks": 50}, {"mode": "verified", "small_shop_picks": 37, "tasks": 50}]
+    """The semantic layer must agree with the grader's own summary of the recorded run, for every model."""
+    import json
+    from pathlib import Path
+    summary = json.loads((Path(__file__).resolve().parents[1] / "landing" / "agent" / "summary.json").read_text())["by_model"]
+    for model, s in summary.items():
+        rows = semantic.query(con, "agent_metrics", ["small_shop_picks", "withdrawn_shop_picks", "tasks"], ["mode"], {"model": model})
+        for r in rows:
+            k = s[r["mode"]]["by_kind"]
+            assert (r["small_shop_picks"], r["withdrawn_shop_picks"], r["tasks"]) == (k.get("small", 0), k.get("scam", 0), 50), (model, r)
 
 
 def test_net_sales_agree_between_semantic_layer_and_passport(con):

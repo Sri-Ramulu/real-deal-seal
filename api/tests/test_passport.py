@@ -7,6 +7,7 @@ from rds import passport, store
 def test_a_fresh_seal_is_genuine():
     r = passport.verify(passport.issue("lydia"))
     assert r["result"] == "genuine" and all(s["ok"] for s in r["steps"])
+    assert not any("revoked" in s["detail"] for s in r["steps"]), "a genuine seal must not say its key was revoked"
 
 
 def test_changing_one_number_breaks_the_seal():

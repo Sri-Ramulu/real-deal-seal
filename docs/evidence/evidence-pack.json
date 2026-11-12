@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-12T09:16:38+00:00",
+ "generated_at": "2026-11-12T13:21:26+00:00",
  "summary": {
-  "tests_total": 165,
-  "tests_passed": 163,
+  "tests_total": 166,
+  "tests_passed": 164,
   "claims": 15,
   "claims_passing": 15,
   "adversarial_cases": 20,
@@ -10,9 +10,9 @@
   "adversarial_not_automated": 1
  },
  "runs": [
-  "data_platform/tests: 55 passed in 5.74s",
-  "api/tests: 108 passed, 2 skipped in 78.88s (0:01:18)",
-  "evals/tau harness: oracle: pass rate 0.917, pass^1 0.917 over 12 tasks",
+  "data_platform/tests: 55 passed in 4.49s",
+  "api/tests: 109 passed, 2 skipped in 59.53s",
+  "evals/tau harness: oracle: pass rate 1.0, pass^1 1.0 over 12 tasks",
   "evals/tau harness: naive: pass rate 0.0, pass^1 0.0 over 12 tasks"
  ],
  "claims": [
@@ -150,13 +150,13 @@
      "passed": true
     },
     {
-     "name": "test_scorecard_north_star_is_37_of_50_against_25",
+     "name": "test_scorecard_north_star_matches_the_graded_run",
      "file": "test_api",
      "passed": true
     }
    ],
    "passed": true,
-   "note": "The tests prove the recorded traces are served unchanged. The runs themselves used the first version of the tools on 2026-11-10 and have not been repeated on this build."
+   "note": "The tests prove the site serves the graded run unchanged. The runs were made on this build's live site on 2026-11-12 (evals/live/); Gemini is not yet included."
   },
   {
    "claim": "Checkout cannot be duplicated",

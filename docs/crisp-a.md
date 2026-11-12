@@ -46,7 +46,7 @@ Safety and learning. Targets are demo targets set by the project.
 - Star schema: 8 dimensions and 9 facts in gold, with every foreign key under contract.
 - Rule sets by business type, as data: physical, services, digital.
 - Agent: one Claude model, eight tools, plain loop; system prompt states the boundaries.
-- Recorded result (first version of the tools, 2026-11-10): Sonnet 5.5 25 of 50 to 37 of 50; Haiku 5.5 28 of 50 to 50 of 50 (possibly over-weighting the seal).
+- Recorded result (live site, 2026-11-12): honest small shop picks Sonnet 9 to 35 of 50, Haiku 7 to 37 of 50; withdrawn-seal shop picks 34 to 0 for both. The 2026-11-10 result on the earlier catalog is in git history.
 
 ## 06 Deployment (data engineer)
 

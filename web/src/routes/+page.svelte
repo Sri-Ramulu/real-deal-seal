@@ -43,7 +43,7 @@
     <div class="answer before">
       <span class="label">Search only</span>
       <strong>{first?.baseline_shop ?? 'Babel Home'}</strong>
-      <span class="small">The assistant knows the chain and the price. It knows nothing about the small shop.</span>
+      <span class="small">It sees only the listing: the price, shipping and returns, as the seller wrote them.</span>
     </div>
     <div class="answer after">
       <span class="label">Search + Real Deal Seal</span>
@@ -58,9 +58,11 @@
 {#if error}<div class="wrap"><p class="notice">The API is not reachable: {error} Start it with <code>make api</code>.</p></div>{/if}
 
 <section class="wrap section-tight facts">
-  <div><span class="num big">{ns?.baseline_numerator ?? 25} <i>to</i> {ns?.numerator ?? 37}</span><p>of 50 AI shopping decisions went to a small shop once the assistant could read the evidence, in a controlled test with a fictional chain.</p></div>
-  <div><span class="num big">175</span><p>PayPal sandbox orders behind the published facts, and each one can be traced.</p></div>
-  <div><span class="num big">0</span><p>times in 200 recorded runs did the assistant pick the shop with the forged badge.</p></div>
+  {#if ns}
+  <div><span class="num big">{ns.baseline_numerator} <i>to</i> {ns.numerator}</span><p>of 50 AI shopping decisions went to an honest small shop once the assistant could read the evidence ({modelName(ns.model)}, a controlled test with fictional shops).</p></div>
+  <div><span class="num big">{ns.baseline_withdrawn} <i>to</i> {ns.withdrawn}</span><p>of 50 decisions went to a shop whose seal was withdrawn for cause. Its listings looked clean and cheap; only the record showed otherwise.</p></div>
+  <div><span class="num big">{ns.paypal_orders}</span><p>PayPal sandbox orders behind the published facts, and each one can be traced.</p></div>
+  {/if}
 </section>
 
 <section class="stone section"><div class="wrap"><LightspeedStudy compact /></div></section>
@@ -96,17 +98,17 @@
 
 <section class="wrap section proof">
   <div>
-    <h2>Evidence moved 12 of 50 decisions</h2>
+    <h2>Evidence moved {ns?.moved ?? '…'} of 50 decisions</h2>
     <p class="lede">We ran the same 50 shopping requests twice with the same model: once with product search only, once with the evidence tools as well. The model had no instructions to favor small shops.</p>
-    <p>With evidence, small shops won {ns?.numerator ?? 37} of 50 instead of {ns?.baseline_numerator ?? 25}. The chain still won {50 - (ns?.numerator ?? 37)}, usually on price. The evidence informed the choice without forcing it.</p>
+    {#if ns}<p>With evidence, honest small shops won {ns.numerator} of 50 instead of {ns.baseline_numerator}, and shops whose seals were withdrawn went from {ns.baseline_withdrawn} picks to {ns.withdrawn}. The chains still won {ns.chain}, usually on price. The evidence informed the choice without forcing it.</p>{/if}
     <a class="btn black" href="/proof">Open the proof lab <Arrow /></a>
   </div>
   <figure>
     {#if ns}
-      <Slope series={ns.by_model.map((m) => ({ name: modelName(m.model), from: m.baseline, to: m.with_evidence, highlight: m.model === ns.model,
-        detail: `${modelName(m.model)}: ${m.baseline_n} of 50 without evidence, ${m.with_evidence_n} of 50 with it` }))} />
+      <Slope series={ns.by_model.map((m) => ({ name: m.label, from: m.baseline, to: m.with_evidence, highlight: m.model === ns.model,
+        detail: `${m.label}: ${m.baseline_n} of 50 without evidence, ${m.with_evidence_n} of 50 with it` }))} />
     {/if}
-    <figcaption class="source">Share of 50 requests where the assistant picked a small shop, one run per request, recorded on 10 Nov 2026 with the first version of the tools. A controlled test with a fictional chain; these are AI recommendations, not purchases. Source: Real Deal Seal evaluation.</figcaption>
+    <figcaption class="source">Share of 50 requests where the assistant picked an honest small shop, one run per request per model, recorded on {ns?.recorded_on ?? ''} on this site. A controlled test with fictional shops; these are AI recommendations, not purchases. Source: Real Deal Seal evaluation.</figcaption>
   </figure>
 </section>
 

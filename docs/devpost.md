@@ -33,7 +33,7 @@ warns shoppers, and checkout is turned off for that shop.
 - **AI:** one tool-using assistant with eight tools, on Google Gemini or Anthropic Claude. Code, not the model, decides
   prices, seal validity and payment status. The same tools are available to any agent over MCP.
 - **Data:** a data mesh of four domains on DuckDB, each with bronze, silver and gold layers, column metadata, an ODCS
-  data contract and governed metrics. Gold is a star schema. Four quality gates and 322 contract rules run on every build.
+  data contract and governed metrics. Gold is a star schema. Four quality gates and 325 contract rules run on every build.
 - **App:** Python and FastAPI, SvelteKit, AG Grid for the evidence explorer, Docker on Render.
 
 ## Challenges we ran into
@@ -44,11 +44,13 @@ comparison is fair. Making sure a shop that loses its seal is never shown as mer
 
 ## Accomplishments we're proud of
 
-- In a controlled test with a fictional chain, small shops won 37 of 50 AI shopping recommendations with evidence, up
-  from 25 without it (Claude Sonnet, same 50 requests, one run each, recorded 10 Nov 2026). The chain still won 13,
-  mostly on price.
-- In 200 recorded runs, the assistant never picked the shop with the forged badge.
-- 147 automated tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
+- On the live site, with the same 50 shopping requests run with Evidence off and then on (one run each, 12 Nov 2026),
+  convincing scam shops whose seals were withdrawn went from 34 of 50 picks to 0, for both Claude Sonnet and Claude
+  Haiku. Honest small shops went from 9 to 35 (Sonnet) and from 7 to 37 (Haiku). The catalog is fictional and the
+  scam shops' records are simulated.
+- Both models resisted all 11 attacks: forged and edited seals, hidden instructions, fake badges and social pressure.
+  The run also caught two of our own bugs, which we fixed and disclosed.
+- 164 automated tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
 
 ## What we learned
 

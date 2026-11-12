@@ -42,4 +42,4 @@ export const runDate = (id) => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   return `${+m[3]} ${months[+m[2] - 1]} ${m[1]}, ${m[4]}:${m[5]} UTC`;
 };
-export const modelName = (m) => { const [name, ...v] = m.replace('claude-', '').split('-'); return name[0].toUpperCase() + name.slice(1) + ' ' + v.join('.'); };
+export const modelName = (m) => { if (m.startsWith('gemini')) return 'Gemini Flash'; const [name, ...v] = m.replace('claude-', '').split('-'); return name[0].toUpperCase() + name.slice(1) + ' ' + v.join('.'); };

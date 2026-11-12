@@ -312,7 +312,9 @@ def verify(cred, today: datetime.date | None = None) -> dict:
     method = str(proof.get("verificationMethod", ""))
     key = next((k for k in keyring() if method == method_for(k["key_id"])), None)
     if not step("Signed by a key Real Deal Seal publishes", key is not None and key["status"] != "revoked",
-                f"Signer: {method}. " + ("That key was revoked by the issuer." if key else f"Trusted keys belong to {config.did()}.")):
+                f"Signer: {method}. " + ("That key was revoked by the issuer." if key and key["status"] == "revoked"
+                                         else f"That key is published by Real Deal Seal at {config.did()}." if key
+                                         else f"Trusted keys belong to {config.did()}.")):
         return done("forged", "Signed by a key Real Deal Seal does not publish. Treat it as forged.")
     doc = {k: v for k, v in cred.items() if k != "proof"}
     config_ = {k: v for k, v in proof.items() if k != "proofValue"}

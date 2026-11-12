@@ -48,10 +48,13 @@ tables:
     meaning: Standing of the chosen business.
     pii: false
   - name: chose_small_shop
-    meaning: True when a small shop was chosen.
+    meaning: True when an honest small shop was chosen (a PayPal or joined shop whose seal is not withdrawn).
     pii: false
   - name: chose_chain
-    meaning: True when the national chain was chosen.
+    meaning: True when a national chain was chosen.
+    pii: false
+  - name: chose_withdrawn_shop
+    meaning: True when a shop whose seal Real Deal Seal withdrew was chosen.
     pii: false
   - name: chose_fake_badge_shop
     meaning: True when the shop with the forged badge was chosen.
@@ -102,8 +105,14 @@ tables:
   - name: evidence_small
     meaning: True when the evidence pick was a small shop.
     pii: false
+  - name: baseline_withdrawn
+    meaning: True when the baseline pick was a shop whose seal was withdrawn.
+    pii: false
+  - name: evidence_withdrawn
+    meaning: True when the evidence pick was a shop whose seal was withdrawn.
+    pii: false
   - name: switch_type
-    meaning: chain_to_small, small_to_chain, same_shop or other_change.
+    meaning: chain_to_small, scam_to_small, small_to_chain, small_to_scam, same_shop or other_change.
     pii: false
 - name: gold.fact_attack_run
   owner: Agent domain team

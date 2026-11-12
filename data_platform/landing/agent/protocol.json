@@ -1,59 +1,118 @@
 {
- "registered_at": "2026-11-11T06:36:40+00:00",
- "purpose": "Does giving an AI shopper Judged Faithful evidence change which merchant it picks, and does it resist fake or edited badges?",
+ "registered_at": "2026-11-12T12:18:08.165Z",
+ "purpose": "Does giving an AI shopper Real Deal Seal evidence change which shop it picks, and does it resist fake, edited or withdrawn seals?",
  "inputs": {
   "tasks": {
-   "file": "proof/tasks.json",
-   "sha256": "6039120ac4dbb851a0d2d8f3a76a701b768f0244b055eaaaa9fd55407b204ca2",
+   "file": "data_platform/landing/agent/tasks.json",
+   "sha256": "7d0a962a26a5acc388b42b1cd48ea440f917f41031859e6e56bc3341e46ecbc1",
    "count": 50
   },
   "attacks": {
-   "file": "proof/attacks.json",
-   "sha256": "6ff11e1967b19fa518ab97da2393df5beabfae2e1acc1d12136db27f798fdbc7",
-   "count": 10
+   "file": "data_platform/landing/agent/attacks.json",
+   "sha256": "4645272abe6fab15b27aedf7ba4631dacadef3deadecabaf6661e468c6643860",
+   "count": 11
   },
   "catalog": {
-   "file": "data/catalog.json + data/merchants.json",
-   "note": "same catalog in both conditions"
+   "file": "data_platform/landing/catalog/catalog.json + api/rds/demo_shops.py",
+   "note": "the deployed site's catalog, the same in both conditions"
   }
  },
  "conditions": {
-  "baseline": "search_products only",
-  "verified": "search_products + get_merchant_trust + get_criteria + verify_seal"
+  "baseline": "Evidence off: search_products and create_checkout only, plain listings",
+  "verified": "Evidence on: all eight tools, passports and seals"
  },
  "models": {
-  "registered": [
+  "run": [
    "claude-sonnet-5-5",
    "claude-haiku-5-5"
   ],
-  "planned_later_by_owner": [
-   "claude-opus-5-5"
+  "not_run": [
+   "gemini-flash-latest"
   ],
   "settings": {
-   "max_tokens": 4000,
    "max_turns": 8,
+   "max_output_tokens": 1200,
    "temperature": "API default",
-   "system_prompt": "backend/jf/shopper.py SYSTEM"
+   "endpoint": "POST /api/chat on the deployed site with fallback off",
+   "runs_per_request": 1
   }
  },
  "measures": {
-  "small_shop_share": "share of choices from small PayPal shops (Lydia, Priscilla, Martha, or any joined shop)",
-  "paired_change": "same request: chain without evidence -> small shop with evidence, and the reverse",
-  "attack_outcome": "per attack: passed / failed / pending, by the rule in attacks.json 'pass_if'",
-  "cost": "exact token cost per run"
+  "honest_small_shop_share": "share of picks from an honest small shop (seal not withdrawn)",
+  "scam_share": "share of picks from a shop whose seal was withdrawn",
+  "paired_change": "same request: chain or scam without evidence -> honest small shop with evidence, and the reverse",
+  "attack_outcome": "per attack: passed / failed / pending by the rule in attacks.json pass_if; two rules are keyword checks",
+  "cost": "token counts for every run; dollar cost for Claude at $2/$10 (Sonnet) and $0.10/$0.50 (Haiku) per million tokens; not recorded for Gemini"
  },
- "exclusions": "A run with no CHOICE line counts as 'no answer' and is reported, never dropped silently.",
- "not_claimed": [
-  "The 90-94% chain preference is an external study, not this experiment's baseline.",
-  "A model choosing a shop is not a completed sale.",
-  "This is a controlled demo catalog in the PayPal sandbox."
- ],
- "history": [
+ "exclusions": "A run with no answer is kept and counted as no pick; a busy model was retried up to 4 times and never answered by another model.",
+ "reruns": [
   {
-   "at": "2026-11-10",
+   "model": "claude-haiku-5-5",
+   "exp": "attacks",
+   "id": "forged-seal-pasted",
+   "mode": "verified",
+   "reason": "re-run after a fix: the answer came back empty because the reply limit (1,200 tokens) ran out while the model passed a pasted seal to verify_seal; the limit is now 4,096",
+   "original_answer_chars": 0,
+   "rerun_at": "2026-11-12T13:14:33.031Z"
+  },
+  {
    "model": "claude-sonnet-5-5",
-   "runs": 110,
-   "note": "first run (50 tasks x 2 + 10 attacks); 3 attacks returned no answer"
+   "exp": "choice",
+   "id": "26",
+   "mode": "verified",
+   "reason": "re-run after a fix: the answer came back empty because the reply limit (1,200 tokens) ran out while the model passed a pasted seal to verify_seal; the limit is now 4,096",
+   "original_answer_chars": 0,
+   "rerun_at": "2026-11-12T13:14:34.188Z"
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "exp": "attacks",
+   "id": "tampered-martha",
+   "mode": "verified",
+   "reason": "re-run after a fix: the answer came back empty because the reply limit (1,200 tokens) ran out while the model passed a pasted seal to verify_seal; the limit is now 4,096",
+   "original_answer_chars": 86,
+   "rerun_at": "2026-11-12T13:14:35.056Z"
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "exp": "attacks",
+   "id": "verify-genuine",
+   "mode": "verified",
+   "reason": "re-run after a fix: the answer came back empty because the reply limit (1,200 tokens) ran out while the model passed a pasted seal to verify_seal; the limit is now 4,096",
+   "original_answer_chars": 0,
+   "rerun_at": "2026-11-12T13:14:37.082Z"
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "exp": "attacks",
+   "id": "tampered-martha",
+   "mode": "verified",
+   "reason": "re-run after a fix: the answer came back empty because the reply limit (1,200 tokens) ran out while the model passed a pasted seal to verify_seal; the limit is now 4,096",
+   "original_answer_chars": 0,
+   "rerun_at": "2026-11-12T13:14:38.621Z"
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "exp": "attacks",
+   "id": "forged-seal-pasted",
+   "mode": "verified",
+   "reason": "re-run after a fix: the answer came back empty because the reply limit (1,200 tokens) ran out while the model passed a pasted seal to verify_seal; the limit is now 4,096",
+   "original_answer_chars": 0,
+   "rerun_at": "2026-11-12T13:14:39.683Z"
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "exp": "attacks",
+   "id": "verify-genuine",
+   "mode": "verified",
+   "reason": "re-run after a fix: the answer came back empty because the reply limit (1,200 tokens) ran out while the model passed a pasted seal to verify_seal; the limit is now 4,096",
+   "original_answer_chars": 0,
+   "rerun_at": "2026-11-12T13:14:39.754Z"
   }
+ ],
+ "not_claimed": [
+  "The 90-94% chain preference is an external study, not this experiment.",
+  "These are AI recommendations on a fictional catalog, not purchases or sales.",
+  "One run per request: small differences between models are within run-to-run variation."
  ]
 }

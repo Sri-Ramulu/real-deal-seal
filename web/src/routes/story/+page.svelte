@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { api, usd } from '$lib/api.js';
+  import { api, usd, modelName } from '$lib/api.js';
   import SealMark from '$lib/components/SealMark.svelte';
   import PassportCard from '$lib/components/PassportCard.svelte';
   import Arrow from '$lib/components/Arrow.svelte';
@@ -18,16 +18,16 @@
   const tracking = $derived(pub?.facts.find((f) => f.metric === 'tracking_rate'));
   // One square per order, drawn from public counts only: refunded first, then shipped without tracking, then the rest.
   const squares = $derived(shape ? Array.from({ length: shape.orders }, (_, i) => (i < shape.refunded ? 'refund' : i < shape.refunded + shape.fulfilled_without_tracking ? 'notrack' : 'ok')) : []);
-  const chapters = [
+  const chapters = $derived([
     ['A good shop is invisible to AI', 'A shopper asks an AI assistant for a purple table runner. The assistant knows the national chain, its prices and its returns policy. It knows almost nothing about Lydia, who hand-dyes linen and has shipped a hundred orders without a problem. So it recommends the chain.', 'A study for Lightspeed Commerce by Vaer AI (September 2026, about 460,000 AI answers) found that, without live web search, assistants chose a national chain over a smaller retailer 90 to 94 times in 100 head-to-head comparisons. With live search, chains were still 46 to 58% of answers.'],
     ['The proof is already in her payment records', 'Every order Lydia took through PayPal left a record: paid, shipped, tracked, and refunded or not. That’s one hundred orders, two refunds, and a tracking number on almost every shipment. A shopper shouldn’t have to take her word for it, and with these records they don’t need to.', 'Each square is one of Lydia’s 100 PayPal sandbox orders. In this demo, the order dates are simulated, and they’re labeled that way.'],
     ['We turn the record into facts anyone can count', 'With Lydia’s permission, Real Deal Seal reads her records from PayPal and counts what happened. We don’t give her a trust score. We report, for example, how many of her recent shipments had a tracking number, out of how many. Each fact also says where it came from and how strong the evidence is.', 'Tracking numbers are reported by the shop, so they’re labeled that way. Refunds come straight from PayPal’s records.'],
     ['Then we sign it so no one can quietly change it', 'The facts go into a Merchant Passport, signed with a key we publish. Anyone can check it. If someone changes a single number, or copies the badge onto another shop’s page, the check fails. And if we learn a sealed shop is cheating, we can withdraw its seal, and its old badge stops checking out.', 'Real Deal Seal signs the passport. PayPal supplied the sandbox records but doesn’t sign or endorse the shop.'],
-    ['Ask again, and this time the assistant can check', 'Same question, same assistant, same catalog. This time the assistant can open each shop’s passport before it answers. Across 50 requests, small shops won 37 times instead of 25. The chain still won 13, mostly on price, so the evidence informed the choice without forcing it.', 'A controlled test with a fictional chain: one run per request with Claude Sonnet, recorded on 10 Nov 2026. These are AI recommendations, not real purchases.'],
+    ['Ask again, and this time the assistant can check', ns ? `Same question, same assistant, same catalog. This time the assistant can open each shop’s passport before it answers. Across 50 requests, honest small shops won ${ns.numerator} times instead of ${ns.baseline_numerator}, and shops whose seals were withdrawn for cause went from ${ns.baseline_withdrawn} picks to ${ns.withdrawn}. Their listings looked clean and cheap; only the record showed otherwise. The chains still won ${ns.chain}, mostly on price, so the evidence informed the choice without forcing it.` : 'Same question, same assistant, same catalog. This time the assistant can open each shop’s passport before it answers.', `A controlled test with fictional shops: one run per request with ${ns ? modelName(ns.model) : 'Claude'}${ns?.recorded_on ? `, recorded on ${ns.recorded_on}` : ''}. These are AI recommendations, not real purchases.`],
     ['The shopper pays, not the AI', 'The assistant can open a PayPal checkout, but it can’t approve one. The shopper approves the payment in PayPal, and our server then asks PayPal directly whether the exact amount was captured. Only then does the order count as paid.', 'Checkout runs in the PayPal sandbox with test money.'],
     ['New shops get a fair label, and problems stay visible', 'Priscilla has only a few weeks of orders. Her record is clean but too short to judge, so her passport says she’s new. Martha has 60 orders and misses several rules. Her passport shows which ones, and her studio shows the exact orders to fix. Neither shop is called unsafe, and neither gets a seal she hasn’t earned.', 'Every shop is judged by the same published rules for its type of business.'],
     ['Why it matters', 'The same signed record helps a small shop get chosen by AI shoppers and shows it what to fix next. For PayPal, it gives merchants a reason to stay, and AI agents a reason to check out with PayPal.', 'Shown here with demo shops in the PayPal sandbox.']
-  ];
+  ]);
 </script>
 
 <svelte:head><title>The story | Real Deal Seal</title></svelte:head>

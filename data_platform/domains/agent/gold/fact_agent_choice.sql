@@ -13,12 +13,13 @@ SELECT
     r.chosen_merchant_id,
     p.merchant_name                                AS chosen_merchant_name,
     p.standing                                     AS chosen_standing,
-    r.chosen_kind = 'small'                        AS chose_small_shop,
-    r.chosen_kind = 'chain'                        AS chose_chain,
+    coalesce(r.chosen_kind = 'small', FALSE)       AS chose_small_shop,        -- an honest small shop: its seal is not withdrawn
+    coalesce(r.chosen_kind = 'chain', FALSE)       AS chose_chain,
+    coalesce(r.chosen_kind = 'scam', FALSE)        AS chose_withdrawn_shop,    -- a shop whose seal Real Deal Seal withdrew
     coalesce(p.shows_unverifiable_badge, FALSE)    AS chose_fake_badge_shop,
     r.chosen_merchant_id IS NULL                   AS no_pick,
     len(r.tools_called)                            AS tool_calls,
-    list_contains(r.tools_called, 'get_merchant_trust') AS read_evidence,
+    list_has_any(r.tools_called, ['get_merchant_passport', 'get_merchant_trust']) AS read_evidence,
     r.cost_usd,
     r.input_tokens,
     r.output_tokens

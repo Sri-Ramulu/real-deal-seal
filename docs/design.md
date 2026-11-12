@@ -35,7 +35,7 @@ slope line drawing (scorecard), the squares filling (proof, story), the evidence
 
 ## Charts (after Storytelling with Data)
 
-- The title is the takeaway ("With evidence, small shops won 37 of 50").
+- The title is the takeaway ("With evidence, honest small shops won 35 of 50").
 - Grey for context, red for the one thing to look at, labels on the marks, no legends to decode, no dual axes.
 - Every chart has a source line naming the gold table or measure.
 - In rule bars red means "rule not met"; in the slope chart red marks the headline model. Grey is context, not a category,

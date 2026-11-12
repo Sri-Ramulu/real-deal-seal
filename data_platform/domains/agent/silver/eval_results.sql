@@ -15,5 +15,7 @@ SELECT
     CAST(payload->'$.tools' AS VARCHAR[])      AS tools_called,
     CAST(payload->>'$.cost_usd' AS DOUBLE)     AS cost_usd,
     CAST(payload->>'$.input_tokens' AS INTEGER)  AS input_tokens,
-    CAST(payload->>'$.output_tokens' AS INTEGER) AS output_tokens
+    CAST(payload->>'$.output_tokens' AS INTEGER) AS output_tokens,
+    coalesce(payload->>'$.status', 'answered')  AS run_status,
+    CAST(substr(payload->>'$.recorded_at', 1, 19) AS TIMESTAMP) AS recorded_at
 FROM bronze.agent_eval_results

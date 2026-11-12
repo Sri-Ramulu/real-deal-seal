@@ -6,10 +6,15 @@ def test_health_reports_modes_honestly(client):
     assert h["gates_green"] and h["assistant"] == "offline" and set(h["checkout"].values()) == {"simulated"}
 
 
-def test_scorecard_north_star_is_37_of_50_against_25(client):
+def test_scorecard_north_star_matches_the_graded_run(client):
+    """The headline is read from the recorded evaluation, never typed in: it must equal the grader's summary."""
+    import json
+    from pathlib import Path
+    s = json.loads((Path(__file__).resolve().parents[2] / "data_platform/landing/agent/summary.json").read_text())["by_model"]["claude-sonnet-5-5"]
     ns = client.get("/api/scorecard").json()["north_star"]
-    assert (ns["numerator"], ns["denominator"], ns["baseline_numerator"], ns["lift_points"]) == (37, 50, 25, 24)
-    assert "not purchases" in ns["caveat"]
+    assert (ns["numerator"], ns["baseline_numerator"], ns["denominator"]) == (s["verified"]["by_kind"].get("small", 0), s["baseline"]["by_kind"].get("small", 0), 50)
+    assert (ns["withdrawn"], ns["baseline_withdrawn"]) == (s["verified"]["by_kind"].get("scam", 0), s["baseline"]["by_kind"].get("scam", 0))
+    assert ns["lift_points"] == ns["value"] - ns["baseline"] and "not purchases" in ns["caveat"]
 
 
 def test_every_kpi_names_its_source(client):

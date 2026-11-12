@@ -20,14 +20,14 @@
     <div class="star">
       <div>
         <span class="label">North Star</span>
-        <h1>With evidence, small shops won {ns.numerator} of {ns.denominator} AI shopping decisions. Without it, {ns.baseline_numerator}.</h1>
+        <h1>With evidence, honest small shops won {ns.numerator} of {ns.denominator} AI shopping decisions. Without it, {ns.baseline_numerator}.</h1>
         <p class="lede">{ns.why}</p>
         <p class="small">{ns.name}. {modelName(ns.model)}, the same 50 requests in both conditions. {ns.caveat}</p>
       </div>
       <figure>
-        <Slope series={ns.by_model.map((m) => ({ name: modelName(m.model), from: m.baseline, to: m.with_evidence, highlight: m.model === ns.model,
-          detail: `${modelName(m.model)}: ${m.baseline_n} of 50 without evidence, ${m.with_evidence_n} of 50 with it` }))} />
-        <figcaption class="source">Share of requests won by a small shop. Hover a line for counts. Haiku reaching 100% may mean it over-weights the seal.</figcaption>
+        <Slope series={ns.by_model.map((m) => ({ name: m.label, from: m.baseline, to: m.with_evidence, highlight: m.model === ns.model,
+          detail: `${m.label}: ${m.baseline_n} of 50 without evidence, ${m.with_evidence_n} of 50 with it` }))} />
+        <figcaption class="source">Share of requests won by an honest small shop (seal not withdrawn). Hover a line for counts.</figcaption>
       </figure>
     </div>
 

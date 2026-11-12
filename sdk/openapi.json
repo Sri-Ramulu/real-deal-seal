@@ -1941,6 +1941,12 @@
       ],
       "title": "Model",
       "description": "'gemini', 'claude-sonnet' or 'claude-haiku'; empty uses the server's default"
+     },
+     "fallback": {
+      "type": "boolean",
+      "title": "Fallback",
+      "description": "If Gemini is busy, answer with Claude Sonnet. Evaluations set this to false so every answer comes from the model asked for.",
+      "default": true
      }
     },
     "type": "object",
