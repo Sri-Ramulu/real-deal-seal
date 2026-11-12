@@ -145,8 +145,8 @@ docs/                 architecture, plan coverage, CRISP-A walk-through, design 
 ## Built with
 
 PayPal Orders v2 (create, get, capture, track), refunds and webhook signature verification, all in the sandbox.
-The shopping assistant runs on Google Gemini or Anthropic Claude. AI coding assistants (Claude) were used during
-development. Sponsor tools: AG Grid (evidence explorer), Channel3 (cached price context) and Render (hosting).
+The shopping assistant runs on Google Gemini or Anthropic Claude. Built with Claude Code (Anthropic) as a coding
+assistant, credited as co-author on the commits. Sponsor tools: AG Grid (evidence explorer), Channel3 (cached price context) and Render (hosting).
 Open source: DuckDB, FastAPI, SvelteKit, the MCP Python SDK and cryptography.
 
 MIT license. See `LICENSE`.
