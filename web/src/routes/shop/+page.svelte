@@ -5,7 +5,17 @@
 
   let all = $state([]), q = $state(''), found = $state(null), open = $state(null), detail = $state(null), market = $state(null), error = $state(''), busy = $state(false), health = $state(null);
   onMount(async () => { [all, health] = await Promise.all([api('/api/products'), api('/api/health').catch(() => null)]); });
-  const list = $derived(found ?? all);
+  let shop = $state('all'), standing = $state('all');
+  // With no search, shops take turns (one offer each, cheapest first) so the first screen shows every kind of standing.
+  const mixed = $derived.by(() => {
+    const by = {}; for (const o of all) (by[o.shop] ??= []).push(o);
+    const queues = Object.values(by).map((x) => [...x].sort((a, b) => a.price_usd - b.price_usd));
+    const out = []; for (let i = 0; queues.some((x) => x[i]); i++) for (const x of queues) if (x[i]) out.push(x[i]);
+    return out;
+  });
+  const shopNames = $derived([...new Set(all.map((o) => o.shop))].sort());
+  const standings = [['all', 'Any standing'], ['sealed', 'Seal earned'], ['verified', 'Verified'], ['reported', 'Self-reported'], ['new', 'New'], ['no_record', 'No record'], ['withdrawn', 'Seal withdrawn']];
+  const list = $derived((found ?? mixed).filter((o) => (shop === 'all' || o.shop === shop) && (standing === 'all' || cls(o.shop_standing) === standing)));
   const cls = (h) => (h.includes('withdrawn') ? 'withdrawn' : h.includes('Real Deal') ? 'sealed' : h.includes('Verified') ? 'verified' : h.includes('Self-reported') ? 'reported' : h.includes('history') ? 'new' : 'no_record');
   async function search() { found = q.trim() ? await api(`/api/products?q=${encodeURIComponent(q)}`) : null; }
   async function show(o) {
@@ -20,8 +30,14 @@
 <section class="wrap section">
   <div class="head"><h1>Shop</h1>
     <form onsubmit={(e) => { e.preventDefault(); search(); }}><input class="input" bind:value={q} placeholder="Search: purple table runner, linen napkins, garden tote" aria-label="Search products" /><button class="btn">Search <Arrow size={12} /></button></form></div>
-  <p class="lede">Every offer shows the shop's standing beside the price. Results are sorted by how well they match your search, then by price. No shop can pay to rank higher.</p>
+  <p class="lede">Every offer shows the shop's standing beside the price. Search results are sorted by how well they match, then by price. Before you search, the shops take turns. No shop can pay to rank higher.</p>
   {#if found && !found.length}<p class="notice">Nothing matched "{q}". Try naming the item and one detail, for example "purple napkins".</p>{/if}
+  <div class="filters">
+    <label class="field">Shop<select class="input" bind:value={shop}><option value="all">All {shopNames.length} shops</option>{#each shopNames as n}<option>{n}</option>{/each}</select></label>
+    <div class="tabs" role="group" aria-label="Filter by standing">{#each standings.filter(([k]) => k === 'all' || all.some((o) => cls(o.shop_standing) === k)) as [k, name]}<button class:on={standing === k} onclick={() => (standing = k)}>{name}</button>{/each}</div>
+    <span class="small count" aria-live="polite">{list.length} of {all.length} products{found ? ` match "${q}"` : ''}</span>
+  </div>
+  {#if !list.length && all.length && !(found && !found.length)}<p class="notice">No products match these filters. <button class="linkish" onclick={() => { shop = 'all'; standing = 'all'; }}>Clear the filters</button></p>{/if}
   <div class="grid">
     {#each list as o (o.sku)}
       <button class="offer" onclick={() => show(o)}>
@@ -59,6 +75,9 @@
 {/if}
 
 <style>
+  .filters { display: flex; gap: 16px; align-items: end; flex-wrap: wrap; margin: 28px 0 14px; }
+  .filters .field { min-width: 220px; } .count { margin-left: auto; padding-bottom: 12px; }
+  .linkish { border: 0; background: none; padding: 0; font-weight: 700; text-decoration: underline; cursor: pointer; color: inherit; }
   .head { display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; margin-bottom: 20px; }
   .head form { display: flex; gap: 2px; flex: 1; max-width: 620px; } .head .btn { border-radius: 0 4px 4px 0; }
   .lede { margin-bottom: 36px; max-width: 70ch; }

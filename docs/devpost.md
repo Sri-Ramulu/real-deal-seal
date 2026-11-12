@@ -55,7 +55,7 @@ comparison is fair. Making sure a shop that loses its seal is never shown as mer
 - All 600 recorded picks are public in an AG Grid explorer on the proof page: filter, sort, search or export them.
 - A side-by-side demo on the home page asks one question both ways, live, so anyone can see the difference in 20
   seconds.
-- 168 automated tests and 9 browser tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
+- 171 automated tests and 9 browser tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
 
 ## What we learned
 
@@ -77,3 +77,23 @@ supplies the sandbox records and doesn't sign or endorse the seal.
 ## Updates during the submission period
 
 > Write this yourself: when the project started and what was built when, during 1 Oct to 12 Nov 2026.
+
+## Testing instructions (paste into the Devpost "testing instructions" field)
+
+Live site: https://real-deal-seal.onrender.com (free to use, no sign-up, kept online through 15 December 2026).
+Start at https://real-deal-seal.onrender.com/judges for a three-minute, five-click tour.
+
+1. **See the difference.** On the home page, press "Run it live". One question is answered twice: with listings only,
+   and with evidence.
+2. **Check a seal.** Open "Check a seal". Load Lydia's seal (genuine), press "Change one number, then check" (edited),
+   then load Linen Palace (forged) and Violet & Vine Home (withdrawn).
+3. **Open a shop's studio.** Open "Studio" and pick Martha's Kitchen. The demo password is filled in for you
+   (`demo-owner`; it is public on purpose and guards sandbox data only).
+4. **Pay with PayPal (sandbox).** Open "Shop", choose a Lydia Linen Co. product and press "Buy with PayPal". On PayPal's
+   sandbox page, sign in as the test buyer:
+   - Email: `[PASTE THE SANDBOX BUYER EMAIL HERE]`
+   - Password: `[PASTE THE SANDBOX BUYER PASSWORD HERE]`
+   This is a PayPal sandbox personal account with test money. No real payment is possible.
+5. **Read the evidence.** Open "Proof" for every recorded run, and "Developers" for the MCP tools and data platform.
+
+To run it yourself: `make setup && make test && make api` (see the README). Source: https://github.com/Sri-Ramulu/real-deal-seal (MIT license).
