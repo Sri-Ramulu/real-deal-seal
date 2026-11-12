@@ -105,3 +105,7 @@ pre { max-width: 100%; }
 
 /* Phones: a wide table scrolls inside itself instead of pushing the page sideways. */
 @media (max-width: 640px) { table.plain { display: block; overflow-x: auto; max-width: 100%; } }
+
+/* Scroll reveal: set by the layout only for parts that start below the fold. */
+.pre { opacity: 0; transform: translateY(18px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+.pre.shown { opacity: 1; transform: none; }

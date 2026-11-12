@@ -19,7 +19,7 @@
   <path d="M172 102l24 8M172 98l26-2M170 106l20 14" stroke="#0a0a0a" stroke-width="1.6" stroke-linecap="round" />
   <circle cx="163" cy="100" r="1.3" fill="#0a0a0a" /><circle cx="167" cy="104" r="1.3" fill="#0a0a0a" />
   <!-- eye -->
-  <circle cx="150" cy="84" r="5" fill="#fff" /><circle cx="151.5" cy="84" r="2.6" fill="#0a0a0a" />
+  <g class="eye"><circle cx="150" cy="84" r="5" fill="#fff" /><circle cx="151.5" cy="84" r="2.6" fill="#0a0a0a" /></g>
   <!-- cap -->
   <path d="M118 78c2-22 24-34 46-26 10 4 16 12 18 20z" fill="#d9201f" />
   <path d="M170 60c12 0 24 6 30 16l-22-2z" fill="#d9201f" />
@@ -28,6 +28,14 @@
       <rect x="150" y="118" width="40" height="52" rx="3" fill="#b9b9b9" />
       <rect x="162" y="114" width="16" height="8" rx="2" fill="#0a0a0a" />
       <path d="M157 134h26M157 144h26M157 154h16" stroke="#fff" stroke-width="3" />
+      <path class="tick" d="M160 160l5 5 12-14" fill="none" stroke="#d9201f" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1" />
     </g>
   {/if}
 </g>
+
+<style>
+  .eye { transform-box: fill-box; transform-origin: center; animation: blink 5.5s infinite; }
+  .tick { stroke-dasharray: 1; stroke-dashoffset: 1; animation: tick 8s infinite; }
+  @keyframes blink { 0%, 46%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.1); } }
+  @keyframes tick { 0%, 20% { stroke-dashoffset: 1; } 30%, 88% { stroke-dashoffset: 0; } 96%, 100% { stroke-dashoffset: 1; } }
+</style>

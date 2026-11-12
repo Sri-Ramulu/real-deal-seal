@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { api } from '$lib/api.js';
+  import QualityHeat from '$lib/components/QualityHeat.svelte';
   let c = $state(null), tools = $state([]), pick = $state('gold.merchant_passport'), fact = $state('gold.fact_orders'), metric = $state(null), q = $state({ view: 'commerce_metrics', measure: 'net_usd', dim: 'merchant_id' });
   onMount(async () => { [c, tools] = await Promise.all([api('/api/platform'), api('/api/tools')]); run(); });
   async function run() { metric = await api(`/api/platform/metric?view=${q.view}&measures=${q.measure}&dimensions=${q.dim}`).catch((e) => ({ error: e.message })); }
@@ -69,7 +70,20 @@ YYYYMMDD: data date; NNNN: completed orders`}</pre>
   </div>
 
   {#if c}
-    <h2>Data products</h2>
+    <h2 id="platform">The data platform at a glance</h2>
+    <p class="lede sub">Everything an agent reads is built by one pipeline. These numbers are from run {c.run_id}, the build this page is serving right now.</p>
+    <div class="kpis">
+      <div><span class="num">{c.sources.length}</span><strong>source files</strong><span class="small">each fingerprinted on arrival</span></div>
+      <div><span class="num">{c.tables.length}</span><strong>tables</strong><span class="small">bronze, silver and gold</span></div>
+      <div><span class="num">{c.products.length}</span><strong>data products</strong><span class="small">each with an owner and a contract</span></div>
+      <div><span class="num">{c.gates.reduce((n, g) => n + g.checked - g.failed, 0)}/{c.gates.reduce((n, g) => n + g.checked, 0)}</span><strong>checks passed</strong><span class="small">across four gates</span></div>
+      <div><span class="num">{c.tables.reduce((n, t) => n + (t.rows ?? 0), 0).toLocaleString('en-US')}</span><strong>rows built</strong><span class="small">from {c.sources.reduce((n, x) => n + (x.rows_delivered ?? 0), 0).toLocaleString('en-US')} delivered</span></div>
+    </div>
+    <nav class="index" aria-label="On this page">
+      {#each [['#products', 'Data products'], ['#star', 'Star schema'], ['#lineage', 'Lineage'], ['#semantic', 'Semantic layer'], ['#quality', 'Data quality'], ['#contracts', 'Contracts']] as [href, name]}<a {href}>{name}</a>{/each}
+    </nav>
+
+    <h2 id="products">Data products</h2>
     <p class="lede sub">A data mesh of four domains. Each owns its own bronze, silver and gold tables; a shared platform runs them behind four gates. Pipeline run {c.run_id}.</p>
     <div class="products">
       {#each c.products as p}
@@ -83,7 +97,7 @@ YYYYMMDD: data date; NNNN: completed orders`}</pre>
     </div>
     <div class="gates">{#each c.gates as g}<div><span class="num">{g.checked - g.failed}/{g.checked}</span><strong>Gate {g.gate}: {g.name}</strong></div>{/each}</div>
 
-    <h2>The star schema</h2>
+    <h2 id="star">The star schema</h2>
     <p class="lede sub">Gold is a star for analytics: {facts.length} fact tables at a declared grain, pointing at {gold.length - facts.length - serving.length} shared dimensions through surrogate keys. Every foreign key is checked on every build. The {serving.length} agent-ready tables are built on top of it.</p>
     <div class="star">
       <div class="lane"><h3>Facts</h3>{#each facts as t}<button class="node" class:sel={fact === t.name} onclick={() => { fact = t.name; pick = t.name; }}>{short(t.name)}<span>{t.rows} rows</span></button>{/each}
@@ -98,7 +112,7 @@ GROUP BY ALL`}</pre>{/if}</div>
       <div class="lane"><h3>Its dimensions</h3>{#each factDims as t}<button class="node lit" onclick={() => (pick = t.name)}>{short(t.name)}<span>{t.rows} rows</span></button>{/each}{#if !factDims.length}<p class="small">This table carries no dimension keys.</p>{/if}</div>
     </div>
 
-    <h2>Lineage</h2>
+    <h2 id="lineage">Lineage</h2>
     <p class="lede sub">Read from the <code>-- reads:</code> and <code>-- writes:</code> lines of each SQL file, never drawn by hand. Pick a table to light up everything it depends on.</p>
     <div class="lineage">
       {#each layers as l}
@@ -118,7 +132,7 @@ GROUP BY ALL`}</pre>{/if}</div>
         <tbody>{#each table.columns as col}<tr><td><code>{col.name}</code>{table.key.includes(col.name) ? ' (key)' : ''}</td><td class="small">{col.type}</td><td>{col.meaning ?? ''}</td></tr>{/each}</tbody></table>
     {/if}
 
-    <h2>Semantic layer</h2>
+    <h2 id="semantic">Semantic layer</h2>
     <p class="lede sub">A number has one definition. Dashboards and agents ask for a measure by name; nobody retypes a formula. Asking for a measure that is not defined is refused.</p>
     <div class="two">
       <div>
@@ -133,7 +147,11 @@ GROUP BY ALL`}</pre>{/if}</div>
       <pre class="res">{JSON.stringify(metric, null, 2)}</pre>
     </div>
 
-    <h2>Data contracts</h2>
+    <h2 id="quality">Data quality</h2>
+    <p class="lede sub">Every contracted table against every kind of promise it makes. Pick a cell to read the promises behind it, or a table name to trace where it comes from.</p>
+    <QualityHeat {rules} onpick={(t) => { pick = t; document.getElementById('lineage')?.scrollIntoView({ behavior: 'smooth' }); }} />
+
+    <h2 id="contracts">Data contracts</h2>
     <p class="lede sub">{rules.filter((r) => r.passed).length} of {rules.length} promises hold on this run. One broken promise stops the build before anything reaches an agent.</p>
     {#each c.contracts as k}
       <details><summary><strong>{k.name}</strong> v{k.version} <span class="small">{k.rules.length} rules, {k.description}</span></summary>
@@ -143,6 +161,13 @@ GROUP BY ALL`}</pre>{/if}</div>
 </section>
 
 <style>
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+  .kpis div { background: var(--ink); color: #cfcfcf; padding: 22px 20px; display: grid; gap: 2px; }
+  .kpis .num { font-size: clamp(2rem, 3.6vw, 3.2rem); color: #fff; line-height: 1; } .kpis strong { color: #fff; } .kpis .small { color: #a9a9a9; }
+  .index { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
+  .index a { background: var(--tile); padding: 11px 16px; font-weight: 600; font-size: 0.92rem; text-decoration: none; } .index a:hover { background: var(--red); color: #fff; }
+  h2[id] { scroll-margin-top: 110px; }
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
   .top { margin: 24px 0 0; } .sub { margin-bottom: 30px; }
   h2 { font-size: clamp(1.9rem, 3.6vw, 3rem); margin: 88px 0 16px; } .h { font-size: 0.7em; }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
