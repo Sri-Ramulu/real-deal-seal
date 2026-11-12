@@ -62,7 +62,8 @@ measurement of real shoppers.
 
 ## Contents
 
-[The problem](#the-problem) · [How it works](#how-it-works) · [What's in it](#whats-in-it) · [Run it](#run-it) ·
+[The problem](#the-problem) · [How it works](#how-it-works) · [What's in it](#whats-in-it) ·
+[Test it as a judge](#test-it-as-a-judge) · [Run it](#run-it) ·
 [What is checked](#what-is-checked-and-what-isnt) · [Real and simulated](#what-is-real-and-what-is-simulated) ·
 [Layout](#layout) · [Built with](#built-with)
 
@@ -102,6 +103,19 @@ That is their study of general-purpose assistants, not a measurement of this pro
 | **Operational database** | PostgreSQL in production, with row-level security so a request scoped to one business can only read and write that business's rows; SQLite for local runs. A deep health check (`/api/health/deep`) confirms every migration has run and that row-level security is on. |
 | **Seal lifecycle** | Seals are valid for 45 days from issue and renewed 14 days before they expire, even when the facts haven't changed. Revocation is published as a signed W3C Bitstring Status List at `/api/credentials/status-list/revocation`. |
 | **Data platform** | Data mesh with medallion layers on DuckDB: four domains, each with bronze, silver and gold, column metadata, an ODCS data contract and governed metrics. Gold is a star schema (8 dimensions, 9 facts) with agent-ready tables on top. Lineage is read from the SQL. |
+
+## Test it as a judge
+
+The live site is free to use, needs no sign-up, and stays online through the judging period (15 December 2026):
+https://real-deal-seal.onrender.com. Start at [/judges](https://real-deal-seal.onrender.com/judges) for a
+three-minute, five-click tour.
+
+| What | How to get in |
+|---|---|
+| The site, the assistant, seal checks, the Proof page | Open the site. No account is needed. |
+| Merchant Studio (seven demo shops) | Open **Studio** and pick a shop. The demo password, `demo-owner`, is filled in for you. It is public on purpose and guards sandbox data only. |
+| PayPal sandbox checkout | Press **Buy with PayPal** on a product from Lydia, Martha, Priscilla, Copper Kettle or Sage & Stone. PayPal's sandbox page opens; sign in with the sandbox test buyer given in the testing instructions of the Devpost submission. Test money only. |
+| Running it yourself | See [Run it](#run-it). Without keys, the app runs in labelled offline and simulated-checkout modes, so every page still works. |
 
 ## Run it
 
