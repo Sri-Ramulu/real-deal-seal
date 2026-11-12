@@ -37,7 +37,7 @@ test('shop cards show a product image, and labels and prices stay inside the car
 
 test('the assistant shows trust labels with evidence on, and none with evidence off', async ({ page }) => {
   await page.goto('/assistant');
-  await page.getByRole('button', { name: /lavender napkins/ }).click();
+  await page.getByRole('button', { name: /lavender for our guest room/ }).click();
   const on = page.locator('.msg.bot').last();
   await expect(on.locator('article').first()).toBeVisible();
   await expect(on.locator('.chip').first()).toBeVisible();

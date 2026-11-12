@@ -94,6 +94,10 @@ Checked in this repository (`make test`, `make evidence`):
   simulated, labelled records (`api/rds/demo_shops.py`): two convincing scams whose seals were withdrawn, one shop
   with a weak record and one honest new maker. Evidence off shows only listings, and it never reveals a withdrawal,
   not even through the checkout flag or a refused checkout.
+- Live check on the deployed site, 12 Nov 2026, Claude Sonnet, 3 runs per mode: on the four starter questions in the
+  assistant, Evidence off picked a withdrawn scam shop 12 of 12 times and Evidence on picked an honest shop 12 of 12
+  times. One candidate question ("cheapest lavender napkins") was dropped because evidence on still chose the
+  unverifiable cheapest listing.
 - The eval harness: a scripted correct agent passes 12 of 12 tasks, and a scripted bad agent passes 0 of 12.
 - 6 browser tests (`make e2e`) walk the main journeys in Chrome: the home page, product images and card layout,
   the assistant with evidence on and off, the seal check, checkout, and Merchant Studio.

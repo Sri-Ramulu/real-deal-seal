@@ -5,7 +5,8 @@
   import Arrow from '$lib/components/Arrow.svelte';
 
   let text = $state(''), result = $state(null), error = $state(''), busy = $state(false);
-  const samples = [['lydia', 'Lydia Linen Co. (genuine)'], ['martha', "Martha's Kitchen (genuine, not sealed)"], ['palace', 'Linen Palace (the badge it displays)']];
+  const samples = [['lydia', 'Lydia Linen Co. (genuine)'], ['martha', "Martha's Kitchen (genuine, not sealed)"], ['palace', 'Linen Palace (the badge it displays)'],
+    ['violet-vine-home', 'Violet & Vine Home (seal withdrawn)']];
 
   async function load(id) { text = JSON.stringify(await api(`/api/merchants/${id}/seal`), null, 2); await check(); }
   async function check() {

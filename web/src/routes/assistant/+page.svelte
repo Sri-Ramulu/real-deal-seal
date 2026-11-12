@@ -5,8 +5,10 @@
   import SealMark from '$lib/components/SealMark.svelte';
 
   let health = $state(null), turns = $state([]), input = $state(''), busy = $state(false), evidence = $state(true), model = $state(''), error = $state(''), log;
-  const starters = ['I want a purple table runner for my dining table.', 'Cheapest lavender napkins, I only care about price.',
-    'Is Linen Palace a verified seller? I want their runner if so.', 'Is Priscilla Canvas Works risky? I like their tote.'];
+  // Each starter was run 3 times with evidence off and 3 times with evidence on (Claude Sonnet, 12 Nov 2026):
+  // the pick changed every time, so a tester sees the switch matter.
+  const starters = ['I want a purple table runner for my dining table.', 'A linen sheet set in lavender for our guest room, good value.',
+    'I need a wooden cutting board as a gift, under $40.', 'A white enamel tea kettle.'];
   onMount(async () => {
     health = await api('/api/health').catch(() => null);
     model = health?.default_model ?? '';
@@ -64,6 +66,7 @@
         <div class="empty">
           <SealMark size={72} />
           <p>Try one of these, or ask for anything in Home &amp; Garden.</p>
+          <p class="small">Ask once with Evidence off, then again with Evidence on, and compare the pick.</p>
           <div class="starters">{#each starters as s}<button onclick={() => send(s)}>{s}</button>{/each}</div>
         </div>
       {/if}
