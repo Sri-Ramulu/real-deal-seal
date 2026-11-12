@@ -3,8 +3,9 @@
   import Arrow from '$lib/components/Arrow.svelte';
   import { onMount } from 'svelte';
   import { api } from '$lib/api.js';
-  let ns = $state(null);
-  onMount(async () => { try { ns = (await api('/api/scorecard')).north_star; } catch { ns = null; } });
+  let ns = $state(null), sc = $state(null);
+  onMount(async () => { try { sc = await api('/api/scorecard'); ns = sc.north_star; } catch { ns = null; } });
+  const kpi = (k) => sc?.perspectives.flatMap((p) => p.kpis).find((x) => x.key === k);
   const flywheel = ['A business takes payments through PayPal', 'Its record becomes a signed passport', 'AI shoppers can check it and choose it', 'More checkouts go through PayPal', 'The record gets longer and stronger'];
   const tiers = [
     ['Passport', 'Free', 'Every eligible business', ['Signed Merchant Passport', 'Public seal check', 'Listed to AI agents over MCP'], 'Free on purpose. Being visible to AI shoppers must not depend on paying.'],
@@ -20,7 +21,44 @@
   const excluded = ['Lending decisions, credit scores and financing guarantees', 'A resale marketplace or agent-to-agent price negotiation', 'Holding or delaying funds', 'Any claim that PayPal issues or endorses the seal'];
 </script>
 
-<svelte:head><title>The business | Real Deal Seal</title></svelte:head>
+<svelte:head><title>Why PayPal wins | Real Deal Seal</title></svelte:head>
+
+<section class="wrap section">
+  <h1>Why PayPal wins</h1>
+  <p class="lede sub">AI assistants are starting to choose where people shop. PayPal already holds the one thing an assistant can’t get from a listing: what a business actually delivered. Real Deal Seal makes that record checkable.</p>
+  {#if ns}
+  <div class="wins">
+    <article>
+      <span class="label">Measured</span>
+      <p class="num big">{ns.baseline_withdrawn} <i>to</i> {ns.withdrawn}</p>
+      <h3>Shoppers are steered away from bad sellers</h3>
+      <p>Of 50 AI picks, {ns.baseline_withdrawn} went to a shop whose seal had been withdrawn when the assistant saw listings only, and {ns.withdrawn} when it could read the record.</p>
+      <a class="small" href="/proof">Every run, in the proof lab</a>
+    </article>
+    <article>
+      <span class="label">Measured</span>
+      <p class="num big">{ns.baseline_numerator} <i>to</i> {ns.numerator}</p>
+      <h3>Honest PayPal merchants get chosen</h3>
+      <p>Honest small shops won {ns.numerator} of 50 picks with evidence, up from {ns.baseline_numerator}. Every one of those shops checks out through PayPal here.</p>
+      <a class="small" href="/scorecard">The scorecard and its sources</a>
+    </article>
+    <article>
+      <span class="label">Measured</span>
+      <p class="num big">{kpi('net_usd')?.display ?? ''}</p>
+      <h3>The evidence sits on real PayPal records</h3>
+      <p>{ns.paypal_orders} PayPal sandbox orders, read back from PayPal, are behind the three PayPal shops’ facts. The buyer approves each payment in PayPal, and the server confirms the capture with PayPal.</p>
+      <a class="small" href="/shops/lydia">See one passport</a>
+    </article>
+    <article class="proj">
+      <span class="label">Proposition, not measured</span>
+      <p class="num big">?</p>
+      <h3>More checkouts through PayPal</h3>
+      <p>If agents prefer sellers they can check, and the record lives with PayPal, more agent checkouts should run through PayPal. This project has not measured that. It would take live merchants and real purchases.</p>
+    </article>
+  </div>
+  <p class="small">Measured figures: {ns.model?.includes('sonnet') ? 'Claude Sonnet' : ns.model}, the same 50 requests with Evidence off and on, one run each, recorded {ns.recorded_on} on this site, with fictional shops. They are AI recommendations, not purchases.</p>
+  {/if}
+</section>
 
 <section class="wrap section"><LightspeedStudy /></section>
 
@@ -59,6 +97,15 @@
 
 <style>
   h2 { margin-bottom: 18px; } .sub { margin-bottom: 36px; } .light { color: #d8d8d8; }
+  h1 { margin-bottom: 24px; }
+  .wins { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: 18px; }
+  .wins article { min-width: 0; background: var(--tile); padding: 26px; display: grid; gap: 10px; align-content: start; }
+  .wins .big { font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300; line-height: 1; margin: 6px 0; color: var(--ink); }
+  .wins i { font-style: normal; font-size: 0.45em; color: var(--muted); }
+  .wins h3 { font-size: 1.2rem; } .wins p { margin: 0; font-size: 0.96rem; }
+  .wins .proj { background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); } .wins .proj .big { color: var(--muted); }
+  @media (max-width: 960px) { .wins { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .wins { grid-template-columns: 1fr; } }
   .four { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 28px; }
   .four article { background: #fff; padding: 26px; display: grid; gap: 10px; align-content: start; } .four p { margin: 0; font-size: 0.97rem; }
   .n { width: 34px; height: 34px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-weight: 600; }

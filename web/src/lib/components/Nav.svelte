@@ -7,10 +7,11 @@
   const links = [
     ['/shop', 'Shop'],
     ['/shops', 'Passports'],
-    ['/studio', 'Merchant Studio'],
+    ['/studio', 'Studio'],
     ['/scorecard', 'Scorecard'],
     ['/proof', 'Proof'],
-    ['/story', 'The story'],
+    ['/business', 'Why PayPal'],
+    ['/story', 'Story'],
     ['/developers', 'Developers']
   ];
   $effect(() => { page.url.pathname; open = false; });

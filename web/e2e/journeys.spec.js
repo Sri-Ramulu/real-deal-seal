@@ -11,7 +11,8 @@ test('home tells the story and links to the seal check, not to joining', async (
   await page.goto('/');
   await expect(page.locator('h1')).toContainText('Small shops');
   await expect(page.locator('a[href="/join"]')).toHaveCount(0);
-  await expect(page.locator('a[href="/business"]')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /Take the 3-minute tour/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Why PayPal', exact: true })).toHaveAttribute('href', '/business');
   await expect(page.getByRole('link', { name: 'Check a seal' }).first()).toBeVisible();
 });
 
@@ -101,4 +102,14 @@ test('the home page shows the same question answered with Evidence off and on, a
   await sbs.getByRole('button', { name: /Run it live/ }).click();
   await expect(sbs.getByRole('button', { name: /Run it again/ })).toBeVisible({ timeout: 30000 });
   await expect(sbs.locator('article.on')).toContainText(/It picked|no pick/);
+});
+
+test('the judges page walks the five steps, and Why PayPal wins separates measured from proposed', async ({ page }) => {
+  await page.goto('/judges');
+  await expect(page.locator('ol.steps li')).toHaveCount(5);
+  await expect(page.getByRole('link', { name: /Run it live/ })).toHaveAttribute('href', '/#difference');
+  await page.goto('/business');
+  await expect(page.locator('h1')).toHaveText('Why PayPal wins');
+  await expect(page.locator('.wins article')).toHaveCount(4);
+  await expect(page.locator('.wins .proj')).toContainText('not measured');
 });

@@ -21,6 +21,8 @@
         <a href="/studio">Merchant Studio</a>
         <a href="/scorecard">Scorecard</a>
         <a href="/story">The story</a>
+        <a href="/business">Why PayPal wins</a>
+        <a href="/judges">Judges: start here</a>
       </nav>
       <div>
         <h3>For builders</h3>

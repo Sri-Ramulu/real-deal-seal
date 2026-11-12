@@ -30,6 +30,8 @@
 
 <svelte:head><title>Real Deal Seal: proof beats brand</title></svelte:head>
 
+<div class="wrap"><a class="judges" href="/judges">Judging this project? Take the 3-minute tour <span aria-hidden="true">→</span></a></div>
+
 <section class="hero wrap">
   <div class="copy">
     <h1>Small shops deliver.<br />Now AI can check.</h1>
@@ -144,6 +146,8 @@
   @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
   @keyframes stamp { from { transform: scale(2.6) rotate(-25deg); opacity: 0; } }
   .note { margin-top: 12px; }
+  .judges { display: inline-block; margin-top: 22px; padding: 8px 14px; background: var(--tile); border-radius: 999px; font-size: 0.92rem; font-weight: 600; text-decoration: none; color: var(--ink); }
+  .judges:hover { background: var(--ink); color: #fff; }
   .diff { margin: 14px 0 26px; }
   #difference { scroll-margin-top: 90px; }
   .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 4vw, 56px); border-top: 1.5px solid var(--ink); padding-top: 28px; }

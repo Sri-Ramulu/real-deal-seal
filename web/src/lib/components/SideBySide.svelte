@@ -16,12 +16,19 @@
   function side(res) {
     const o = res.offers?.find((x) => x.sku === res.pick);
     return { shop: o ? shopById(o.shop_id) : null, product: o?.product, price: o?.price_usd, sku: o?.sku,
-      why: (res.answer || '').split('\n').find((l) => l.trim()) ?? '', tools: res.trace?.length ?? 0, label: res.model_label };
+      why: (res.answer || '').split('\n').find((l) => l.trim()) ?? '', answer: res.answer || '', tools: res.trace?.length ?? 0, label: res.model_label };
   }
   async function run() {
     busy = true; error = ''; live = null;
     const ask = (evidence) => api('/api/chat', { messages: [{ role: 'user', content: q }], evidence, model: 'claude-sonnet' });
-    try { const [off, on] = await Promise.all([ask(false), ask(true)]); live = { off: side(off), on: side(on) }; }
+    try {
+      const [off, on] = await Promise.all([ask(false), ask(true)]).then((r) => r.map(side));
+      // What the evidence-on answer said about the shop the evidence-off answer picked, in the assistant's own words.
+      const name = off.shop && off.shop.merchant_id !== on.shop?.merchant_id ? off.shop.merchant_name.split(' ')[0].toLowerCase() : null;
+      on.skipped = name ? (on.answer.split('\n').map((l) => l.replace(/^[\s\-*•]+/, '').trim()).find((l) => l.toLowerCase().includes(name) && l !== on.why) ?? '') : '';
+      on.skippedShop = off.shop?.merchant_name;
+      live = { off, on };
+    }
     catch (e) { error = e.message; }
     busy = false;
   }
@@ -48,6 +55,7 @@
           {#if s.product}<p class="prod">{s.product}, {usd(s.price)}</p>{/if}
           {#if key === 'on'}<Standing standing={s.shop.standing} headline={s.shop.headline} />
             {#if s.why}<p class="why">{@html rich(s.why)}</p>{:else}<p class="why">{s.shop.verdict}</p>{/if}
+            {#if s.skipped}<div class="record ok"><span class="label">What it said about {s.skippedShop}</span><p class="small">{@html rich(s.skipped)}</p></div>{/if}
           {:else}
             {#if s.why}<p class="why">{@html rich(s.why)}</p>{/if}
             <div class="record">
@@ -87,6 +95,7 @@
   .why { margin: 6px 0 0; font-size: 0.95rem; max-width: 52ch; }
   .record { margin-top: 10px; padding: 14px 16px; background: #fff; border-left: 3px solid var(--oxblood); border-radius: 0 4px 4px 0; display: grid; gap: 8px; justify-items: start; width: 100%; }
   .record p { margin: 0; }
+  .record.ok { background: var(--tile); border-left-color: var(--ink); }
   .meta { color: var(--muted); margin: 4px 0 0; }
   .bar { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
   .bar p { margin: 0; max-width: 60ch; }

@@ -102,3 +102,6 @@ pre { max-width: 100%; }
   table.plain { display: block; overflow-x: auto; }
   code { overflow-wrap: anywhere; }
 }
+
+/* Phones: a wide table scrolls inside itself instead of pushing the page sideways. */
+@media (max-width: 640px) { table.plain { display: block; overflow-x: auto; max-width: 100%; } }
