@@ -57,7 +57,7 @@
       <p class="small">The first seven have a Merchant Studio with a public demo login. The last three never joined, so they have no studio.</p>
     </div>
     <div>
-      <p><code>POST /api/chat</code> takes <code>messages</code>, <code>evidence</code> (default <code>true</code>), <code>model</code> (<code>claude-sonnet</code> or <code>claude-haiku</code>) and <code>fallback</code> (default <code>true</code>: a busy Gemini is retried twice, then Claude Sonnet answers and the reply is labelled; set <code>false</code> in evaluations).</p>
+      <p><code>POST /api/chat</code> takes <code>messages</code>, <code>evidence</code> (default <code>true</code>), <code>model</code> (<code>gemini</code>, <code>claude-sonnet</code> or <code>claude-haiku</code>) and <code>fallback</code> (default <code>true</code>: a busy Gemini is retried twice, then Claude Sonnet answers and the reply is labelled; set <code>false</code> in evaluations).</p>
       <p>Each offer carries <code>paypal_checkout</code>. With evidence on it means checkout can be opened now (false for a withdrawn seal); with evidence off it only says whether the shop takes PayPal, so the baseline never learns about a withdrawal. <code>GET /api/health</code> gives each shop's checkout mode: <code>paypal_sandbox</code> or <code>simulated</code>.</p>
       <p>The two lines at the foot of every passport have one fixed layout, 36 characters each:</p>
       <pre>{`RDS<<SHOP<NAME<<<<<<<<<<<<<<<<<<<<<<

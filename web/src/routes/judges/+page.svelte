@@ -51,7 +51,7 @@
         <li>PayPal sandbox orders, captures and refunds for Lydia, Martha and Priscilla, read back from PayPal.</li>
         <li>PayPal sandbox checkout at five shops (Lydia, Martha, Priscilla, Copper Kettle and Sage &amp; Stone), each with its own sandbox account: the buyer approves, the server verifies the capture.</li>
         <li>Signed seals, checked with a published key.</li>
-        <li>The assistant’s answers: live calls to Claude Sonnet or Claude Haiku, nothing scripted.</li>
+        <li>The assistant’s answers: live calls to Claude or Gemini, nothing scripted.</li>
         <li>The experiment: every run recorded on this site and published.</li>
       </ul>
     </div>
