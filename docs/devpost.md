@@ -80,6 +80,7 @@ supplies the sandbox records and doesn't sign or endorse the seal.
 
 ## Testing instructions (paste into the Devpost "testing instructions" field)
 
+Demo video: https://youtu.be/nQ7Zxm2F7a0
 Live site: https://real-deal-seal.onrender.com (free to use, no sign-up, kept online through 15 December 2026).
 Start at https://real-deal-seal.onrender.com/judges for a three-minute, five-click tour.
 

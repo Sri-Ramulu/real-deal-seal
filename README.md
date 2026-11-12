@@ -4,6 +4,8 @@
 shops compete: it turns a shop's PayPal sales history into a signed Merchant Passport that any AI shopping assistant
 can read and check, so a shop gets chosen for what it actually delivers.
 
+**Demo video (2:55):** https://youtu.be/nQ7Zxm2F7a0 · **Live site:** https://real-deal-seal.onrender.com
+
 Built for the PayPal AI Hackathon 2026. Real Deal Seal is a hackathon project, not a PayPal product. PayPal supplies
 the sandbox records, and Real Deal Seal signs the passport. PayPal does not issue or endorse the seal.
 
