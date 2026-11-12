@@ -33,6 +33,10 @@ services:
       - {key: PAYPAL_COPPER_KETTLE_SUPPLY_CLIENT_SECRET, sync: false}
       - {key: PAYPAL_SAGE_STONE_STUDIO_CLIENT_ID, sync: false}
       - {key: PAYPAL_SAGE_STONE_STUDIO_CLIENT_SECRET, sync: false}
+      - {key: PAYPAL_VIOLET_VINE_HOME_CLIENT_ID, sync: false}     # withdrawn-seal shops: checkout stays off; keys are for reading back sandbox orders
+      - {key: PAYPAL_VIOLET_VINE_HOME_CLIENT_SECRET, sync: false}
+      - {key: PAYPAL_JUNIPER_OAK_GOODS_CLIENT_ID, sync: false}
+      - {key: PAYPAL_JUNIPER_OAK_GOODS_CLIENT_SECRET, sync: false}
       - {key: RDS_ADMIN_TOKEN, generateValue: true}     # enables seal withdrawal and key rotation
       - {key: RDS_REFRESH_HOURS, value: "24"}
 
