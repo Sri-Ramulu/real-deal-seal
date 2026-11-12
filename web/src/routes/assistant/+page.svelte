@@ -18,10 +18,10 @@
     const content = (text ?? input).trim();
     if (!content || busy) return;
     input = ''; error = ''; busy = true;
-    turns.push({ role: 'user', content });
+    turns.push({ role: 'user', content, evidence });
     await tick(); log?.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
     try {
-      const r = await api('/api/chat', { messages: turns.map((t) => ({ role: t.role, content: t.content })), evidence, model: model || null });
+      const r = await api('/api/chat', { messages: turns.map((t) => ({ role: t.role, content: t.content, evidence: t.evidence })), evidence, model: model || null });
       turns.push({ role: 'assistant', content: r.answer, ...r });
     } catch (e) { error = e.message; }
     busy = false;
@@ -73,8 +73,10 @@
           <div class="starters">{#each starters as s}<button onclick={() => send(s)}>{s}</button>{/each}</div>
         </div>
       {/if}
-      {#each turns as t}
-        {#if t.role === 'user'}<div class="msg user">{t.content}</div>
+      {#each turns as t, i}
+        {#if t.role === 'user'}
+          {#if i > 0 && turns[i - 1].evidence !== t.evidence}<p class="switch small">Evidence turned {t.evidence ? 'on' : 'off'}. The assistant starts fresh here and can’t see the answers above, so the two modes stay separate.</p>{/if}
+          <div class="msg user">{t.content}</div>
         {:else}
           <div class="msg bot">
             <div class="who"><SealMark size={26} /> Assistant <span class="small">{t.mode === 'offline' ? 'offline search' : t.model_label}{t.evidence === false ? ' · evidence off' : ''}</span></div>
@@ -138,6 +140,7 @@
   @keyframes in { from { opacity: 0; transform: translateY(10px); } }
   .who { display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 10px; }
   .text { white-space: pre-wrap; max-width: 70ch; }
+  .switch { align-self: center; text-align: center; margin: 6px 0; padding: 8px 14px; border-radius: 999px; background: #fff; color: var(--muted); max-width: 60ch; }
   .offers { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin-top: 18px; }
   article { position: relative; min-width: 0; background: var(--tile); border-radius: 6px; padding: 18px; display: grid; gap: 8px; align-content: start; justify-items: start; }
   article .chip { max-width: 100%; white-space: normal; line-height: 1.25; }

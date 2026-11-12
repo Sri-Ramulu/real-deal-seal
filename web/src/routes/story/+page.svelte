@@ -34,7 +34,7 @@
 
 <section class="wrap intro">
   <h1>How a shop nobody has heard of gets chosen</h1>
-  <p class="lede">The whole project in eight short scenes, with the real numbers. No technical background needed.</p>
+  <p class="lede">The whole project in eight short scenes, with the real numbers. Written in plain English, for any reader.</p>
 </section>
 
 <section class="wrap scrolly">

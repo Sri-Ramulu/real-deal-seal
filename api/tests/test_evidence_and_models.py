@@ -243,3 +243,37 @@ def test_every_product_has_an_image_and_every_shop_gets_the_same_treatment(clien
     offer = tools.search_products("napkins")["offers"][0]
     assert offer["image_url"].endswith(f"/api/products/{offer['sku']}/image.svg")
     assert tools.search_products("napkins", evidence=False)["offers"][0]["image_url"]
+
+
+def test_an_evidence_on_answer_is_never_replayed_to_an_evidence_off_request():
+    """The leak: ask with evidence on, switch it off, ask again. The earlier answer names seals and must not be sent."""
+    history = [{"role": "user", "content": "purple runner", "evidence": True},
+               {"role": "assistant", "content": "Lydia is sealed. Violet & Vine's seal was withdrawn.", "evidence": True},
+               {"role": "user", "content": "purple runner", "evidence": False}]
+    assert agent.same_mode_history(history, evidence=False) == [{"role": "user", "content": "purple runner"}]
+    untagged = [{"role": "user", "content": "a"}, {"role": "assistant", "content": "seal withdrawn"}, {"role": "user", "content": "b"}]
+    assert agent.same_mode_history(untagged, evidence=False) == [{"role": "user", "content": "b"}], "with evidence off, an unflagged answer is not trusted to be clean"
+
+
+def test_an_evidence_off_pick_does_not_anchor_an_evidence_on_answer_and_same_mode_history_is_kept():
+    off_then_on = [{"role": "user", "content": "runner", "evidence": False}, {"role": "assistant", "content": "Violet & Vine.", "evidence": False},
+                   {"role": "user", "content": "runner", "evidence": True}]
+    assert agent.same_mode_history(off_then_on, evidence=True) == [{"role": "user", "content": "runner"}]
+    same = [{"role": "user", "content": "runner", "evidence": True}, {"role": "assistant", "content": "Lydia.", "evidence": True},
+            {"role": "user", "content": "buy it", "evidence": True}]
+    assert [m["content"] for m in agent.same_mode_history(same, evidence=True)] == ["runner", "Lydia.", "buy it"]
+    plain_api = [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}, {"role": "user", "content": "c"}]
+    assert len(agent.same_mode_history(plain_api, evidence=True)) == 3, "API callers that send no flags keep their history with evidence on"
+
+
+def test_evidence_off_search_never_carries_trust_words_for_any_recorded_request():
+    import json
+    from pathlib import Path
+    from rds import tools
+    tasks = json.loads((Path(__file__).resolve().parents[2] / "data_platform/landing/agent/tasks.json").read_text())["tasks"]
+    allowed_keys = {"sku", "product", "price_usd", "in_stock", "image_url", "shop_id", "shop", "ships_from", "returns", "paypal_checkout", "seller_text"}
+    for q in tasks:
+        res = tools.search_products(q, evidence=False)
+        assert set(res) == {"query", "matches", "offers", "ordering"}
+        for o in res["offers"]:
+            assert set(o) == allowed_keys and set(o["seller_text"]) == {"text"}, o["sku"]

@@ -49,6 +49,28 @@ How to work
 BASELINE_TOOLS = ["search_products", "create_checkout"]
 
 
+def same_mode_history(messages: list[dict], evidence: bool) -> list[dict]:
+    """Keep only the earlier turns that were answered in the same Evidence mode as this request.
+
+    An answer written with evidence on names seals and standings; replaying it to an evidence-off request would leak
+    them. The reverse anchors an evidence-on answer to a pick made without evidence. Each turn may carry an `evidence`
+    flag (the page sets it). With evidence off, an earlier answer is kept only when it is flagged evidence off; with
+    evidence on, only answers flagged evidence off are dropped. The shopper's latest message is always kept."""
+    groups, current = [], []
+    for m in messages:
+        if m.get("role") == "user" and current and current[-1].get("role") == "assistant":
+            groups.append(current)
+            current = []
+        current.append(m)
+    kept = []
+    for g in groups:
+        flags = [m.get("evidence") for m in g if m.get("role") == "assistant"]
+        ok = all(f is False for f in flags) if not evidence else all(f is not False for f in flags)
+        if ok:
+            kept += g
+    return [{"role": m["role"], "content": m["content"]} for m in kept + current if m.get("role") in ("user", "assistant")]
+
+
 def _offline(messages: list[dict], evidence: bool) -> dict:
     query = next((m["content"] for m in reversed(messages) if m["role"] == "user" and isinstance(m["content"], str)), "")
     res = tools.search_products(query, limit=6, evidence=evidence)
@@ -198,6 +220,7 @@ def chat(messages: list[dict], evidence: bool = True, model: str | None = None, 
     `allowed_tools` is kept for older callers: passing only the two baseline tools means evidence off."""
     if allowed_tools is not None and set(allowed_tools) <= set(BASELINE_TOOLS):
         evidence = False
+    messages = same_mode_history(messages, evidence)
     choice = config.resolve_model(model)
     if choice is None:
         return _offline(messages, evidence)
