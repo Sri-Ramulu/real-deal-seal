@@ -50,7 +50,7 @@ comparison is fair. Making sure a shop that loses its seal is never shown as mer
   scam shops' records are simulated.
 - Both models resisted all 11 attacks: forged and edited seals, hidden instructions, fake badges and social pressure.
   The run also caught two of our own bugs, which we fixed and disclosed.
-- 164 automated tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
+- 165 automated tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
 
 ## What we learned
 

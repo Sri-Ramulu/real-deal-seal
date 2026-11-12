@@ -31,3 +31,12 @@ def test_a_studio_request_is_scoped_to_its_business(client, owner):
     r = client.get("/api/studio/martha/evidence", headers=owner("martha"))
     assert r.status_code == 200
     assert client.get("/api/studio/lydia", headers=owner("martha")).status_code in (401, 403)
+
+
+def test_a_deploy_with_new_pipeline_code_rebuilds_the_warehouse(client):
+    """The disk keeps the warehouse between deploys; a changed pipeline or landing file must trigger a rebuild."""
+    from rds import refresh
+    assert refresh.run("test")["ok"] and not refresh.stale()
+    refresh._fingerprint_file().write_text("built-by-an-older-deploy")
+    assert refresh.stale()
+    assert refresh.run("startup: new build")["ok"] and not refresh.stale()

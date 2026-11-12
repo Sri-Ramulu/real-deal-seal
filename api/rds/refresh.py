@@ -61,6 +61,31 @@ def export() -> dict:
             "catalog_items": _write("catalog_items", items)}
 
 
+def _code_fingerprint() -> str:
+    """A hash of everything a build reads from the image: the domains' SQL, contracts and semantic layer, the
+    pipeline code and the landing files (catalog, PayPal readbacks, the recorded evaluation)."""
+    import hashlib
+    from .config import REPO
+    h = hashlib.sha256()
+    base = REPO / "data_platform"
+    for sub_ in ("domains", "landing", "rdsp", "run"):
+        for f in sorted((base / sub_).rglob("*")):
+            if f.is_file() and "__pycache__" not in f.parts:
+                h.update(str(f.relative_to(base)).encode())
+                h.update(f.read_bytes())
+    return h.hexdigest()
+
+
+def _fingerprint_file():
+    return warehouse.warehouse_path().parent / "build.fingerprint"
+
+
+def stale() -> bool:
+    """True when the warehouse on disk was built from older pipeline code or landing data, as after a deploy."""
+    f = _fingerprint_file()
+    return not f.exists() or f.read_text().strip() != _code_fingerprint()
+
+
 @store.unscoped
 def run(reason: str = "manual", attempts: int = 2) -> dict:
     job = {"kind": f"refresh:{reason}", "status": "running", "created_at": store.now(), "updated_at": store.now()}
@@ -72,6 +97,7 @@ def run(reason: str = "manual", attempts: int = 2) -> dict:
             hashes = export()
             warehouse.rebuild()
             issued = reconcile_credentials()
+            _fingerprint_file().write_text(_code_fingerprint())
             store.run("UPDATE jobs SET status = 'done', attempts = ?, updated_at = ? WHERE job_id = ?", [attempt, store.now(), job_id])
             return {"ok": True, "job_id": job_id, "extract": hashes, "credentials": issued, "pipeline_run": warehouse.catalog()["run_id"]}
         except Exception as e:  # a red gate or a transient failure: keep the last good warehouse and report

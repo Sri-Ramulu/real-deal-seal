@@ -28,6 +28,8 @@ async def lifespan(app: FastAPI):
     auth.seed_demo_owners()
     if config.DEMO_SHOPS:
         demo_shops.ensure()
+    if refresh.stale():  # a deploy changed the pipeline or its landing data: rebuild instead of serving the old warehouse
+        refresh.run("startup: new build")
     refresh.reconcile_credentials()
     task = asyncio.create_task(_scheduled_refresh()) if config.REFRESH_HOURS > 0 else None
     async with mcp.session_manager.run():
