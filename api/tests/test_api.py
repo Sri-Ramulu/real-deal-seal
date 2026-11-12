@@ -71,3 +71,11 @@ def test_evidence_rows_are_private_and_carry_no_buyer_identity(client):
 def test_public_passport_has_no_order_rows(client):
     p = client.get("/api/merchants/lydia").json()
     assert set(p) == {"passport", "facts", "rules", "seal", "products", "record_shape"} and "order_id" not in str(p)
+
+
+def test_repeat_runs_are_served_and_run_1_is_the_headline(client):
+    ns = client.get("/api/scorecard").json()["north_star"]
+    first = ns["repeat_runs"][0]
+    assert first["run"] == 1 and (first["small"], first["baseline_small"], first["withdrawn"]) == (ns["numerator"], ns["baseline_numerator"], ns["withdrawn"])
+    rows = client.get("/api/proof").json()["repeats"]
+    assert rows and all(r["tasks"] == 50 for r in rows)

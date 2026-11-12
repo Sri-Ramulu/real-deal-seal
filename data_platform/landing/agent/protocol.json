@@ -114,5 +114,21 @@
   "The 90-94% chain preference is an external study, not this experiment.",
   "These are AI recommendations on a fictional catalog, not purchases or sales.",
   "One run per request: small differences between models are within run-to-run variation."
- ]
+ ],
+ "repeats": {
+  "purpose": "Full repeat runs of the same requests and attacks, to show run-to-run variation. Run 1 stays the headline.",
+  "runs": [
+   2,
+   3
+  ],
+  "models": [
+   "claude-haiku-5-5",
+   "claude-sonnet-5-5"
+  ],
+  "rows": 444,
+  "raw_files": [
+   "evals/live/runs/2026-11-12-runs-2-3.json"
+  ],
+  "rules_changed_after_these_runs": "none"
+ }
 }

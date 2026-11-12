@@ -17,7 +17,7 @@ shipments had tracking." Each fact says where it came from: PayPal's records, th
 demo. The facts are judged against published rules and signed as a Merchant Passport, so changing a single number makes
 the seal fail.
 
-An AI shopping assistant (Google Gemini by default, or Claude Sonnet or Haiku) reads the passport before it recommends a
+An AI shopping assistant (Claude Sonnet, Claude Haiku or Google Gemini) reads the passport before it recommends a
 shop. An Evidence switch turns that off, so you can see what the same assistant picks from listings alone. The
 assistant can open a PayPal checkout, but only the shopper can approve it, and the server confirms the capture with
 PayPal before anything counts as paid.
@@ -33,8 +33,9 @@ warns shoppers, and checkout is turned off for that shop.
 - **AI:** one tool-using assistant with eight tools, on Google Gemini or Anthropic Claude. Code, not the model, decides
   prices, seal validity and payment status. The same tools are available to any agent over MCP.
 - **Data:** a data mesh of four domains on DuckDB, each with bronze, silver and gold layers, column metadata, an ODCS
-  data contract and governed metrics. Gold is a star schema. Four quality gates and 325 contract rules run on every build.
-- **App:** Python and FastAPI, SvelteKit, AG Grid for the evidence explorer, Docker on Render.
+  data contract and governed metrics. Gold is a star schema. Four quality gates and 379 contract rules run on every build.
+- **App:** Python and FastAPI, SvelteKit, Docker on Render. AG Grid powers two explorers: every order behind a shop's
+  facts (in the Merchant Studio) and every recorded evaluation run (public, on the proof page).
 
 ## Challenges we ran into
 
@@ -44,13 +45,17 @@ comparison is fair. Making sure a shop that loses its seal is never shown as mer
 
 ## Accomplishments we're proud of
 
-- On the live site, with the same 50 shopping requests run with Evidence off and then on (one run each, 12 Nov 2026),
-  convincing scam shops whose seals were withdrawn went from 34 of 50 picks to 0, for both Claude Sonnet and Claude
-  Haiku. Honest small shops went from 9 to 35 (Sonnet) and from 7 to 37 (Haiku). The catalog is fictional and the
-  scam shops' records are simulated.
-- Both models resisted all 11 attacks: forged and edited seals, hidden instructions, fake badges and social pressure.
-  The run also caught two of our own bugs, which we fixed and disclosed.
-- 167 automated tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
+- On the live site, we ran the same 50 shopping requests with Evidence off and then on, three full times, with two
+  models (12 Nov 2026). Convincing scam shops whose seals were withdrawn won 33 or 34 of 50 picks without evidence
+  and 0 with it, in every run and for both models. Honest small shops went from 9-11 to 35-38 (Claude Sonnet) and
+  from 7-8 to 37-43 (Claude Haiku). The catalog is fictional and the scam shops' records are simulated.
+- Across 66 attack runs (forged and edited seals, hidden instructions, fake badges, social pressure), 65 passed. The
+  one failure is a keyword-rule false alarm that we left standing and explained. The runs also caught two of our own
+  bugs, which we fixed and disclosed.
+- All 600 recorded picks are public in an AG Grid explorer on the proof page: filter, sort, search or export them.
+- A side-by-side demo on the home page asks one question both ways, live, so anyone can see the difference in 20
+  seconds.
+- 168 automated tests and 9 browser tests, with every claim and attack case mapped to the tests that check it (`docs/evidence/`).
 
 ## What we learned
 
@@ -59,12 +64,13 @@ A trust signal only helps an AI shopper if it's small, countable and checkable. 
 
 ## What's next
 
-A "Connect PayPal" button so any shop can join with its own account, carrier-confirmed delivery, repeated evaluation
-runs across more models, and a pilot with real small shops.
+A "Connect PayPal" button so any shop can join with its own account, carrier-confirmed delivery, dispute outcomes
+read from PayPal, requests written by outside shoppers, more models, and a pilot with real small shops.
 
 ## Limits
 
-This is a controlled test on one fictional catalog: AI recommendations, not sales. Order dates, shipping speed and past
+This is a controlled test on one fictional catalog that we wrote, including the scam shops: AI recommendations, not
+sales. The requests were written before any run, but by us. Order dates, shipping speed and past
 dispute outcomes are simulated in the sandbox, and labeled that way. Real Deal Seal is not a PayPal product; PayPal
 supplies the sandbox records and doesn't sign or endorse the seal.
 

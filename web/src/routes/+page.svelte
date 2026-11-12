@@ -74,6 +74,9 @@
   <div><span class="num big">{ns.paypal_orders}</span><p>PayPal sandbox orders behind the published facts, and each one can be traced.</p></div>
   {/if}
 </section>
+{#if ns?.repeat_runs?.length > 1}
+  <div class="wrap"><p class="small again">We ran all 50 requests {ns.repeat_runs.length} times. Picks of a shop with a withdrawn seal, without and with evidence: {ns.repeat_runs.map((r) => `${r.baseline_withdrawn} to ${r.withdrawn}`).join(', ')}. Honest small shops: {ns.repeat_runs.map((r) => `${r.baseline_small} to ${r.small}`).join(', ')}. <a href="/proof">See every run</a>.</p></div>
+{/if}
 
 <section class="stone section"><div class="wrap"><LightspeedStudy compact /></div></section>
 
@@ -149,6 +152,7 @@
   .judges { display: inline-block; margin-top: 22px; padding: 8px 14px; background: var(--tile); border-radius: 999px; font-size: 0.92rem; font-weight: 600; text-decoration: none; color: var(--ink); }
   .judges:hover { background: var(--ink); color: #fff; }
   .diff { margin: 14px 0 26px; }
+  .again { margin: 18px 0 0; max-width: 90ch; }
   #difference { scroll-margin-top: 90px; }
   .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 4vw, 56px); border-top: 1.5px solid var(--ink); padding-top: 28px; }
   .facts .big { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 300; color: var(--ink); line-height: 1; display: block; margin-bottom: 10px; }

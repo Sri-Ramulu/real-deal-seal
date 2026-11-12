@@ -27,7 +27,7 @@
       <figure>
         <Slope series={ns.by_model.map((m) => ({ name: m.label, from: m.baseline, to: m.with_evidence, highlight: m.model === ns.model,
           detail: `${m.label}: ${m.baseline_n} of 50 without evidence, ${m.with_evidence_n} of 50 with it` }))} />
-        <figcaption class="source">Share of requests won by an honest small shop (seal not withdrawn). Hover a line for counts.</figcaption>
+        <figcaption class="source">Share of requests won by an honest small shop (seal not withdrawn), run 1. Hover a line for counts.{#if ns.repeat_runs?.length > 1} Across {ns.repeat_runs.length} full runs with {modelName(ns.model)}: {ns.repeat_runs.map((r) => `${r.baseline_small} to ${r.small}`).join(', ')} of 50.{/if}</figcaption>
       </figure>
     </div>
 

@@ -113,3 +113,11 @@ test('the judges page walks the five steps, and Why PayPal wins separates measur
   await expect(page.locator('.wins article')).toHaveCount(4);
   await expect(page.locator('.wins .proj')).toContainText('not measured');
 });
+
+test('the proof lab shows the repeat runs and an AG Grid of every recorded pick', async ({ page }) => {
+  await page.goto('/proof');
+  await expect(page.locator('table.repeats tbody tr')).toHaveCount(3);
+  await page.getByRole('button', { name: 'Picked a withdrawn seal' }).click();
+  await expect(page.locator('.ag-row').first()).toContainText('Evidence off');
+  await expect(page.locator('.ag-paging-row-summary-panel')).toContainText(/of 20\d/);
+});

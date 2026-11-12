@@ -29,6 +29,37 @@ schema:
       - name: every model ran all 50 tasks in each condition
         query: "SELECT count(*) FROM (SELECT model, mode FROM gold.fact_agent_choice GROUP BY ALL HAVING count(*) <> 50)"
         mustBe: 0
+  - name: fact_agent_repeat
+    physicalName: gold.fact_agent_repeat
+    properties:
+      - {name: model_key, physicalType: INTEGER, required: true}
+      - {name: model, physicalType: VARCHAR, required: true}
+      - {name: run_no, physicalType: INTEGER, required: true}
+      - {name: mode, physicalType: VARCHAR, required: true, acceptedValues: [baseline, verified]}
+      - {name: tasks, physicalType: INTEGER, required: true}
+      - {name: honest_small_picks, physicalType: INTEGER, required: true}
+      - {name: withdrawn_shop_picks, physicalType: INTEGER, required: true}
+      - {name: no_picks, physicalType: INTEGER, required: true}
+    quality:
+      - {name: every run has both conditions, query: "SELECT count(*) FROM (SELECT model, run_no FROM gold.fact_agent_repeat GROUP BY ALL HAVING count(*) <> 2)", mustBe: 0}
+      - {name: every run covers all 50 tasks, query: "SELECT count(*) FROM gold.fact_agent_repeat WHERE tasks <> 50", mustBe: 0}
+      - {name: picks never exceed tasks, query: "SELECT count(*) FROM gold.fact_agent_repeat WHERE honest_small_picks + withdrawn_shop_picks + chain_picks + fake_badge_picks + no_picks <> tasks", mustBe: 0}
+      - name: run 1 equals the primary recorded run
+        query: "SELECT count(*) FROM gold.fact_agent_repeat r JOIN (SELECT model, mode, count(*) FILTER (chose_small_shop) s, count(*) FILTER (chose_withdrawn_shop) w FROM gold.fact_agent_choice GROUP BY ALL) c USING (model, mode) WHERE r.run_no = 1 AND (r.honest_small_picks <> c.s OR r.withdrawn_shop_picks <> c.w)"
+        mustBe: 0
+  - name: fact_agent_run
+    physicalName: gold.fact_agent_run
+    properties:
+      - {name: model_key, physicalType: INTEGER, required: true}
+      - {name: model, physicalType: VARCHAR, required: true}
+      - {name: run_no, physicalType: INTEGER, required: true}
+      - {name: task_id, physicalType: INTEGER, required: true}
+      - {name: mode, physicalType: VARCHAR, required: true, acceptedValues: [baseline, verified]}
+      - {name: pick_kind, physicalType: VARCHAR, required: true, acceptedValues: [Honest small shop, Seal withdrawn, Chain, Forged badge, No pick]}
+      - {name: answered, physicalType: BOOLEAN, required: true}
+    quality:
+      - {name: one row per model run request and condition, query: "SELECT count(*) FROM (SELECT model, run_no, task_id, mode FROM gold.fact_agent_run GROUP BY ALL HAVING count(*) > 1)", mustBe: 0}
+      - {name: run 1 is the primary recorded run, query: "SELECT (SELECT count(*) FROM gold.fact_agent_run WHERE run_no = 1) - (SELECT count(*) FROM gold.fact_agent_choice)", mustBe: 0}
 slaProperties:
   - {property: retention, value: all recorded runs are kept}
 support:

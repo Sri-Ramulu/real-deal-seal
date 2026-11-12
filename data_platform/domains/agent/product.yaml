@@ -3,7 +3,7 @@ id: agent.decisions
 owner: Agent domain team
 purpose: What the AI shopper chose, with and without evidence, for every recorded evaluation task and attack.
 consumers: [Proof Lab, business scorecard, data story]
-output_ports: [gold.fact_agent_choice, gold.fact_agent_switch, gold.fact_attack_run, gold.dim_model]
-input_ports: [landing/agent/results.jsonl, landing/agent/attacks.json, landing/agent/summary.json]
+output_ports: [gold.fact_agent_choice, gold.fact_agent_switch, gold.fact_attack_run, gold.fact_agent_repeat, gold.fact_agent_run, gold.dim_model]
+input_ports: [landing/agent/results.jsonl, landing/agent/attacks.json, landing/agent/summary.json, landing/agent/repeat_results.jsonl]
 refresh: when a new evaluation run is landed
 status: active

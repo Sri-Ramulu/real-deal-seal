@@ -160,5 +160,51 @@ def main(path: str, *reruns: str) -> None:
               "| attacks", s["attacks"]["passed"], "/", s["attacks"]["n"], s["attacks"]["failed"], "| cost", s["total_cost_usd"])
 
 
+def repeats(*paths: str) -> None:
+    """Write landing/agent/repeat_results.jsonl: every run of every later full repeat of the evaluation, one row per
+    request (or attack) per condition, in the same shape as results.jsonl plus `run` and, for attacks, `outcome`.
+    Run 1 is the primary run in results.jsonl. A run with no answer is kept and counts as no pick; an attack with no
+    answer is pending, never a pass. The pipeline does the counting (gold.fact_agent_repeat)."""
+    agent, sku = LANDING / "agent", shops()
+    attacks = {a["id"]: a for a in json.loads((agent / "attacks.json").read_text())["attacks"]}
+    out = []
+    for path in paths:
+        for r in json.loads(Path(path).read_text())["rows"]:
+            model = MODEL_IDS[r["model"]]
+            ok = r["status"] == 200 and bool(r["answer"].strip())
+            assert not ok or r["served_model"] == model, "answered by another model"
+            assert not r.get("busy_from"), "a hand-over answer must never be recorded"
+            merchant, name, kind = sku.get(r["pick"] or "", (None, None, None)) if ok else (None, None, None)
+            tin, tout = r.get("input_tokens") or 0, r.get("output_tokens") or 0
+            price = PRICE_PER_MTOK.get(model)
+            out.append({"exp": r["exp"], "id": r["id"], "mode": r["mode"], "model": model, "run": r["run"], "request": r["request"],
+                        "choice": f"{r['pick']} | {name}" if merchant else None, "merchant": merchant, "kind": kind,
+                        "answer": r["answer"] if ok else None, "tools": r["tools"],
+                        "cost_usd": round((tin * price[0] + tout * price[1]) / 1e6, 5) if price and ok else None,
+                        "input_tokens": tin or None, "output_tokens": tout or None, "status": "answered" if ok else "no_answer",
+                        "recorded_at": r["at"],
+                        "outcome": grade_attack(attacks[r["id"]], {"status": 200 if ok else 0, "answer": r["answer"]}, merchant) if r["exp"] == "attacks" else None})
+    order = {m: i for i, m in enumerate(MODEL_IDS.values())}
+    out.sort(key=lambda o: (o["run"], order[o["model"]], o["exp"] != "choice", int(o["id"]) if o["id"].isdigit() else 0, o["id"], o["mode"]))
+    (agent / "repeat_results.jsonl").write_text("".join(json.dumps(o, ensure_ascii=False) + "\n" for o in out))
+    proto = json.loads((agent / "protocol.json").read_text())
+    proto["repeats"] = {"purpose": "Full repeat runs of the same requests and attacks, to show run-to-run variation. Run 1 stays the headline.",
+                        "runs": sorted({o["run"] for o in out}), "models": sorted({o["model"] for o in out}), "rows": len(out),
+                        "raw_files": [str(Path(p).resolve().relative_to(ROOT)) if Path(p).resolve().is_relative_to(ROOT) else Path(p).name for p in paths],
+                        "rules_changed_after_these_runs": "none"}
+    (agent / "protocol.json").write_text(json.dumps(proto, indent=1, ensure_ascii=False))
+    for model, run in sorted({(o["model"], o["run"]) for o in out}):
+        mine = [o for o in out if o["model"] == model and o["run"] == run]
+        for mode in ("baseline", "verified"):
+            k = Counter(o["kind"] for o in mine if o["exp"] == "choice" and o["mode"] == mode)
+            print(model, "run", run, mode, "| small", k["small"], "scam", k["scam"], "chain", k["chain"], "badge", k["unknown"], "none", k[None])
+        att = [o for o in mine if o["exp"] == "attacks"]
+        print("   attacks", sum(a["outcome"] == "passed" for a in att), "/", len(att), [a["id"] + ":" + a["outcome"] for a in att if a["outcome"] != "passed"],
+              "| cost", round(sum(o["cost_usd"] or 0 for o in mine), 2))
+
+
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    if sys.argv[1] == "--repeats":
+        repeats(*sys.argv[2:])
+    else:
+        main(*sys.argv[1:])

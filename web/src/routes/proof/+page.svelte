@@ -1,4 +1,5 @@
 <script>
+  import RunGrid from '$lib/components/RunGrid.svelte';
   import { onMount } from 'svelte';
   import { api, modelName } from '$lib/api.js';
   let d = $state(null), pack = $state(null), model = $state('claude-sonnet-5-5'), only = $state('changed');
@@ -7,6 +8,10 @@
   const sw = $derived(d ? Object.fromEntries(d.switches.filter((r) => r.model === model).map((r) => [r.switch_type, r.n])) : {});
   const pairs = $derived(d ? d.pairs.filter((p) => p.model === model && (only === 'all' || !['same_shop'].includes(p.switch_type))) : []);
   const attacks = $derived(d ? d.attacks.filter((a) => a.model === model) : []);
+  const runs = $derived.by(() => {
+    const mine = (d?.repeats ?? []).filter((r) => r.model === model);
+    return [...new Set(mine.map((r) => r.run_no))].sort().map((n) => ({ n, off: mine.find((r) => r.run_no === n && r.mode === 'baseline'), on: mine.find((r) => r.run_no === n && r.mode === 'verified') }));
+  });
   const label = { chain_to_small: 'Chain → small shop', scam_to_small: 'Withdrawn shop → small shop', small_to_chain: 'Small shop → chain',
     small_to_scam: 'Small shop → withdrawn shop', same_shop: 'Same shop', other_change: 'Other change' };
   const back = (t) => t === 'small_to_chain' || t === 'small_to_scam';
@@ -33,7 +38,27 @@
         </div>
       {/each}
     </div>
-    <p class="lede mid">{sw.chain_to_small ?? 0} decisions moved from a chain to an honest small shop, and {sw.scam_to_small ?? 0} from a shop whose seal was withdrawn. {(sw.small_to_chain ?? 0) + (sw.small_to_scam ?? 0)} moved the other way. {sw.same_shop ?? 0} did not change.</p>
+    <p class="lede mid">{sw.chain_to_small ?? 0} {(sw.chain_to_small ?? 0) === 1 ? 'decision' : 'decisions'} moved from a chain to an honest small shop, and {sw.scam_to_small ?? 0} from a shop whose seal was withdrawn. {(sw.small_to_chain ?? 0) + (sw.small_to_scam ?? 0)} moved the other way. {sw.same_shop ?? 0} did not change.</p>
+
+    {#if runs.length > 1}
+      <h2 class="gap">Run it again, and again</h2>
+      <p class="lede mid0">The same 50 requests and {attacks.length} attacks, run {runs.length} times in full with {modelName(model)}. Run 1 is the headline above; the others were run later to see how much the result moves.</p>
+      <table class="plain repeats">
+        <thead><tr><th>Run</th><th>Honest small shop<br /><span class="small">off → on</span></th><th>Seal withdrawn<br /><span class="small">off → on</span></th><th>Chain<br /><span class="small">off → on</span></th><th>No pick<br /><span class="small">off → on</span></th><th>Attacks resisted</th><th>Recorded</th></tr></thead>
+        <tbody>{#each runs as r}<tr><td class="num">{r.n}{r.n === 1 ? ' (headline)' : ''}</td>
+          <td class="num"><strong>{r.off.honest_small_picks} → {r.on.honest_small_picks}</strong></td>
+          <td class="num"><strong>{r.off.withdrawn_shop_picks} → {r.on.withdrawn_shop_picks}</strong></td>
+          <td class="num">{r.off.chain_picks} → {r.on.chain_picks}</td><td class="num">{r.off.no_picks} → {r.on.no_picks}</td>
+          <td class="num">{r.on.attacks_passed} of {r.on.attacks_total}</td><td class="small">{r.on.recorded_on}</td></tr>{/each}</tbody>
+      </table>
+      <p class="source">Picks out of 50 per condition. Every run went through this site’s chat API with fallback off; raw runs are in <code>evals/live/runs/</code>. Source: gold.fact_agent_repeat.</p>
+    {/if}
+
+    {#if d.runs?.length}
+      <h2 class="gap">Every run, in one grid</h2>
+      <p class="lede mid0">Nothing is summarised away. Filter to the picks of a withdrawn seal, search for a request, sort by anything, or export it all.</p>
+      <RunGrid rows={d.runs} />
+    {/if}
 
     <div class="thead"><h2>Request by request</h2>
       <div class="models"><button class:on={only === 'changed'} onclick={() => (only = 'changed')}>Only changes</button><button class:on={only === 'all'} onclick={() => (only = 'all')}>All 50</button></div></div>
@@ -80,6 +105,8 @@
   .scamkey { color: var(--ink); }
   @keyframes pop { from { transform: scale(0); } }
   .mid { margin: 30px 0 0; max-width: 60ch; }
+  .mid0 { margin: 0 0 20px; max-width: 70ch; }
+  .repeats th { vertical-align: bottom; }
   .thead { display: flex; justify-content: space-between; align-items: end; margin: 80px 0 16px; flex-wrap: wrap; gap: 16px; }
   h2 { font-size: clamp(1.8rem, 3.4vw, 2.8rem); }
   .gap { margin: 80px 0 16px; }

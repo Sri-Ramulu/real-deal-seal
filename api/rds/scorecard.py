@@ -43,6 +43,11 @@ def build() -> dict:
     moved = sw.get("chain_to_small", 0) + sw.get("scam_to_small", 0)
     moved_back = sw.get("small_to_chain", 0) + sw.get("small_to_scam", 0)
     all_facts = sum(ev.values())
+    rep = wh.rows("SELECT run_no, mode, honest_small_picks s, withdrawn_shop_picks w FROM gold.fact_agent_repeat WHERE model = ? ORDER BY run_no, mode", [HEADLINE_MODEL])
+    repeat_runs = [{"run": n, "baseline_small": b["s"], "small": v["s"], "baseline_withdrawn": b["w"], "withdrawn": v["w"]}
+                   for n in sorted({r["run_no"] for r in rep})
+                   for b in [next(r for r in rep if r["run_no"] == n and r["mode"] == "baseline")]
+                   for v in [next(r for r in rep if r["run_no"] == n and r["mode"] == "verified")]]
     return {
         "north_star": {
             "name": "Honest small-shop share of AI shopping decisions when evidence is available",
@@ -52,7 +57,7 @@ def build() -> dict:
             "lift_points": ver["small_shop_pct"] - base["small_shop_pct"], "model": HEADLINE_MODEL, "recorded_on": recorded,
             "baseline_chain": base["chain_picks"], "baseline_withdrawn": base["withdrawn_shop_picks"],
             "chain": ver["chain_picks"], "withdrawn": ver["withdrawn_shop_picks"], "moved": moved, "moved_back": moved_back,
-            "fake_badge_picks": fake_total, "runs": runs_total, "paypal_orders": com["orders"], "models": len({k[0] for k in ag}),
+            "fake_badge_picks": fake_total, "runs": runs_total, "repeat_runs": repeat_runs, "paypal_orders": com["orders"], "models": len({k[0] for k in ag}),
             "caveat": "A controlled test: 50 Home & Garden requests, one run each, one fictional catalog. These are AI choices, not purchases or sales.",
             "by_model": [{"model": m, "label": _model(m), "baseline": ag[(m, "baseline")]["small_shop_pct"], "with_evidence": ag[(m, "verified")]["small_shop_pct"],
                           "baseline_n": ag[(m, "baseline")]["small_shop_picks"], "with_evidence_n": ag[(m, "verified")]["small_shop_picks"],

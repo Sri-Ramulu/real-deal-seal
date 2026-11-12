@@ -142,3 +142,95 @@ tables:
   - name: passed
     meaning: True when the attack was resisted.
     pii: false
+- name: gold.fact_agent_repeat
+  owner: Agent domain team
+  description: One row per model per full run of the evaluation per condition, so run-to-run variation is visible. Run 1 is the primary recorded run.
+  columns:
+  - name: model_key
+    meaning: Surrogate key of the AI model.
+    pii: false
+  - name: model
+    meaning: Model identifier.
+    pii: false
+  - name: run_no
+    meaning: Which full run of the 50 requests and the attacks this is. 1 is the primary run.
+    pii: false
+  - name: mode
+    meaning: baseline (Evidence off) or verified (Evidence on).
+    pii: false
+  - name: condition_label
+    meaning: Display label of the condition.
+    pii: false
+  - name: tasks
+    meaning: Shopping requests in the run.
+    pii: false
+  - name: honest_small_picks
+    meaning: Picks of an honest small shop (seal not withdrawn).
+    pii: false
+  - name: withdrawn_shop_picks
+    meaning: Picks of a shop whose seal was withdrawn.
+    pii: false
+  - name: chain_picks
+    meaning: Picks of a national chain.
+    pii: false
+  - name: fake_badge_picks
+    meaning: Picks of the shop with the forged badge.
+    pii: false
+  - name: no_picks
+    meaning: Requests with no pick, including runs with no answer.
+    pii: false
+  - name: attacks_passed
+    meaning: Attacks resisted in this run (Evidence on only).
+    pii: false
+  - name: attacks_total
+    meaning: Attacks in this run (Evidence on only).
+    pii: false
+  - name: recorded_on
+    meaning: Date the run finished.
+    pii: false
+- name: gold.fact_agent_run
+  owner: Agent domain team
+  description: Every recorded pick in every full run of the evaluation. One row per model per run per shopping request per condition.
+  columns:
+  - name: model_key
+    meaning: Surrogate key of the AI model.
+    pii: false
+  - name: model
+    meaning: Model identifier.
+    pii: false
+  - name: run_no
+    meaning: Which full run of the evaluation this is. 1 is the primary run.
+    pii: false
+  - name: task_id
+    meaning: Shopping request number, 1 to 50.
+    pii: false
+  - name: mode
+    meaning: baseline (Evidence off) or verified (Evidence on).
+    pii: false
+  - name: condition_label
+    meaning: Evidence off or Evidence on.
+    pii: false
+  - name: request
+    meaning: What the shopper asked.
+    pii: false
+  - name: chosen_merchant_id
+    meaning: Shop the assistant picked, if any.
+    pii: false
+  - name: chosen_merchant_name
+    meaning: Name of the picked shop.
+    pii: false
+  - name: pick_kind
+    meaning: Honest small shop, Seal withdrawn, Chain, Forged badge or No pick. Fixed by the shop, not by the answer.
+    pii: false
+  - name: tool_calls
+    meaning: Tools the assistant called in the run.
+    pii: false
+  - name: answered
+    meaning: False when the model gave no answer after four tries.
+    pii: false
+  - name: cost_usd
+    meaning: Model cost of the run, when a price is recorded for the model.
+    pii: false
+  - name: recorded_on
+    meaning: Date of the run.
+    pii: false

@@ -51,7 +51,7 @@ installs what it needs and opens the site.
 
 ```bash
 make setup      # Python environment and web dependencies
-make test       # builds the warehouse, runs 167 tests and the eval harness check
+make test       # builds the warehouse, runs 168 tests and the eval harness check
 make test-pg DATABASE_URL=postgresql://...   # the API tests on PostgreSQL, with row-level security
 make web        # builds the site
 make api        # http://localhost:8000 (reads .env by itself)
@@ -80,9 +80,9 @@ Render dashboard. Keep `RDS_ISSUER_SEED_HEX` the same across deploys, or every i
 
 Checked in this repository (`make test`, `make evidence`):
 
-- 167 automated tests pass on SQLite (55 on the data platform, 112 on the API, assistant and client). The API suite
+- 168 automated tests pass on SQLite (55 on the data platform, 113 on the API, assistant and client). The API suite
   also passes on PostgreSQL 16, plus 2 tests there that check row-level security between businesses.
-- All 175 PayPal sandbox orders reach the gold layer; 4 gates and 325 data contract rules pass, including every
+- All 175 PayPal sandbox orders reach the gold layer; 4 gates and 379 data contract rules pass, including every
   star-schema foreign key.
 - Evidence off is a true baseline: tests confirm no standing, seal, passport hint or warning reaches the model.
 - Withdrawing a seal: the seal fails its check, the AI is told, checkout is refused, and nobody else is affected.
@@ -99,7 +99,7 @@ Checked in this repository (`make test`, `make evidence`):
   times. One candidate question ("cheapest lavender napkins") was dropped because evidence on still chose the
   unverifiable cheapest listing.
 - The eval harness: a scripted correct agent passes 12 of 12 tasks, and a scripted bad agent passes 0 of 12.
-- 8 browser tests (`make e2e`) walk the main journeys in Chrome: the home page and its side-by-side Evidence demo, product images and card layout,
+- 9 browser tests (`make e2e`) walk the main journeys in Chrome: the home page and its side-by-side Evidence demo, product images and card layout,
   the assistant with evidence on and off, the seal check, checkout, and Merchant Studio.
 
 Checked by hand on 12 Nov 2026:
@@ -123,6 +123,18 @@ one run each, fallback off so every answer came from the model asked for):
 | National chain, off → on | 7 → 14 of 50 | 9 → 7 of 50 |
 | Attacks resisted | 11 of 11 | 11 of 11 |
 | Model cost | $2.76 | $0.14 |
+
+Repeated in full twice more on the same day (runs 2 and 3; run 1 above stays the headline):
+
+| Off → On, runs 1 / 2 / 3 | Claude Sonnet | Claude Haiku |
+|---|---|---|
+| Honest small shop | 9→35 / 11→37 / 9→38 | 7→37 / 7→43 / 8→42 |
+| Seal withdrawn | 34→0 / 33→0 / 33→0 | 34→0 / 33→0 / 34→0 |
+| Attacks resisted | 11 / 11 / 11 of 11 | 11 / 10 / 11 of 11 |
+
+Haiku's one failed attack in run 2 is a keyword-rule false alarm ("not that the shop is risky"); the rule stands and
+the result is not edited. All 600 picks are in `gold.fact_agent_run` and in an AG Grid explorer on the proof page; raw
+runs are in `evals/live/runs/`.
 
 Seven runs that came back empty because of a reply-limit bug (a pasted seal did not fit) were re-run after the fix
 and are listed in `data_platform/landing/agent/protocol.json`. The same run caught a wording bug in the seal check,

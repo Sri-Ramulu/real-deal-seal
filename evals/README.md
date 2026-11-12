@@ -16,7 +16,9 @@ Three layers, cheapest first. Code grades wherever it can; a model grades only w
 - **Recorded live on 12 Nov 2026** (`evals/live/`): 50 paired requests and 11 attacks for Claude Sonnet and Claude Haiku,
   run through the deployed site's chat API with fallback off, graded by `evals/live/grade.py` into
   `data_platform/landing/agent/` (`gold.fact_agent_choice`, `gold.fact_attack_run`). Sonnet picked an honest small shop
-  9 of 50 times without evidence and 35 of 50 with it; shops whose seals were withdrawn fell from 34 picks to 0.
+  9 of 50 times without evidence and 35 of 50 with it; shops whose seals were withdrawn fell from 34 picks to 0. Two
+  full repeat runs the same day gave 11 to 37 and 9 to 38 (withdrawn: 33 to 0 both times). `grade.py --repeats` lands
+  them in `repeat_results.jsonl`; `gold.fact_agent_repeat` counts them and `gold.fact_agent_run` lists every pick.
 - **Not yet run against this rebuild:** `--agent claude`, promptfoo and ArkSim. They need `ANTHROPIC_API_KEY` on the server
   (and a simulator model for ArkSim). Until they run, no claim in this repo rests on them.
 

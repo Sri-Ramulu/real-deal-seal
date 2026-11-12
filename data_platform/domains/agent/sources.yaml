@@ -14,3 +14,6 @@ sources:
     files: landing/agent/summary.json
     format: json_key_map
     key: by_model
+  - table: agent_eval_repeats
+    files: landing/agent/repeat_results.jsonl
+    format: jsonl
