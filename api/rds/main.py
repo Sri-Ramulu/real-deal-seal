@@ -70,6 +70,7 @@ class ChatIn(BaseModel):
     messages: list[dict] = Field(..., description="[{role, content}] with the shopper's latest message last")
     evidence: bool = Field(True, description="False is the baseline: plain product search only, no passports, seals or standings")
     model: str | None = Field(None, description="'gemini', 'claude-sonnet' or 'claude-haiku'; empty uses the server's default")
+    fallback: bool = Field(True, description="If Gemini is busy, answer with Claude Sonnet. Evaluations set this to false so every answer comes from the model asked for.")
 
 
 class CheckoutIn(BaseModel):
@@ -240,7 +241,7 @@ def products(q: str | None = None):
 def chat(body: ChatIn, request: Request):
     auth.rate_limit(f"chat:{request.client.host if request.client else ''}", 30, 60)
     try:
-        r = agent.chat(body.messages[-12:], evidence=body.evidence, model=body.model)
+        r = agent.chat(body.messages[-12:], evidence=body.evidence, model=body.model, fallback=body.fallback)
     except Exception as e:  # a provider outage should read as a message, not a crash
         raise HTTPException(502, f"The AI model did not answer: {str(e)[:200]}. Try again, or pick another model.")
     pick_shop = next((o["shop_id"] for o in r["offers"] if o["sku"] == r["pick"]), None)

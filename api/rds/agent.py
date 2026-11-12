@@ -189,7 +189,7 @@ def _gemini(model: str, system: str, messages: list[dict], run: _Run, max_turns:
 
 
 def chat(messages: list[dict], evidence: bool = True, model: str | None = None, max_turns: int = 8,
-         allowed_tools: list[str] | None = None) -> dict:
+         allowed_tools: list[str] | None = None, fallback: bool = True) -> dict:
     """messages: [{role: 'user'|'assistant', content: str}, ...]. `model` is a choice key from config.MODEL_CHOICES
     ('gemini', 'claude-sonnet', 'claude-haiku') or a raw model id. Returns the answer, the pick, offers seen and the tool trace.
     `allowed_tools` is kept for older callers: passing only the two baseline tools means evidence off."""
@@ -206,7 +206,7 @@ def chat(messages: list[dict], evidence: bool = True, model: str | None = None, 
         text = loop(choice["model"], system, messages, run, max_turns)
     except ModelBusy:
         # Gemini is overloaded even after retries: answer with Claude Sonnet if it is set up, and say so.
-        if choice["provider"] != "gemini" or not config.ANTHROPIC_API_KEY:
+        if not fallback or choice["provider"] != "gemini" or not config.ANTHROPIC_API_KEY:
             raise
         busy_from, choice = choice["label"], {"key": "claude-sonnet", **config.MODEL_CHOICES["claude-sonnet"]}
         run = _Run(evidence)

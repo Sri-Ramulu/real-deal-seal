@@ -196,6 +196,14 @@ def test_gemini_still_busy_hands_over_to_claude_sonnet_and_says_so(monkeypatch, 
     assert ("passport" in seen["system"]) is evidence, "the hand-over keeps the Evidence setting"
 
 
+def test_an_evaluation_can_refuse_the_hand_over(monkeypatch, client):
+    _gemini_answers(monkeypatch, [503])
+    _fake_claude(monkeypatch, {})
+    monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "a")
+    r = client.post("/api/chat", json={"messages": [{"role": "user", "content": "runner"}], "fallback": False})
+    assert r.status_code == 502, "with fallback off, a busy Gemini is reported, never answered by another model"
+
+
 def test_busy_gemini_without_claude_is_a_clear_error(monkeypatch, client):
     _gemini_answers(monkeypatch, [503])
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "")

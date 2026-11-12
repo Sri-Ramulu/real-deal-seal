@@ -51,7 +51,7 @@ installs what it needs and opens the site.
 
 ```bash
 make setup      # Python environment and web dependencies
-make test       # builds the warehouse, runs 163 tests and the eval harness check
+make test       # builds the warehouse, runs 164 tests and the eval harness check
 make test-pg DATABASE_URL=postgresql://...   # the API tests on PostgreSQL, with row-level security
 make web        # builds the site
 make api        # http://localhost:8000 (reads .env by itself)
@@ -80,7 +80,7 @@ Render dashboard. Keep `RDS_ISSUER_SEED_HEX` the same across deploys, or every i
 
 Checked in this repository (`make test`, `make evidence`):
 
-- 163 automated tests pass on SQLite (55 on the data platform, 108 on the API, assistant and client). The API suite
+- 164 automated tests pass on SQLite (55 on the data platform, 109 on the API, assistant and client). The API suite
   also passes on PostgreSQL 16, plus 2 tests there that check row-level security between businesses.
 - All 175 PayPal sandbox orders reach the gold layer; 4 gates and 322 data contract rules pass, including every
   star-schema foreign key.
