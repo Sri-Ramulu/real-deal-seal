@@ -23,7 +23,7 @@ test-pg:          ## the API tests on PostgreSQL: DATABASE_URL=postgresql://... 
 	DATABASE_URL=$(DATABASE_URL) $(PY) -m pytest api/tests -q
 e2e:              ## browser tests of the main journeys (needs: npx playwright install chromium, or CHROME_PATH)
 	cd web && npm run e2e
-evals:            ## real-model evals: MODEL=gemini|claude-opus|claude-sonnet (the simulated shopper needs ANTHROPIC_API_KEY)
+evals:            ## real-model evals: MODEL=gemini|claude-sonnet|claude-haiku (the simulated shopper needs ANTHROPIC_API_KEY)
 	$(PY) evals/tau/run.py --agent live --model $(or $(MODEL),gemini) -k 3
 clean:
 	rm -rf data_platform/warehouse data_platform/build var web/build web/.svelte-kit

@@ -149,7 +149,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--agent", choices=["oracle", "naive", "live", "claude"], default="oracle",
                     help="live runs the real assistant with --model; claude is kept as a shorthand for --agent live --model claude-sonnet")
-    ap.add_argument("--model", default=None, help="gemini, claude-opus or claude-sonnet (default: the server default)")
+    ap.add_argument("--model", default=None, help="gemini, claude-sonnet or claude-haiku (default: the server default)")
     ap.add_argument("-k", "--trials", type=int, default=1)
     ap.add_argument("--out", default=str(HERE / "results"))
     a = ap.parse_args()

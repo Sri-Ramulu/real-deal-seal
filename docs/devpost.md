@@ -17,7 +17,7 @@ shipments had tracking." Each fact says where it came from: PayPal's records, th
 demo. The facts are judged against published rules and signed as a Merchant Passport, so changing a single number makes
 the seal fail.
 
-An AI shopping assistant (Google Gemini by default, or Claude Opus or Sonnet) reads the passport before it recommends a
+An AI shopping assistant (Google Gemini by default, or Claude Sonnet or Haiku) reads the passport before it recommends a
 shop. An Evidence switch turns that off, so you can see what the same assistant picks from listings alone. The
 assistant can open a PayPal checkout, but only the shopper can approve it, and the server confirms the capture with
 PayPal before anything counts as paid.

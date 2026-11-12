@@ -191,7 +191,7 @@ def _gemini(model: str, system: str, messages: list[dict], run: _Run, max_turns:
 def chat(messages: list[dict], evidence: bool = True, model: str | None = None, max_turns: int = 8,
          allowed_tools: list[str] | None = None) -> dict:
     """messages: [{role: 'user'|'assistant', content: str}, ...]. `model` is a choice key from config.MODEL_CHOICES
-    ('gemini', 'claude-opus', 'claude-sonnet') or a raw model id. Returns the answer, the pick, offers seen and the tool trace.
+    ('gemini', 'claude-sonnet', 'claude-haiku') or a raw model id. Returns the answer, the pick, offers seen and the tool trace.
     `allowed_tools` is kept for older callers: passing only the two baseline tools means evidence off."""
     if allowed_tools is not None and set(allowed_tools) <= set(BASELINE_TOOLS):
         evidence = False

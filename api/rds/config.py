@@ -41,15 +41,15 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_
 GEMINI_BASE = os.environ.get("GEMINI_BASE", "https://generativelanguage.googleapis.com/v1beta")
 # Google's alias for its newest Flash model; pin a specific model id here for a fixed evaluation.
 GEMINI_MODEL = os.environ.get("RDS_GEMINI_MODEL", "gemini-flash-latest")
-OPUS_MODEL = os.environ.get("RDS_OPUS_MODEL", "claude-opus-5-5")
+HAIKU_MODEL = os.environ.get("RDS_HAIKU_MODEL", "claude-haiku-5-5")
 DEFAULT_ASSISTANT = os.environ.get("RDS_ASSISTANT", "gemini")
 DEMO_SHOPS = os.environ.get("RDS_DEMO_SHOPS", "1") == "1"  # the four fictional shops in demo_shops.py join at startup
 REFRESH_HOURS = float(os.environ.get("RDS_REFRESH_HOURS", "24"))  # 0 turns the scheduled refresh off
 
 MODEL_CHOICES = {
     "gemini": {"provider": "gemini", "model": GEMINI_MODEL, "label": "Google Gemini"},
-    "claude-opus": {"provider": "claude", "model": OPUS_MODEL, "label": "Claude Opus"},
     "claude-sonnet": {"provider": "claude", "model": MODEL, "label": "Claude Sonnet"},
+    "claude-haiku": {"provider": "claude", "model": HAIKU_MODEL, "label": "Claude Haiku"},
 }
 
 
@@ -65,11 +65,9 @@ def resolve_model(choice: str | None) -> dict | None:
     """Turn a choice key or raw model id into {provider, model, label}. Falls back to the default, then to any model
     with a key. None means no model is set up (offline mode)."""
     if choice and choice not in MODEL_CHOICES:
-        provider = "gemini" if choice.startswith("gemini") else "claude" if choice.startswith("claude") else None
-        if provider and _has_key(provider):
-            label = next((v["label"] for v in MODEL_CHOICES.values() if v["model"] == choice), choice)
-            return {"provider": provider, "model": choice, "label": label, "key": choice}
-        choice = None
+        # A raw model id is accepted only for a model on the menu (Gemini, Claude Sonnet, Claude Haiku); anything
+        # else falls back to the default, so no other model can be reached through the API.
+        choice = next((k for k, v in MODEL_CHOICES.items() if v["model"] == choice), None)
     order = [choice] if choice else []
     order += [DEFAULT_ASSISTANT] + [k for k in MODEL_CHOICES if k != DEFAULT_ASSISTANT]
     for k in order:

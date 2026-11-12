@@ -343,6 +343,25 @@
    }
   },
   {
+   "name": "Credential Status List",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/credentials/status-list/revocation",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "credentials",
+      "status-list",
+      "revocation"
+     ]
+    }
+   }
+  },
+  {
    "name": "Criteria",
    "request": {
     "method": "GET",
@@ -389,6 +408,24 @@
      "path": [
       "api",
       "health"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Health Deep",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/health/deep",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "health",
+      "deep"
      ]
     }
    }

@@ -69,7 +69,7 @@ Owner = Depends(auth.require_merchant)
 class ChatIn(BaseModel):
     messages: list[dict] = Field(..., description="[{role, content}] with the shopper's latest message last")
     evidence: bool = Field(True, description="False is the baseline: plain product search only, no passports, seals or standings")
-    model: str | None = Field(None, description="'gemini', 'claude-opus' or 'claude-sonnet'; empty uses the server's default")
+    model: str | None = Field(None, description="'gemini', 'claude-sonnet' or 'claude-haiku'; empty uses the server's default")
 
 
 class CheckoutIn(BaseModel):

@@ -34,7 +34,7 @@ That is their study of general-purpose assistants, not a measurement of this pro
 | **Six standings** | Sealed; verified but not sealed; self-reported; not enough history yet; no record; seal withdrawn. Imported records can never earn the seal. |
 | **Seal check** | Anyone can check a seal step by step. Edited, forged, expired, withdrawn and superseded seals all fail. The check is code, not an AI model. |
 | **Withdrawn seals** | Real Deal Seal can withdraw one shop's seal for cause. The old seal then fails the check, shoppers and AI agents see the reason, and checkout is turned off for that shop. A shop that takes its own record down is shown as withdrawn, never as an unknown shop. |
-| **Shopping assistant** | Google Gemini by default, with Claude Opus and Claude Sonnet selectable. Eight tools with evidence on; product search and checkout only with evidence off. Seller text is treated as data, so hidden "rank me first" instructions are ignored. |
+| **Shopping assistant** | Google Gemini by default, with Claude Sonnet and Claude Haiku selectable. Eight tools with evidence on; product search and checkout only with evidence off. Seller text is treated as data, so hidden "rank me first" instructions are ignored. |
 | **PayPal checkout** | Orders v2 in the sandbox: create, approve, capture, track and refund. Webhooks record captures, refunds and resolved disputes after PayPal confirms each event's signature. |
 | **Merchant Studio** | A private workspace for each shop: overview, passport, evidence explorer (AG Grid), a coach that lists what to fix to earn the seal, and orders. |
 | **Product images** | An illustration for every product, drawn in the site's style and tinted with the product's color, so every shop's listings get the same treatment. |
@@ -55,7 +55,7 @@ make test       # builds the warehouse, runs 163 tests and the eval harness chec
 make test-pg DATABASE_URL=postgresql://...   # the API tests on PostgreSQL, with row-level security
 make web        # builds the site
 make api        # http://localhost:8000 (reads .env by itself)
-make evals MODEL=gemini   # real-model evaluation; also claude-opus or claude-sonnet
+make evals MODEL=gemini   # real-model evaluation; also claude-sonnet or claude-haiku
 make evidence   # writes docs/evidence/, mapping every claim to its tests
 make e2e        # browser tests of the main journeys
 ```
@@ -87,7 +87,7 @@ Checked in this repository (`make test`, `make evidence`):
 - Evidence off is a true baseline: tests confirm no standing, seal, passport hint or warning reaches the model.
 - Withdrawing a seal: the seal fails its check, the AI is told, checkout is refused, and nobody else is affected.
 - The Gemini tool-calling loop is tested against a stand-in for Google's API, including sending the model's turn
-  back unchanged; the Claude Opus and Sonnet choices are tested against a stand-in for Anthropic's API.
+  back unchanged; the Claude Sonnet and Haiku choices are tested against a stand-in for Anthropic's API.
 - When Gemini is overloaded, the assistant retries twice, then answers with Claude Sonnet and labels the reply
   "Claude Sonnet (Google Gemini was busy)", keeping the Evidence setting.
 - The demo has 10 fictional shops and about 140 products. Four join at startup through the normal onboarding with

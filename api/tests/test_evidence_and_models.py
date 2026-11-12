@@ -67,7 +67,7 @@ def test_chat_api_evidence_off_offline_has_no_standing(client):
 def test_health_lists_the_three_models_with_gemini_default(client):
     h = client.get("/api/health").json()
     keys = [m["key"] for m in h["models"]]
-    assert keys == ["gemini", "claude-opus", "claude-sonnet"]
+    assert keys == ["gemini", "claude-sonnet", "claude-haiku"], "no Opus in the menu"
     assert [m["key"] for m in h["models"] if m["default"]] == ["gemini"]
     assert h["assistant"] == "offline"  # no keys in the test run
 
@@ -78,13 +78,14 @@ def test_model_resolution_and_fallback(monkeypatch):
     assert config.resolve_model(None) is None
     monkeypatch.setattr(config, "GEMINI_API_KEY", "g")
     assert config.resolve_model(None)["key"] == "gemini"
-    assert config.resolve_model("claude-opus")["key"] == "gemini", "an unavailable choice falls back to one that works"
+    assert config.resolve_model("claude-haiku")["key"] == "gemini", "an unavailable choice falls back to one that works"
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "a")
-    assert config.resolve_model("claude-opus")["model"] == config.OPUS_MODEL
+    assert config.resolve_model("claude-haiku")["model"] == config.HAIKU_MODEL
     assert config.resolve_model("claude-sonnet")["model"] == config.MODEL
-    assert config.resolve_model("claude-some-new-model")["provider"] == "claude"
+    assert config.resolve_model(config.HAIKU_MODEL)["key"] == "claude-haiku", "a raw id works for a model on the menu"
+    assert config.resolve_model("claude-opus-5-5")["key"] == "gemini", "a model off the menu cannot be reached"
     monkeypatch.setattr(config, "GEMINI_API_KEY", "")
-    assert config.resolve_model(None)["key"] == "claude-opus", "with no Gemini key the default falls back to Claude"
+    assert config.resolve_model(None)["key"] == "claude-sonnet", "with no Gemini key the default falls back to Claude"
 
 
 class FakeGemini:
@@ -202,7 +203,7 @@ def test_busy_gemini_without_claude_is_a_clear_error(monkeypatch, client):
     assert r.status_code == 502 and "did not answer" in r.json()["detail"]
 
 
-def test_claude_opus_choice_reaches_anthropic_with_the_opus_model(monkeypatch, client):
+def test_claude_haiku_choice_reaches_anthropic_with_the_haiku_model(monkeypatch, client):
     seen = {}
 
     class FakeMessages:
@@ -214,8 +215,8 @@ def test_claude_opus_choice_reaches_anthropic_with_the_opus_model(monkeypatch, c
     import anthropic
     monkeypatch.setattr(anthropic, "Anthropic", lambda **kw: SimpleNamespace(messages=FakeMessages()))
     monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "k")
-    r = client.post("/api/chat", json={"messages": [{"role": "user", "content": "a sofa"}], "model": "claude-opus", "evidence": False}).json()
-    assert seen["model"] == config.OPUS_MODEL and r["model_label"] == "Claude Opus" and r["pick"] is None
+    r = client.post("/api/chat", json={"messages": [{"role": "user", "content": "a sofa"}], "model": "claude-haiku", "evidence": False}).json()
+    assert seen["model"] == config.HAIKU_MODEL and r["model_label"] == "Claude Haiku" and r["pick"] is None
     assert [t["name"] for t in seen["tools"]] == ["search_products", "create_checkout"]
     assert "passport" not in seen["system"]
 

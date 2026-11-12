@@ -22,6 +22,23 @@
     }
    }
   },
+  "/api/health/deep": {
+   "get": {
+    "summary": "Health Deep",
+    "description": "Checks the operational database itself: which backend, whether every migration has run, and row-level security.",
+    "operationId": "health_deep_api_health_deep_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  },
   "/api/business-types": {
    "get": {
     "summary": "Business Types",
@@ -158,6 +175,23 @@
         "schema": {
          "$ref": "#/components/schemas/HTTPValidationError"
         }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/credentials/status-list/revocation": {
+   "get": {
+    "summary": "Credential Status List",
+    "description": "W3C Bitstring Status List (revocation). Each seal names its position in credentialStatus.",
+    "operationId": "credential_status_list_api_credentials_status_list_revocation_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
        }
       }
      }
@@ -1906,7 +1940,7 @@
        }
       ],
       "title": "Model",
-      "description": "'gemini', 'claude-opus' or 'claude-sonnet'; empty uses the server's default"
+      "description": "'gemini', 'claude-sonnet' or 'claude-haiku'; empty uses the server's default"
      }
     },
     "type": "object",
