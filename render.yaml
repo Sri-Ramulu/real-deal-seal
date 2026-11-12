@@ -29,7 +29,7 @@ services:
       - {key: PAYPAL_LYDIA_WEBHOOK_ID, sync: false}     # from each shop app's Webhooks page in the PayPal dashboard
       - {key: PAYPAL_MARTHA_WEBHOOK_ID, sync: false}
       - {key: PAYPAL_PRISCILLA_WEBHOOK_ID, sync: false}
-      - {key: PAYPAL_COPPER_KETTLE_SUPPLY_CLIENT_ID, sync: false}     # sandbox apps for two demo shops; without them their checkout is simulated
+      - {key: PAYPAL_COPPER_KETTLE_SUPPLY_CLIENT_ID, sync: false}     # sandbox apps for the two later shops that take payments; without them their checkout is simulated
       - {key: PAYPAL_COPPER_KETTLE_SUPPLY_CLIENT_SECRET, sync: false}
       - {key: PAYPAL_SAGE_STONE_STUDIO_CLIENT_ID, sync: false}
       - {key: PAYPAL_SAGE_STONE_STUDIO_CLIENT_SECRET, sync: false}

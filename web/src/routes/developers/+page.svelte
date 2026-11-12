@@ -50,8 +50,8 @@
       <p>The demo has ten fictional shops. Every listing says how a shopper can buy it:</p>
       <table class="plain"><thead><tr><th>Shops</th><th>Record</th><th>How a shopper buys</th></tr></thead><tbody>
         <tr><td>Lydia Linen Co., Martha's Kitchen, Priscilla Canvas Works</td><td class="small">PayPal sandbox orders read back from PayPal</td><td class="small">PayPal sandbox checkout (test money); the shopper approves in PayPal</td></tr>
-        <tr><td>Copper Kettle Supply, Sage &amp; Stone Studio</td><td class="small">Simulated records the business imported</td><td class="small">PayPal sandbox checkout once the shop's sandbox app keys are set (<code>PAYPAL_COPPER_KETTLE_SUPPLY_CLIENT_ID</code> and so on); a labelled simulated checkout until then</td></tr>
-        <tr><td>Violet &amp; Vine Home, Juniper &amp; Oak Goods</td><td class="small">Simulated records; seal withdrawn for cause</td><td class="small">Can't buy here: seal withdrawn</td></tr>
+        <tr><td>Copper Kettle Supply, Sage &amp; Stone Studio</td><td class="small">Simulated records the business imported</td><td class="small">PayPal sandbox checkout (test money) through each shop's own sandbox account; the shopper approves in PayPal. A server run without their keys (<code>PAYPAL_COPPER_KETTLE_SUPPLY_CLIENT_ID</code> and so on) falls back to a labelled simulated checkout</td></tr>
+        <tr><td>Violet &amp; Vine Home, Juniper &amp; Oak Goods</td><td class="small">Simulated records; seal withdrawn for cause</td><td class="small">Can't buy here: seal withdrawn. Each has a PayPal sandbox account, but checkout stays switched off</td></tr>
         <tr><td>Babel Home, Hearthline Home, Linen Palace</td><td class="small">None: they never joined</td><td class="small">Can't buy here: doesn't take PayPal</td></tr>
       </tbody></table>
       <p class="small">The first seven have a Merchant Studio with a public demo login. The last three never joined, so they have no studio.</p>

@@ -14,7 +14,7 @@
     ['45 seconds', 'Open a shop’s studio', '/studio', 'Open Merchant Studio',
       'Pick Martha’s Kitchen. Her studio shows the four rules she misses and the exact orders behind each number. In Coach, add one tracking number and watch her count change.'],
     ['30 seconds', 'Start a PayPal checkout', '/shop', 'Open the shop',
-      'Choose a Lydia Linen Co. product and press Buy with PayPal. PayPal’s sandbox opens. Only the buyer can approve, and the server confirms the capture with PayPal. To approve, sign in with the PayPal sandbox buyer login in our Devpost testing instructions. The video shows this step too.'],
+      'Choose a product from Lydia Linen Co. (or any shop with a Buy with PayPal button) and press it. PayPal’s sandbox opens. Only the buyer can approve, and the server confirms the capture with PayPal. To approve, sign in with the PayPal sandbox buyer login in our Devpost testing instructions. The video shows this step too.'],
     ['30 seconds', 'Read the evidence', '/proof', 'Open the proof lab',
       'Fifty requests and eleven attacks, written before any run, on two models. Every run is listed, including the ones re-run after we fixed our own bug.']
   ];
@@ -49,7 +49,7 @@
       <h3><span class="ico ok"><Icon name="real" size={20} /></span>What is real</h3>
       <ul>
         <li>PayPal sandbox orders, captures and refunds for Lydia, Martha and Priscilla, read back from PayPal.</li>
-        <li>PayPal sandbox checkout: the buyer approves, the server verifies the capture.</li>
+        <li>PayPal sandbox checkout at five shops (Lydia, Martha, Priscilla, Copper Kettle and Sage &amp; Stone), each with its own sandbox account: the buyer approves, the server verifies the capture.</li>
         <li>Signed seals, checked with a published key.</li>
         <li>The assistant’s answers: live calls to Claude or Gemini, nothing scripted.</li>
         <li>The experiment: every run recorded on this site and published.</li>
@@ -60,7 +60,7 @@
       <ul>
         <li>All ten shops are fictional.</li>
         <li>Order dates, shipping speed and dispute outcomes (the sandbox can’t backdate or dispute on its own).</li>
-        <li>The records of the four shops that joined later, including the two whose seals were withdrawn.</li>
+        <li>The order history of the four shops that joined later (Copper Kettle, Sage &amp; Stone, Violet &amp; Vine, Juniper &amp; Oak). Their PayPal sandbox accounts are real; their past orders are not.</li>
         <li>Tracking numbers are reported by the shop.</li>
       </ul>
     </div>

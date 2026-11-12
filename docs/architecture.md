@@ -140,8 +140,8 @@ which is right for this size and wrong for a large one.
 | Shops | Record | Checkout |
 |---|---|---|
 | Lydia Linen Co., Martha's Kitchen, Priscilla Canvas Works | PayPal sandbox orders read back from PayPal | PayPal sandbox, approved by the shopper |
-| Copper Kettle Supply, Sage & Stone Studio | Simulated records imported through onboarding (`api/rds/demo_shops.py`) | PayPal sandbox once `PAYPAL_COPPER_KETTLE_SUPPLY_*` / `PAYPAL_SAGE_STONE_STUDIO_*` are set; a labelled simulated checkout until then |
-| Violet & Vine Home, Juniper & Oak Goods | Simulated records; seal withdrawn for cause | "Can't buy here: seal withdrawn" |
+| Copper Kettle Supply, Sage & Stone Studio | Simulated records imported through onboarding (`api/rds/demo_shops.py`) | PayPal sandbox through each shop's own sandbox account (`PAYPAL_COPPER_KETTLE_SUPPLY_*`, `PAYPAL_SAGE_STONE_STUDIO_*`); a labelled simulated checkout on a server without those keys |
+| Violet & Vine Home, Juniper & Oak Goods | Simulated records; seal withdrawn for cause | "Can't buy here: seal withdrawn" (sandbox accounts exist: `PAYPAL_VIOLET_VINE_HOME_*`, `PAYPAL_JUNIPER_OAK_GOODS_*`) |
 | Babel Home, Hearthline Home, Linen Palace | None (never joined) | "Can't buy here: doesn't take PayPal" |
 
 All ten are fictional. The first seven have a Merchant Studio with a public demo login (`GET /api/auth/demo`).

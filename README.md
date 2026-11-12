@@ -60,12 +60,12 @@ make evidence   # writes docs/evidence/, mapping every claim to its tests
 make e2e        # browser tests of the main journeys
 ```
 
-Copy `.env.example` to `.env` and add a `GEMINI_API_KEY` and/or `ANTHROPIC_API_KEY`, plus the three demo shops'
-PayPal sandbox app keys. Without keys, the app says so on screen and runs in two labeled fallback modes:
+Copy `.env.example` to `.env` and add a `GEMINI_API_KEY` and/or `ANTHROPIC_API_KEY`, plus the demo shops'
+PayPal sandbox app keys (three shops with recorded orders, and up to four more that joined later). Without keys, the app says so on screen and runs in two labeled fallback modes:
 **offline** (a plain catalog search instead of the AI assistant) and **simulated checkout** (no PayPal call, and the
 order never counts as evidence).
 
-The three demo shops' studios are one click away at `/studio`. Their password is public on purpose, because they
+The seven demo shops' studios are one click away at `/studio`. Their password is public on purpose, because they
 hold sandbox data only.
 
 ### Deploy on Render
@@ -144,7 +144,11 @@ now fixed. These are AI choices on a fictional catalog, not purchases.
 
 - **Real:** every order, capture, refund and tracking count of the three demo shops was read back from PayPal
   **sandbox** merchant accounts (Lydia 100, Martha 60, Priscilla 15).
-- **Simulated, and labeled wherever shown:** past order dates and shipping speed (the sandbox can't backdate), and
+- **Real:** PayPal sandbox checkout at five shops, each through its own sandbox merchant account: Lydia, Martha,
+  Priscilla, Copper Kettle Supply and Sage & Stone Studio. Violet & Vine Home and Juniper & Oak Goods also have sandbox
+  accounts, but their seals are withdrawn, so checkout stays off.
+- **Simulated, and labeled wherever shown:** the order history of the four shops that joined later (Copper Kettle,
+  Sage & Stone, Violet & Vine, Juniper & Oak); past order dates and shipping speed (the sandbox can't backdate), and
   dispute outcomes for the demo history.
 - **Fictional:** all shops and buyers. Babel Home is a chain with no PayPal record; Linen Palace shows a forged badge
   and hides instructions to AI in its listing.

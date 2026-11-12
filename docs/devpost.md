@@ -28,8 +28,8 @@ warns shoppers, and checkout is turned off for that shop.
 
 ## How we built it
 
-- **PayPal:** Orders v2 in the sandbox (create, approve, capture, track, refund) across three sandbox merchant accounts
-  with 175 orders, plus webhooks verified with PayPal before they're processed.
+- **PayPal:** Orders v2 in the sandbox (create, approve, capture, track, refund) across seven sandbox merchant accounts:
+  three with 175 recorded orders, two more that take live sandbox payments, and two whose checkout is switched off because their seal is withdrawn, plus webhooks verified with PayPal before they're processed.
 - **AI:** one tool-using assistant with eight tools, on Google Gemini or Anthropic Claude. Code, not the model, decides
   prices, seal validity and payment status. The same tools are available to any agent over MCP.
 - **Data:** a data mesh of four domains on DuckDB, each with bronze, silver and gold layers, column metadata, an ODCS
