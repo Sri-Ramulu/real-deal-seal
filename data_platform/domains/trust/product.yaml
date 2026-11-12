@@ -1,0 +1,9 @@
+name: Merchant Passport
+id: trust.passport
+owner: Trust domain team
+purpose: The agent-ready product. One row per shop with its standing, and every fact with what was counted out of what and how strong the evidence is. The signed seal is issued from these rows only.
+consumers: [AI shopping agent (MCP tools), passport signer, Merchant Studio, business scorecard]
+output_ports: [gold.merchant_passport, gold.agent_offers, gold.fact_metric_observations, gold.fact_rule_results, gold.dim_metric, gold.dim_rule, gold.dim_evidence_class]
+input_ports: [gold.fact_orders, gold.dim_merchant, gold.dim_product, landing/reference/criteria.json]
+refresh: on every pipeline run
+status: active

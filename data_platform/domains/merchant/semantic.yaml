@@ -1,0 +1,13 @@
+metric_views:
+  - name: merchant_metrics
+    description: Counts of shops by kind and connection.
+    source: gold.dim_merchant
+    owner: Merchant domain team
+    dimensions:
+      - {name: merchant_kind, expr: merchant_kind}
+      - {name: ruleset, expr: ruleset}
+      - {name: business_type, expr: business_type}
+      - {name: origin, expr: origin}
+    measures:
+      - {name: shops, expr: "count(*)", unit: shops, description: Shops known to the platform.}
+      - {name: connected_shops, expr: "count(*) FILTER (is_connected)", unit: shops, description: Shops with an active PayPal connection.}

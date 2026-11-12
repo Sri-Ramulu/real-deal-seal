@@ -1,0 +1,24 @@
+metric_views:
+  - name: commerce_metrics
+    description: Sales and fulfilment measures over completed PayPal orders.
+    source: gold.fact_orders
+    owner: Commerce domain team
+    dimensions:
+      - {name: merchant_id, expr: merchant_id}
+      - {name: year_month, expr: "strftime(order_date, '%Y-%m')"}
+      - {name: week_start, expr: "CAST(date_trunc('week', order_date) AS DATE)"}
+      - {name: in_recent_window, expr: in_recent_window}
+      - {name: source_system, expr: source_system}
+      - {name: payment_evidence_class, expr: payment_evidence_class}
+    measures:
+      - {name: orders, expr: "count(*)", unit: orders, description: Completed PayPal orders.}
+      - {name: captured_usd, expr: "sum(amount_usd)", unit: USD, description: Amount captured by PayPal before refunds.}
+      - {name: refunded_usd, expr: "sum(refunded_usd)", unit: USD, description: Amount refunded.}
+      - {name: net_usd, expr: "sum(net_usd)", unit: USD, description: Captured minus refunded.}
+      - {name: refund_rate_pct, expr: "round(100.0 * count(*) FILTER (is_refunded) / nullif(count(*), 0), 1)", unit: "%", description: Share of orders with any refund.}
+      - {name: tracking_rate_pct, expr: "round(100.0 * count(*) FILTER (has_tracking) / nullif(count(*) FILTER (is_fulfilled), 0), 1)", unit: "%", description: Share of shipped orders with a tracking number recorded at PayPal.}
+      - {name: fast_ship_rate_pct, expr: "round(100.0 * count(*) FILTER (fulfilled_within_2_days) / nullif(count(*) FILTER (is_fulfilled), 0), 1)", unit: "%", description: Share of shipped orders that left within 2 days of payment.}
+      - {name: average_order_usd, expr: "round(avg(amount_usd), 2)", unit: USD, description: Average captured amount per order.}
+      - {name: returning_buyer_pct, expr: "round(100.0 * count(*) FILTER (is_returning_buyer) / nullif(count(*), 0), 1)", unit: "%", description: Share of orders from a buyer who bought from the shop before.}
+      - {name: fulfilment_rate_pct, expr: "round(100.0 * count(*) FILTER (is_fulfilled) / nullif(count(*), 0), 1)", unit: "%", description: Share of orders with a shipment, completion or delivery record.}
+      - {name: paypal_confirmed_pct, expr: "round(100.0 * count(*) FILTER (payment_evidence_class = 'paypal_sandbox_confirmed') / nullif(count(*), 0), 1)", unit: "%", description: Share of orders whose payment was read back from PayPal.}

@@ -1,0 +1,4 @@
+sku,name,price_usd,stock,tags,description
+BC-STD-2H,Standard home clean (2 hours),85,40,cleaning|home|service,Two cleaners for two hours. Supplies included.
+BC-DEEP-4H,Deep clean (4 hours),160,20,cleaning|deep clean|home|service,Kitchen and bathrooms in detail. Supplies included.
+BC-MOVE,Move-out clean,240,10,cleaning|move out|service,Full empty-home clean with oven and windows.

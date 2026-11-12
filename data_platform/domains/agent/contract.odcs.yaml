@@ -1,0 +1,34 @@
+apiVersion: v3.0.2
+kind: DataContract
+id: agent.decisions
+name: Agent Decisions
+version: 2.0.0
+status: active
+domain: agent
+description:
+  purpose: The recorded choices of the AI shopper for each task, with and without evidence.
+  limitations: One run per task per condition; a controlled Home & Garden catalog; choices, not purchases.
+  usage: Compare conditions within a model. Never present the lift as a sales increase.
+schema:
+  - name: fact_agent_choice
+    physicalName: gold.fact_agent_choice
+    properties:
+      - {name: model_key, physicalType: INTEGER, required: true}
+      - {name: model, physicalType: VARCHAR, required: true}
+      - {name: task_id, physicalType: INTEGER, required: true}
+      - {name: mode, physicalType: VARCHAR, required: true, acceptedValues: [baseline, verified]}
+      - {name: chose_small_shop, physicalType: BOOLEAN}
+      - {name: chose_chain, physicalType: BOOLEAN}
+      - {name: chose_fake_badge_shop, physicalType: BOOLEAN, required: true}
+    quality:
+      - {name: every choice has a model in the dimension, query: "SELECT count(*) FROM gold.fact_agent_choice f ANTI JOIN gold.dim_model d USING (model_key)", mustBe: 0}
+      - name: every model has both conditions for every task
+        query: "SELECT count(*) FROM (SELECT model, task_id FROM gold.fact_agent_choice GROUP BY ALL HAVING count(DISTINCT mode) <> 2)"
+        mustBe: 0
+      - name: every model ran all 50 tasks in each condition
+        query: "SELECT count(*) FROM (SELECT model, mode FROM gold.fact_agent_choice GROUP BY ALL HAVING count(*) <> 50)"
+        mustBe: 0
+slaProperties:
+  - {property: retention, value: all recorded runs are kept}
+support:
+  - {channel: agent-domain, role: owner}

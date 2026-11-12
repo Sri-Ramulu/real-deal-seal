@@ -1,0 +1,81 @@
+# Owner, description and the meaning of every column for each gold table of this domain.
+tables:
+- name: gold.dim_merchant
+  owner: Merchant domain team
+  description: Star dimension. One row per business with its type, rule set, connection and publication state.
+  columns:
+  - name: merchant_key
+    meaning: Surrogate key of the business in gold.dim_merchant. Assigned per build; merchant_id is the stable identifier.
+    pii: false
+  - name: merchant_id
+    meaning: Stable identifier of the business (tenant).
+    pii: false
+  - name: merchant_name
+    meaning: Display name of the business.
+    pii: false
+  - name: category
+    meaning: Business category in the owner's words.
+    pii: false
+  - name: business_type
+    meaning: physical, services, digital or local. Decides which evidence applies.
+    pii: false
+  - name: business_type_label
+    meaning: Business type in plain words.
+    pii: false
+  - name: ruleset
+    meaning: 'Published rule set that applies: physical, services or digital.'
+    pii: false
+  - name: fulfilment_event
+    meaning: The event that counts as fulfilment for this business type.
+    pii: false
+  - name: region
+    meaning: Operating region.
+    pii: false
+  - name: sells
+    meaning: Short description of what the business sells.
+    pii: false
+  - name: ships_from
+    meaning: Where orders ship from, or where the service is offered.
+    pii: false
+  - name: returns_policy
+    meaning: Stated returns or cancellation policy.
+    pii: false
+  - name: merchant_kind
+    meaning: paypal_merchant, national_chain or unknown_seller.
+    pii: false
+  - name: origin
+    meaning: demo (seeded sandbox shop), workspace (created through onboarding) or external (comparison shop with no record).
+    pii: false
+  - name: connection_method
+    meaning: How the business is connected.
+    pii: false
+  - name: connection_status
+    meaning: active, pending or none.
+    pii: false
+  - name: is_connected
+    meaning: True when a PayPal checkout can be opened for the business.
+    pii: false
+  - name: passport_published
+    meaning: True when the owner has consented to publish the passport. Unpublished businesses never reach agents.
+    pii: false
+  - name: seal_withdrawn_by
+    meaning: Who withdrew the seal, if anyone. 'issuer' means Real Deal Seal withdrew it for cause; 'business' means the business took its published passport down. Empty when the seal stands.
+    pii: false
+  - name: seal_withdrawn_at
+    meaning: When the seal was withdrawn (UTC). Empty when the seal stands, or when a demo shop's withdrawal predates the record.
+    pii: false
+  - name: seal_withdrawn_reason
+    meaning: The stated reason for the withdrawal, shown to shoppers and AI agents.
+    pii: false
+  - name: hidden_metrics
+    meaning: Optional facts the owner chose not to disclose. Rule results can never be hidden.
+    pii: false
+  - name: self_claim
+    meaning: Text the seller wrote about itself. Untrusted.
+    pii: false
+  - name: shows_unverifiable_badge
+    meaning: True when the shop displays a trust badge no published key verifies.
+    pii: false
+  - name: seller_text_has_instructions
+    meaning: True when the seller's own text contains instructions aimed at AI assistants.
+    pii: false

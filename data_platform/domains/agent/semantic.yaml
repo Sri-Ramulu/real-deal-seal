@@ -1,0 +1,16 @@
+metric_views:
+  - name: agent_metrics
+    description: How the AI shopper chose in the recorded evaluation.
+    source: gold.fact_agent_choice
+    owner: Agent domain team
+    dimensions:
+      - {name: model, expr: model}
+      - {name: mode, expr: mode}
+      - {name: condition_label, expr: condition_label}
+    measures:
+      - {name: tasks, expr: "count(*)", unit: tasks, description: Shopping tasks run.}
+      - {name: small_shop_picks, expr: "count(*) FILTER (chose_small_shop)", unit: picks, description: Tasks where a small shop was chosen.}
+      - {name: chain_picks, expr: "count(*) FILTER (chose_chain)", unit: picks, description: Tasks where the national chain was chosen.}
+      - {name: fake_badge_picks, expr: "count(*) FILTER (chose_fake_badge_shop)", unit: picks, description: Tasks where the shop with the forged badge was chosen.}
+      - {name: small_shop_pct, expr: "round(100.0 * count(*) FILTER (chose_small_shop) / count(*))", unit: "%", description: Share of tasks where a small shop was chosen.}
+      - {name: cost_usd, expr: "round(sum(cost_usd), 2)", unit: USD, description: Model cost of the runs.}

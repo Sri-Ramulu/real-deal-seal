@@ -1,0 +1,54 @@
+{
+  "criteria_version": "rds-criteria-2",
+  "note": "Real Deal Seal demonstration rules. They are this project's published policy, not PayPal merchant criteria. Each business type is judged only on evidence that applies to it.",
+  "recent_window_orders": 50,
+  "freshness_days": 45,
+  "business_types": [
+    {"business_type": "physical", "ruleset": "physical", "label": "Physical goods", "fulfilment_event": "shipped", "examples": "linen shops, garden stores, clothing sellers"},
+    {"business_type": "services", "ruleset": "services", "label": "Services", "fulfilment_event": "service_completed", "examples": "cleaners, repair providers, consultants"},
+    {"business_type": "digital", "ruleset": "digital", "label": "Digital and creator", "fulfilment_event": "digital_delivered", "examples": "design studios, software, templates"},
+    {"business_type": "local", "ruleset": "services", "label": "Local and appointment-based", "fulfilment_event": "booking_kept", "examples": "food merchants, studios, salons"}
+  ],
+  "rules": [
+    {"ruleset": "physical", "rule": "enough_history", "metric": "orders_completed", "comparison": ">=", "threshold": 30, "threshold_2": 60, "label": "At least 30 completed orders over 60 days", "short": "short history"},
+    {"ruleset": "physical", "rule": "tracking", "metric": "tracking_rate", "comparison": ">=", "threshold": 90, "threshold_2": null, "label": "Tracking on 90%+ of recent shipped orders", "short": "tracking is often missing"},
+    {"ruleset": "physical", "rule": "fast_ship", "metric": "fast_ship_rate", "comparison": ">=", "threshold": 80, "threshold_2": null, "label": "80%+ of recent orders shipped within 2 days", "short": "shipping is often slow"},
+    {"ruleset": "physical", "rule": "disputes", "metric": "disputes_lost_rate", "comparison": "<=", "threshold": 2, "threshold_2": null, "label": "Disputes lost on 2% or fewer of recent orders", "short": "buyers have won disputes"},
+    {"ruleset": "physical", "rule": "refunds", "metric": "refund_rate", "comparison": "<=", "threshold": 8, "threshold_2": null, "label": "Refunds on 8% or fewer of recent orders", "short": "refunds are high"},
+    {"ruleset": "services", "rule": "enough_history", "metric": "orders_completed", "comparison": ">=", "threshold": 30, "threshold_2": 60, "label": "At least 30 paid jobs over 60 days", "short": "short history"},
+    {"ruleset": "services", "rule": "completion", "metric": "completion_rate", "comparison": ">=", "threshold": 90, "threshold_2": null, "label": "90%+ of recent paid jobs completed", "short": "paid jobs are often not completed"},
+    {"ruleset": "services", "rule": "cancellations", "metric": "cancellation_rate", "comparison": "<=", "threshold": 10, "threshold_2": null, "label": "The business cancelled 10% or fewer of recent jobs", "short": "the business cancels often"},
+    {"ruleset": "services", "rule": "disputes", "metric": "disputes_lost_rate", "comparison": "<=", "threshold": 2, "threshold_2": null, "label": "Disputes lost on 2% or fewer of recent jobs", "short": "buyers have won disputes"},
+    {"ruleset": "services", "rule": "refunds", "metric": "refund_rate", "comparison": "<=", "threshold": 8, "threshold_2": null, "label": "Refunds on 8% or fewer of recent jobs", "short": "refunds are high"},
+    {"ruleset": "digital", "rule": "enough_history", "metric": "orders_completed", "comparison": ">=", "threshold": 30, "threshold_2": 60, "label": "At least 30 completed sales over 60 days", "short": "short history"},
+    {"ruleset": "digital", "rule": "delivery", "metric": "delivery_rate", "comparison": ">=", "threshold": 95, "threshold_2": null, "label": "95%+ of recent sales delivered", "short": "purchases are often not delivered"},
+    {"ruleset": "digital", "rule": "disputes", "metric": "disputes_lost_rate", "comparison": "<=", "threshold": 2, "threshold_2": null, "label": "Disputes lost on 2% or fewer of recent sales", "short": "buyers have won disputes"},
+    {"ruleset": "digital", "rule": "refunds", "metric": "refund_rate", "comparison": "<=", "threshold": 8, "threshold_2": null, "label": "Refunds on 8% or fewer of recent sales", "short": "refunds are high"}
+  ],
+  "metrics": [
+    {"metric": "orders_completed", "label": "Completed orders", "unit": "orders", "layer": "A universal commercial facts", "applies_to": ["physical", "services", "digital"], "optional": false, "definition": "Orders with a completed payment, all history."},
+    {"metric": "sales_net_usd", "label": "Net sales", "unit": "USD", "layer": "A universal commercial facts", "applies_to": ["physical", "services", "digital"], "optional": true, "definition": "Captured minus refunded, all history, whole US dollars."},
+    {"metric": "history_days", "label": "Selling for", "unit": "days", "layer": "A universal commercial facts", "applies_to": ["physical", "services", "digital"], "optional": false, "definition": "Days from the first completed order to the assessment date."},
+    {"metric": "refund_rate", "label": "Orders refunded", "unit": "%", "layer": "A universal commercial facts", "applies_to": ["physical", "services", "digital"], "optional": false, "definition": "Recent orders with any refund / recent orders."},
+    {"metric": "disputes_lost_rate", "label": "Buyer disputes lost", "unit": "%", "layer": "A universal commercial facts", "applies_to": ["physical", "services", "digital"], "optional": false, "definition": "Recent orders with a dispute decided for the buyer / recent orders."},
+    {"metric": "disputes_total", "label": "Buyer disputes opened", "unit": "disputes", "layer": "A universal commercial facts", "applies_to": ["physical", "services", "digital"], "optional": false, "definition": "Recent orders with any dispute."},
+    {"metric": "repeat_buyer_rate", "label": "Orders from returning buyers", "unit": "%", "layer": "A universal commercial facts", "applies_to": ["physical", "services", "digital"], "optional": true, "definition": "Recent orders from a buyer key seen before at this shop / recent orders."},
+    {"metric": "tracking_rate", "label": "Shipped orders with tracking", "unit": "%", "layer": "B business-type evidence", "applies_to": ["physical"], "optional": false, "definition": "Recent shipped orders with a tracking number on record / recent shipped orders."},
+    {"metric": "fast_ship_rate", "label": "Shipped within 2 days", "unit": "%", "layer": "B business-type evidence", "applies_to": ["physical"], "optional": false, "definition": "Recent shipped orders that left within 2 days of payment / recent shipped orders."},
+    {"metric": "completion_rate", "label": "Paid jobs completed", "unit": "%", "layer": "B business-type evidence", "applies_to": ["services"], "optional": false, "definition": "Recent paid jobs with a completion or kept-booking record / recent paid jobs."},
+    {"metric": "cancellation_rate", "label": "Jobs cancelled by the business", "unit": "%", "layer": "B business-type evidence", "applies_to": ["services"], "optional": false, "definition": "Recent paid jobs the business cancelled / recent paid jobs."},
+    {"metric": "delivery_rate", "label": "Sales delivered", "unit": "%", "layer": "B business-type evidence", "applies_to": ["digital"], "optional": false, "definition": "Recent sales with a delivery record / recent sales."},
+    {"metric": "confirmed_payment_share", "label": "Payments confirmed by PayPal records", "unit": "%", "layer": "C evidence quality", "applies_to": ["physical", "services", "digital"], "optional": false, "definition": "Recent orders whose payment was read back from PayPal / recent orders. The rest are the business's own imported records."}
+  ],
+  "evidence_classes": [
+    {"evidence_class": "paypal_sandbox_confirmed", "meaning": "Read back from PayPal's own records in the PayPal sandbox (test environment)."},
+    {"evidence_class": "merchant_reported", "meaning": "Supplied by the business (a tracking number, a completion record or an imported file). Not independently confirmed."},
+    {"evidence_class": "simulated", "meaning": "Simulated for the demo. The sandbox cannot backdate orders or let a shop open buyer disputes."},
+    {"evidence_class": "missing", "meaning": "No records to measure yet. Never treated as zero problems."}
+  ],
+  "source_systems": [
+    {"source_system": "paypal_sandbox_readback", "payment_evidence_class": "paypal_sandbox_confirmed", "description": "Orders read back by ID from the PayPal sandbox Orders v2 API."},
+    {"source_system": "paypal_checkout", "payment_evidence_class": "paypal_sandbox_confirmed", "description": "Orders created and captured through this app's PayPal checkout, confirmed with PayPal server-side."},
+    {"source_system": "merchant_import", "payment_evidence_class": "merchant_reported", "description": "Orders imported from a file the business supplied. Labelled as reported until confirmed."}
+  ]
+}

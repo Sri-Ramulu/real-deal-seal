@@ -1,0 +1,32 @@
+sources:
+  - table: commerce_paypal_orders
+    files: landing/paypal/*.orders.json
+    format: json_key_array
+    key: orders
+  - table: commerce_products
+    files: landing/catalog/catalog.json
+    format: json_key_array
+    key: products
+  - table: commerce_market_offers
+    files: landing/market/channel3_cache.json
+    format: json_key_map
+  - table: commerce_source_systems
+    files: landing/reference/criteria.json
+    format: json_key_array
+    key: source_systems
+  - table: commerce_ops_orders          # orders imported or captured through the app
+    files: extract/ops/orders.jsonl
+    format: jsonl
+    optional: true
+  - table: commerce_ops_payment_events
+    files: extract/ops/payment_events.jsonl
+    format: jsonl
+    optional: true
+  - table: commerce_ops_fulfillment_events
+    files: extract/ops/fulfillment_events.jsonl
+    format: jsonl
+    optional: true
+  - table: commerce_ops_catalog_items
+    files: extract/ops/catalog_items.jsonl
+    format: jsonl
+    optional: true

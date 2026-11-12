@@ -1,0 +1,59 @@
+{
+ "version": 1,
+ "merchants": {
+  "lydia": {
+   "id": "lydia",
+   "name": "Lydia Linen Co.",
+   "category": "Home & Garden",
+   "sells": "Hand-dyed home linens",
+   "ships_from": "Salt Lake City, UT",
+   "returns": "30-day returns",
+   "origin": "demo",
+   "joined_at": null,
+   "connection": {
+    "method": "demo_app",
+    "status": "active",
+    "env_prefix": "PAYPAL_LYDIA",
+    "state_file": "sandbox_state.json",
+    "plan_file": "lydia_orders.json",
+    "note": "Demo sandbox shop with its own PayPal sandbox app keys."
+   }
+  },
+  "priscilla": {
+   "id": "priscilla",
+   "name": "Priscilla Canvas Works",
+   "category": "Home & Garden",
+   "sells": "Handmade outdoor canvas goods",
+   "ships_from": "Provo, UT",
+   "returns": "30-day returns",
+   "origin": "demo",
+   "joined_at": null,
+   "connection": {
+    "method": "demo_app",
+    "status": "active",
+    "env_prefix": "PAYPAL_PRISCILLA",
+    "state_file": "sandbox_state_priscilla.json",
+    "plan_file": "priscilla_orders.json",
+    "note": "Demo sandbox shop with its own PayPal sandbox app keys."
+   }
+  },
+  "martha": {
+   "id": "martha",
+   "name": "Martha's Kitchen",
+   "category": "Home & Garden",
+   "sells": "Kitchen and dining goods",
+   "ships_from": "Boise, ID",
+   "returns": "14-day returns",
+   "origin": "demo",
+   "joined_at": null,
+   "connection": {
+    "method": "demo_app",
+    "status": "active",
+    "env_prefix": "PAYPAL_MARTHA",
+    "state_file": "sandbox_state_martha.json",
+    "plan_file": "martha_orders.json",
+    "note": "Demo sandbox shop with its own PayPal sandbox app keys."
+   }
+  }
+ }
+}

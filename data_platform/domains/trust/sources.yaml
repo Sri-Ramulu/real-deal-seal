@@ -1,0 +1,13 @@
+sources:
+  - table: trust_rules
+    files: landing/reference/criteria.json
+    format: json_key_array
+    key: rules
+  - table: trust_metrics
+    files: landing/reference/criteria.json
+    format: json_key_array
+    key: metrics
+  - table: trust_evidence_classes
+    files: landing/reference/criteria.json
+    format: json_key_array
+    key: evidence_classes

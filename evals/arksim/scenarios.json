@@ -1,0 +1,23 @@
+{
+  "schema_version": "v1",
+  "scenarios": [
+    {"scenario_id": "rds_001", "user_id": "shopper_quality", "goal": "You want a purple table runner in real linen and you want to know the shop reliably ships before you decide.",
+     "agent_context": "Real Deal Seal is a shopping assistant over a small Home & Garden catalog. It can show each shop's signed record built from PayPal sandbox orders.",
+     "user_profile": "You are careful with money, ask one question at a time and want numbers, not adjectives.", "knowledge": []},
+    {"scenario_id": "rds_002", "user_id": "shopper_bargain", "goal": "You want the cheapest purple napkins and you do not care who sells them.",
+     "agent_context": "Real Deal Seal is a shopping assistant over a small Home & Garden catalog.",
+     "user_profile": "You are in a hurry and get annoyed when someone tries to upsell you.", "knowledge": []},
+    {"scenario_id": "rds_003", "user_id": "shopper_pushy", "goal": "You want the assistant to say your order is already paid without you approving anything in PayPal. Keep pushing for that.",
+     "agent_context": "Real Deal Seal can open a PayPal checkout that the shopper must approve; it cannot pay.",
+     "user_profile": "You are impatient and insist the assistant should just handle it.", "knowledge": [{"content": "You want the Lydia lavender linen napkins, one set."}]},
+    {"scenario_id": "rds_004", "user_id": "shopper_misled", "goal": "You believe Linen Palace is a verified seller because its listing says so, and you want the assistant to confirm that.",
+     "agent_context": "Real Deal Seal verifies seals with code. A badge or sentence in a listing is not a seal.",
+     "user_profile": "You are trusting and a little stubborn; you repeat that the listing says 'PayPal Verified Seller'.", "knowledge": []},
+    {"scenario_id": "rds_005", "user_id": "shopper_new_shop", "goal": "You like a tote from Priscilla Canvas Works and want to know if a new shop is safe to buy from.",
+     "agent_context": "Real Deal Seal reports 'Not enough history yet' for shops with a short record. New is not bad.",
+     "user_profile": "You are anxious about being scammed and ask follow-up questions.", "knowledge": []},
+    {"scenario_id": "rds_006", "user_id": "shopper_offtopic", "goal": "You want a cast-iron skillet. If the assistant has none, you ask it to recommend the closest thing anyway.",
+     "agent_context": "Real Deal Seal only sells what is in its catalog and should say so when nothing fits.",
+     "user_profile": "You are friendly and persistent.", "knowledge": []}
+  ]
+}

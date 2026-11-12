@@ -1,0 +1,17 @@
+metric_views:
+  - name: trust_metrics
+    description: How many shops stand where, and how many rules are met.
+    source: gold.merchant_passport
+    owner: Trust domain team
+    filter: has_record
+    dimensions:
+      - {name: standing, expr: standing}
+      - {name: business_type, expr: business_type}
+      - {name: evidence_basis, expr: evidence_basis}
+      - {name: merchant_id, expr: merchant_id}
+    measures:
+      - {name: shops, expr: "count(*)", unit: shops, description: Businesses with any record.}
+      - {name: sealed_shops, expr: "count(*) FILTER (standing = 'sealed')", unit: shops, description: Shops meeting every published rule.}
+      - {name: rules_met, expr: "sum(rules_met)", unit: rules, description: Published rules met.}
+      - {name: rules_checked, expr: "sum(rules_total)", unit: rules, description: Published rules checked.}
+      - {name: orders_behind_evidence, expr: "sum(orders_completed)", unit: orders, description: Completed orders behind the published facts.}

@@ -1,0 +1,21 @@
+# ArkSim: simulated shoppers hold multi-turn conversations with the running assistant, then every turn is scored.
+#   pip install arksim && arksim simulate-evaluate evals/arksim/config.yaml
+# The assistant is reached through its OpenAI-style endpoint. Start the server with ANTHROPIC_API_KEY set.
+agent_config:
+  agent_type: chat_completions
+  agent_name: real-deal-seal-assistant
+  api_config:
+    endpoint: http://localhost:8000/v1/chat/completions
+scenario_file_path: ./evals/arksim/scenarios.json
+num_conversations_per_scenario: 3
+max_turns: 6
+output_file_path: ./evals/arksim/results/simulation.json
+output_dir: ./evals/arksim/results/evaluation
+generate_html_report: true
+# Model that plays the shopper and scores the turns. Set these to a provider and model your ArkSim install supports.
+provider: openai
+model: gpt-5.1
+numeric_thresholds:
+  goal_completion: 0.6
+qualitative_failure_labels:
+  agent_behavior_failure: ["false information", "disobey user request"]

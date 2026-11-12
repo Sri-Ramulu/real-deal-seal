@@ -1,0 +1,240 @@
+{
+ "shop": "priscilla",
+ "verdict": "Looks fine, still new: the record is clean so far but too short to judge.",
+ "how_sure": "low",
+ "based_on": "15 orders",
+ "data_as_of": "2026-11-10",
+ "as_of": "2026-11-11",
+ "criteria_version": "jf-criteria-1",
+ "ruleset": "physical",
+ "standing": "new",
+ "headline": "Not enough history yet",
+ "checks": [
+  {
+   "key": "enough_history",
+   "rule": "At least 30 orders over 60 days",
+   "met": false,
+   "measured": true,
+   "metric": "orders_completed"
+  },
+  {
+   "key": "tracking",
+   "rule": "Tracking on 90%+ of recent shipped orders",
+   "met": true,
+   "measured": true,
+   "metric": "tracking_rate"
+  },
+  {
+   "key": "fast_ship",
+   "rule": "80%+ of recent orders shipped within 2 days",
+   "met": true,
+   "measured": true,
+   "metric": "fast_ship_rate"
+  },
+  {
+   "key": "disputes",
+   "rule": "Disputes lost on 2% or fewer of recent orders",
+   "met": true,
+   "measured": true,
+   "metric": "disputes_lost"
+  },
+  {
+   "key": "refunds",
+   "rule": "Refunds on 8% or fewer of recent orders",
+   "met": true,
+   "measured": true,
+   "metric": "refund_rate"
+  }
+ ],
+ "facts": [
+  {
+   "key": "orders_completed",
+   "label": "Completed PayPal orders",
+   "value": 15,
+   "unit": "orders",
+   "source": "paypal",
+   "evidence": [
+    "8R451386BN187583U",
+    "21559553G9533161A",
+    "9P244160D4796383P",
+    "10B29517BP486854H",
+    "1AR36283HY7191054",
+    "0M228000RA704533M",
+    "8SF31479DP457140V",
+    "0AM015768G669744C",
+    "2R4156466M835062J",
+    "39L43416XY441342Y",
+    "0LA29209TC354703L",
+    "94C964405U747033G",
+    "68N131888R323494D",
+    "59G01064WS681021P",
+    "6GW36281CN062594U"
+   ],
+   "numerator": null,
+   "denominator": null,
+   "definition": "jf-criteria-1/orders_completed",
+   "evidence_class": "paypal_sandbox_confirmed"
+  },
+  {
+   "key": "sales_net_usd",
+   "label": "Net sales through PayPal",
+   "value": "944",
+   "unit": "USD",
+   "source": "paypal",
+   "evidence": [
+    "8R451386BN187583U",
+    "21559553G9533161A",
+    "9P244160D4796383P",
+    "10B29517BP486854H",
+    "1AR36283HY7191054",
+    "0M228000RA704533M",
+    "8SF31479DP457140V",
+    "0AM015768G669744C",
+    "2R4156466M835062J",
+    "39L43416XY441342Y",
+    "0LA29209TC354703L",
+    "94C964405U747033G",
+    "68N131888R323494D",
+    "59G01064WS681021P",
+    "6GW36281CN062594U"
+   ],
+   "numerator": null,
+   "denominator": null,
+   "definition": "jf-criteria-1/sales_net_usd",
+   "evidence_class": "paypal_sandbox_confirmed"
+  },
+  {
+   "key": "history_days",
+   "label": "Selling on PayPal for",
+   "value": 23,
+   "unit": "days",
+   "source": "simulated",
+   "evidence": [
+    "8R451386BN187583U"
+   ],
+   "numerator": null,
+   "denominator": null,
+   "definition": "jf-criteria-1/history_days",
+   "evidence_class": "simulated"
+  },
+  {
+   "key": "tracking_rate",
+   "label": "Shipped orders with tracking",
+   "value": 100,
+   "unit": "%",
+   "source": "merchant_recorded",
+   "evidence": [
+    "8R451386BN187583U",
+    "21559553G9533161A",
+    "9P244160D4796383P",
+    "10B29517BP486854H",
+    "1AR36283HY7191054",
+    "0M228000RA704533M",
+    "8SF31479DP457140V",
+    "0AM015768G669744C",
+    "2R4156466M835062J",
+    "39L43416XY441342Y",
+    "0LA29209TC354703L",
+    "94C964405U747033G",
+    "68N131888R323494D",
+    "59G01064WS681021P"
+   ],
+   "numerator": 14,
+   "denominator": 14,
+   "definition": "jf-criteria-1/tracking_rate",
+   "evidence_class": "merchant_reported"
+  },
+  {
+   "key": "fast_ship_rate",
+   "label": "Shipped within 2 days",
+   "value": 93,
+   "unit": "%",
+   "source": "simulated",
+   "evidence": [
+    "8R451386BN187583U",
+    "21559553G9533161A",
+    "9P244160D4796383P",
+    "10B29517BP486854H",
+    "1AR36283HY7191054",
+    "0M228000RA704533M",
+    "0AM015768G669744C",
+    "2R4156466M835062J",
+    "39L43416XY441342Y",
+    "0LA29209TC354703L",
+    "94C964405U747033G",
+    "68N131888R323494D",
+    "59G01064WS681021P"
+   ],
+   "numerator": 13,
+   "denominator": 14,
+   "definition": "jf-criteria-1/fast_ship_rate",
+   "evidence_class": "simulated"
+  },
+  {
+   "key": "refund_rate",
+   "label": "Orders refunded",
+   "value": 0,
+   "unit": "%",
+   "source": "paypal",
+   "evidence": [],
+   "numerator": 0,
+   "denominator": 15,
+   "definition": "jf-criteria-1/refund_rate",
+   "evidence_class": "paypal_sandbox_confirmed"
+  },
+  {
+   "key": "disputes_lost",
+   "label": "Buyer disputes lost",
+   "value": 0,
+   "unit": "disputes",
+   "source": "simulated",
+   "evidence": [],
+   "numerator": 0,
+   "denominator": 15,
+   "definition": "jf-criteria-1/disputes_lost",
+   "evidence_class": "simulated"
+  },
+  {
+   "key": "disputes_total",
+   "label": "Buyer disputes opened",
+   "value": 0,
+   "unit": "disputes",
+   "source": "simulated",
+   "evidence": [],
+   "numerator": null,
+   "denominator": null,
+   "definition": "jf-criteria-1/disputes_total",
+   "evidence_class": "simulated"
+  },
+  {
+   "key": "repeat_buyer_rate",
+   "label": "Orders from returning buyers",
+   "value": 13,
+   "unit": "%",
+   "source": "paypal",
+   "evidence": [
+    "21559553G9533161A",
+    "0M228000RA704533M"
+   ],
+   "numerator": 2,
+   "denominator": 15,
+   "definition": "jf-criteria-1/repeat_buyer_rate",
+   "evidence_class": "paypal_sandbox_confirmed"
+  },
+  {
+   "key": "buyer_protection",
+   "label": "Protected by PayPal Buyer Protection",
+   "value": "eligible purchases",
+   "unit": "",
+   "source": "paypal_policy",
+   "evidence": [],
+   "numerator": null,
+   "denominator": null,
+   "definition": "jf-criteria-1/buyer_protection",
+   "evidence_class": "policy"
+  }
+ ],
+ "notes": [
+  "Historical dates and dispute outcomes are simulated in the PayPal sandbox and labelled 'simulated'."
+ ]
+}

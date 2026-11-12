@@ -1,0 +1,83 @@
+apiVersion: v3.0.2
+kind: DataContract
+id: trust.passport
+name: Merchant Passport
+version: 2.0.0
+status: active
+domain: trust
+description:
+  purpose: What an AI shopping agent, the passport signer and every dashboard may rely on about a business.
+  limitations: Demo shops carry simulated order dates and dispute outcomes; those facts are labelled 'simulated' and never upgraded. Imported records are labelled merchant_reported and can never earn the seal on their own.
+  usage: Read gold.merchant_passport for the summary and gold.fact_metric_observations for each fact. Never recompute a rate from fact_orders.
+schema:
+  - name: merchant_passport
+    physicalName: gold.merchant_passport
+    properties:
+      - {name: merchant_key, physicalType: INTEGER, required: true, unique: true}
+      - {name: merchant_id, physicalType: VARCHAR, required: true, unique: true}
+      - {name: merchant_name, physicalType: VARCHAR, required: true}
+      - {name: standing, physicalType: VARCHAR, required: true, acceptedValues: [sealed, verified, reported, new, no_record, withdrawn]}
+      - {name: evidence_basis, physicalType: VARCHAR, required: true, acceptedValues: [paypal_record, mixed, merchant_import, none]}
+      - {name: headline, physicalType: VARCHAR, required: true}
+      - {name: verdict, physicalType: VARCHAR, required: true}
+      - {name: evidence_strength, physicalType: VARCHAR, required: true, acceptedValues: [high, medium, low, none]}
+      - {name: has_paypal_record, physicalType: BOOLEAN, required: true}
+      - {name: passport_published, physicalType: BOOLEAN, required: true}
+      - {name: seal_withdrawn_by, physicalType: VARCHAR, required: false, acceptedValues: [issuer, business]}
+      - {name: seal_withdrawn_at, physicalType: TIMESTAMP, required: false}
+      - {name: seal_withdrawn_reason, physicalType: VARCHAR, required: false}
+      - {name: rules_met, physicalType: BIGINT, required: true}
+      - {name: rules_total, physicalType: BIGINT, required: true}
+    quality:
+      - {name: a sealed business meets every rule, query: "SELECT count(*) FROM gold.merchant_passport WHERE standing = 'sealed' AND rules_met <> rules_total", mustBe: 0}
+      - {name: a seal is never built on self-reported payments, query: "SELECT count(*) FROM gold.merchant_passport WHERE standing = 'sealed' AND evidence_basis <> 'paypal_record'", mustBe: 0}
+      - {name: a business without records is never given a standing other than no_record, query: "SELECT count(*) FROM gold.merchant_passport WHERE NOT has_record AND standing NOT IN ('no_record', 'withdrawn')", mustBe: 0}
+      - {name: "a short record is 'new', never judged", query: "SELECT count(*) FROM gold.merchant_passport WHERE has_record AND (orders_completed < 30 OR history_days < 60) AND standing NOT IN ('new', 'withdrawn')", mustBe: 0}
+      - {name: a withdrawn seal always states who withdrew it and why, query: "SELECT count(*) FROM gold.merchant_passport WHERE standing = 'withdrawn' AND (seal_withdrawn_by IS NULL OR seal_withdrawn_reason IS NULL)", mustBe: 0}
+      - {name: every business has a passport row, query: "SELECT (SELECT count(*) FROM gold.dim_merchant) - (SELECT count(*) FROM gold.merchant_passport)", mustBe: 0}
+  - name: fact_metric_observations
+    physicalName: gold.fact_metric_observations
+    properties:
+      - {name: merchant_key, physicalType: INTEGER, required: true}
+      - {name: metric_key, physicalType: INTEGER, required: true}
+      - {name: evidence_class_key, physicalType: INTEGER, required: true}
+      - {name: metric, physicalType: VARCHAR, required: true}
+      - {name: evidence_class, physicalType: VARCHAR, required: true, acceptedValues: [paypal_sandbox_confirmed, merchant_reported, simulated, missing]}
+      - {name: window_label, physicalType: VARCHAR, required: true}
+      - {name: criteria_version, physicalType: VARCHAR, required: true}
+      - {name: as_of, physicalType: DATE, required: true}
+    quality:
+      - {name: "every observation has a merchant in the dimension", query: "SELECT count(*) FROM gold.fact_metric_observations f ANTI JOIN gold.dim_merchant d USING (merchant_key)", mustBe: 0}
+      - {name: "every observation has a metric definition", query: "SELECT count(*) FROM gold.fact_metric_observations f ANTI JOIN gold.dim_metric d USING (metric_key)", mustBe: 0}
+      - {name: "every observation has an evidence class", query: "SELECT count(*) FROM gold.fact_metric_observations f ANTI JOIN gold.dim_evidence_class d USING (evidence_class_key)", mustBe: 0}
+      - {name: a rate never has a numerator above its denominator, query: "SELECT count(*) FROM gold.fact_metric_observations WHERE numerator > denominator", mustBe: 0}
+      - {name: every percentage is between 0 and 100, query: "SELECT count(*) FROM gold.fact_metric_observations WHERE unit = '%' AND (value < 0 OR value > 100)", mustBe: 0}
+      - {name: no business is measured on a metric that does not apply to its type, query: "SELECT count(*) FROM gold.fact_metric_observations o JOIN gold.dim_merchant m USING (merchant_key) JOIN gold.dim_metric k USING (metric_key) WHERE NOT list_contains(k.applies_to, m.ruleset)", mustBe: 0}
+      - {name: the order count reconciles with the order fact, query: "SELECT count(*) FROM gold.fact_metric_observations m JOIN (SELECT merchant_id, count(*) n FROM gold.fact_orders GROUP BY 1) o USING (merchant_id) WHERE m.metric = 'orders_completed' AND m.value <> o.n", mustBe: 0}
+  - name: fact_rule_results
+    physicalName: gold.fact_rule_results
+    properties:
+      - {name: merchant_key, physicalType: INTEGER, required: true}
+      - {name: rule_key, physicalType: INTEGER, required: true}
+      - {name: met, physicalType: BOOLEAN, required: true}
+    quality:
+      - {name: "every rule result has a rule in the dimension", query: "SELECT count(*) FROM gold.fact_rule_results f ANTI JOIN gold.dim_rule d USING (rule_key)", mustBe: 0}
+      - {name: a business is only judged by its own rule set, query: "SELECT count(*) FROM gold.fact_rule_results r JOIN gold.dim_merchant m USING (merchant_key) WHERE r.ruleset <> m.ruleset", mustBe: 0}
+  - name: agent_offers
+    physicalName: gold.agent_offers
+    properties:
+      - {name: sku, physicalType: VARCHAR, required: true, unique: true}
+      - {name: product_name, physicalType: VARCHAR, required: true}
+      - {name: price_usd, physicalType: DECIMAL, required: true}
+      - {name: merchant_id, physicalType: VARCHAR, required: true}
+      - {name: standing, physicalType: VARCHAR, required: true, acceptedValues: [sealed, verified, reported, new, no_record, withdrawn]}
+      - {name: paypal_checkout_available, physicalType: BOOLEAN, required: true}
+      - {name: seller_text_has_instructions, physicalType: BOOLEAN, required: true}
+    quality:
+      - {name: a shop whose seal was withdrawn never offers checkout, query: "SELECT count(*) FROM gold.agent_offers WHERE standing = 'withdrawn' AND paypal_checkout_available", mustBe: 0}
+      - {name: an unpublished business never appears in agent offers, query: "SELECT count(*) FROM gold.agent_offers o JOIN gold.dim_merchant m USING (merchant_id) WHERE NOT m.passport_published", mustBe: 0}
+slaProperties:
+  - {property: freshness, value: 45, unit: days, element: gold.merchant_passport.data_as_of}
+  - {property: availability, value: every pipeline run that passes all four gates}
+support:
+  - {channel: trust-domain, role: owner}

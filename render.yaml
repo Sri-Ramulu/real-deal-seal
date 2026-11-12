@@ -1,0 +1,39 @@
+# Render Blueprint. The judging period runs to 15 Dec 2026, so the demo must stay awake and keep its data:
+# a paid instance with a persistent disk does both. On the free plan the service sleeps when idle and the disk
+# below is not available, so accounts and orders made after a deploy are lost on the next one.
+services:
+  - type: web
+    name: real-deal-seal
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    disk:
+      name: rds-data
+      mountPath: /var/rds          # RDS_VAR_DIR in the Dockerfile: the app's database, extract and warehouse
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL                               # PostgreSQL with row-level security for accounts, orders and seals
+        fromDatabase: {name: real-deal-seal-db, property: connectionString}
+      # RDS_PUBLIC_URL is optional on Render: RENDER_EXTERNAL_URL is used when it is empty.
+      - {key: RDS_PUBLIC_URL, sync: false}
+      - {key: RDS_ISSUER_SEED_HEX, sync: false}       # keep it stable, or every issued seal stops verifying
+      - {key: GEMINI_API_KEY, sync: false}
+      - {key: ANTHROPIC_API_KEY, sync: false}
+      - {key: RDS_ASSISTANT, value: gemini}           # default model: gemini, claude-opus or claude-sonnet
+      - {key: PAYPAL_LYDIA_CLIENT_ID, sync: false}
+      - {key: PAYPAL_LYDIA_CLIENT_SECRET, sync: false}
+      - {key: PAYPAL_MARTHA_CLIENT_ID, sync: false}
+      - {key: PAYPAL_MARTHA_CLIENT_SECRET, sync: false}
+      - {key: PAYPAL_PRISCILLA_CLIENT_ID, sync: false}
+      - {key: PAYPAL_PRISCILLA_CLIENT_SECRET, sync: false}
+      - {key: PAYPAL_LYDIA_WEBHOOK_ID, sync: false}     # from each shop app's Webhooks page in the PayPal dashboard
+      - {key: PAYPAL_MARTHA_WEBHOOK_ID, sync: false}
+      - {key: PAYPAL_PRISCILLA_WEBHOOK_ID, sync: false}
+      - {key: RDS_ADMIN_TOKEN, generateValue: true}     # enables seal withdrawal and key rotation
+      - {key: RDS_REFRESH_HOURS, value: "24"}
+
+databases:
+  - name: real-deal-seal-db
+    plan: basic-256mb
+    databaseName: rds
+    user: rds

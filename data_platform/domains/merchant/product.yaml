@@ -1,0 +1,9 @@
+name: Merchant Directory
+id: merchant.directory
+owner: Merchant domain team
+purpose: Who each shop is, how it is connected, and whether a PayPal record exists for it.
+consumers: [trust domain, AI shopping agent, Merchant Studio]
+output_ports: [gold.dim_merchant]
+input_ports: [landing/merchant/merchants.json, landing/catalog/catalog.json]
+refresh: on every pipeline run
+status: active

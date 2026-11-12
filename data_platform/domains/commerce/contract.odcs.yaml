@@ -1,0 +1,86 @@
+apiVersion: v3.0.2
+kind: DataContract
+id: commerce.record
+name: Commerce Record
+version: 2.0.0
+status: active
+domain: commerce
+description:
+  purpose: The analytics star for commerce. One order fact with conformed merchant, date and source-system dimensions, plus payment and fulfilment event facts.
+  limitations: Order dates of demo shops are planned dates (the sandbox cannot backdate); history_is_simulated marks them. Imported orders carry merchant_reported payment evidence.
+  usage: Use the measures in commerce/semantic.yaml. Buyer identity is a one-way key only; there are no names, emails or addresses.
+schema:
+  - name: fact_orders
+    physicalName: gold.fact_orders
+    properties:
+      - {name: order_id, physicalType: VARCHAR, required: true, unique: true}
+      - {name: merchant_key, physicalType: INTEGER, required: true}
+      - {name: order_date_key, physicalType: INTEGER, required: true}
+      - {name: source_system_key, physicalType: INTEGER, required: true}
+      - {name: merchant_id, physicalType: VARCHAR, required: true}
+      - {name: order_date, physicalType: DATE, required: true}
+      - {name: amount_usd, physicalType: DECIMAL, required: true}
+      - {name: refunded_usd, physicalType: DECIMAL, required: true}
+      - {name: net_usd, physicalType: DECIMAL, required: true}
+      - {name: capture_status, physicalType: VARCHAR, required: true, acceptedValues: [COMPLETED, REFUNDED, PARTIALLY_REFUNDED]}
+      - {name: is_fulfilled, physicalType: BOOLEAN, required: true}
+      - {name: has_tracking, physicalType: BOOLEAN, required: true}
+      - {name: is_refunded, physicalType: BOOLEAN, required: true}
+      - {name: in_recent_window, physicalType: BOOLEAN, required: true}
+      - {name: history_is_simulated, physicalType: BOOLEAN, required: true}
+      - {name: payment_evidence_class, physicalType: VARCHAR, required: true, acceptedValues: [paypal_sandbox_confirmed, merchant_reported]}
+    quality:
+      - {name: "every order has a merchant in the dimension", query: "SELECT count(*) FROM gold.fact_orders f ANTI JOIN gold.dim_merchant d USING (merchant_key)", mustBe: 0}
+      - {name: every order has a date in the dimension, query: "SELECT count(*) FROM gold.fact_orders f ANTI JOIN gold.dim_date d ON d.date_key = f.order_date_key", mustBe: 0}
+      - {name: "every order has a source system in the dimension", query: "SELECT count(*) FROM gold.fact_orders f ANTI JOIN gold.dim_source_system d USING (source_system_key)", mustBe: 0}
+      - {name: no refund is larger than its capture, query: "SELECT count(*) FROM gold.fact_orders WHERE refunded_usd > amount_usd", mustBe: 0}
+      - {name: every completed order in silver reaches the fact, query: "SELECT (SELECT count(*) FROM silver.commerce_orders WHERE order_status = 'COMPLETED') - (SELECT count(*) FROM gold.fact_orders)", mustBe: 0}
+      - {name: the recent window never holds more than 50 orders per business, query: "SELECT count(*) FROM (SELECT merchant_id FROM gold.fact_orders WHERE in_recent_window GROUP BY 1 HAVING count(*) > 50)", mustBe: 0}
+      - {name: a simulated checkout is never counted as an order, query: "SELECT count(*) FROM gold.fact_orders WHERE source_system = 'simulated_checkout'", mustBe: 0}
+  - name: fact_payment_events
+    physicalName: gold.fact_payment_events
+    properties:
+      - {name: event_id, physicalType: VARCHAR, required: true, unique: true}
+      - {name: merchant_key, physicalType: INTEGER, required: true}
+      - {name: order_id, physicalType: VARCHAR, required: true}
+      - {name: event_type, physicalType: VARCHAR, required: true, acceptedValues: [capture, refund, dispute_lost, dispute_won]}
+      - {name: evidence_class, physicalType: VARCHAR, required: true, acceptedValues: [paypal_sandbox_confirmed, merchant_reported, simulated]}
+    quality:
+      - {name: payment events add up to the order fact's net sales, query: "SELECT CAST((SELECT sum(signed_amount_usd) FROM gold.fact_payment_events) - (SELECT sum(net_usd) FROM gold.fact_orders) AS INTEGER)", mustBe: 0}
+      - {name: every order has exactly one capture event, query: "SELECT count(*) FROM (SELECT f.order_id FROM gold.fact_orders f LEFT JOIN gold.fact_payment_events e ON e.order_id = f.order_id AND e.event_type = 'capture' GROUP BY 1 HAVING count(e.event_id) <> 1)", mustBe: 0}
+  - name: fact_fulfillment_events
+    physicalName: gold.fact_fulfillment_events
+    properties:
+      - {name: event_id, physicalType: VARCHAR, required: true, unique: true}
+      - {name: merchant_key, physicalType: INTEGER, required: true}
+      - {name: order_id, physicalType: VARCHAR, required: true}
+      - {name: event_type, physicalType: VARCHAR, required: true, acceptedValues: [shipped, tracking_added, service_completed, digital_delivered, booking_kept, cancelled_by_business]}
+      - {name: evidence_class, physicalType: VARCHAR, required: true, acceptedValues: [merchant_reported, simulated]}
+  - name: fact_monthly_sales
+    physicalName: gold.fact_monthly_sales
+    properties:
+      - {name: merchant_key, physicalType: INTEGER, required: true}
+      - {name: year_month, physicalType: VARCHAR, required: true}
+      - {name: net_usd, physicalType: DECIMAL, required: true}
+    quality:
+      - {name: monthly sales add up to the order fact, query: "SELECT CAST((SELECT sum(net_usd) FROM gold.fact_monthly_sales) - (SELECT sum(net_usd) FROM gold.fact_orders) AS INTEGER)", mustBe: 0}
+  - name: dim_date
+    physicalName: gold.dim_date
+    properties:
+      - {name: date_key, physicalType: INTEGER, required: true, unique: true}
+      - {name: date_day, physicalType: DATE, required: true, unique: true}
+    quality:
+      - {name: the calendar has no gaps, query: "SELECT CAST(date_diff('day', min(date_day), max(date_day)) + 1 - count(*) AS INTEGER) FROM gold.dim_date", mustBe: 0}
+  - name: dim_product
+    physicalName: gold.dim_product
+    properties:
+      - {name: product_key, physicalType: INTEGER, required: true, unique: true}
+      - {name: sku, physicalType: VARCHAR, required: true, unique: true}
+      - {name: merchant_key, physicalType: INTEGER, required: true}
+      - {name: price_usd, physicalType: DECIMAL, required: true}
+    quality:
+      - {name: no price is zero or negative, query: "SELECT count(*) FROM gold.dim_product WHERE price_usd <= 0", mustBe: 0}
+slaProperties:
+  - {property: freshness, value: 45, unit: days, element: gold.fact_orders.snapshot_taken_at}
+support:
+  - {channel: commerce-domain, role: owner}

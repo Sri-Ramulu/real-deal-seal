@@ -1,0 +1,135 @@
+# Owner, description and the meaning of every column for each gold table of this domain.
+tables:
+- name: gold.dim_model
+  owner: Agent domain team
+  description: Star dimension. One row per AI model in a recorded evaluation.
+  columns:
+  - name: model_key
+    meaning: Surrogate key of the AI model.
+    pii: false
+  - name: model
+    meaning: Model identifier.
+    pii: false
+  - name: model_family
+    meaning: Model family name.
+    pii: false
+- name: gold.fact_agent_choice
+  owner: Agent domain team
+  description: One row per model per shopping task per condition. Choices, not purchases.
+  columns:
+  - name: model_key
+    meaning: Surrogate key of the AI model.
+    pii: false
+  - name: chosen_merchant_key
+    meaning: Key of the business the agent chose; null when it chose none.
+    pii: false
+  - name: model
+    meaning: Model identifier.
+    pii: false
+  - name: task_id
+    meaning: Shopping task number.
+    pii: false
+  - name: mode
+    meaning: baseline or verified.
+    pii: false
+  - name: condition_label
+    meaning: The condition in plain words.
+    pii: false
+  - name: request
+    meaning: What the shopper asked.
+    pii: false
+  - name: chosen_merchant_id
+    meaning: Business the agent chose.
+    pii: false
+  - name: chosen_merchant_name
+    meaning: Name of the business the agent chose.
+    pii: false
+  - name: chosen_standing
+    meaning: Standing of the chosen business.
+    pii: false
+  - name: chose_small_shop
+    meaning: True when a small shop was chosen.
+    pii: false
+  - name: chose_chain
+    meaning: True when the national chain was chosen.
+    pii: false
+  - name: chose_fake_badge_shop
+    meaning: True when the shop with the forged badge was chosen.
+    pii: false
+  - name: no_pick
+    meaning: True when the agent chose nothing.
+    pii: false
+  - name: tool_calls
+    meaning: Tool calls in the run.
+    pii: false
+  - name: read_evidence
+    meaning: True when the agent read merchant evidence.
+    pii: false
+  - name: cost_usd
+    meaning: Model cost of the run.
+    pii: false
+  - name: input_tokens
+    meaning: Input tokens.
+    pii: false
+  - name: output_tokens
+    meaning: Output tokens.
+    pii: false
+- name: gold.fact_agent_switch
+  owner: Agent domain team
+  description: One row per model per task, pairing the baseline choice with the evidence-enabled choice.
+  columns:
+  - name: model_key
+    meaning: Surrogate key of the AI model.
+    pii: false
+  - name: model
+    meaning: Model identifier.
+    pii: false
+  - name: task_id
+    meaning: Shopping task number.
+    pii: false
+  - name: request
+    meaning: What the shopper asked.
+    pii: false
+  - name: baseline_merchant_id
+    meaning: Business chosen with search only.
+    pii: false
+  - name: evidence_merchant_id
+    meaning: Business chosen with evidence.
+    pii: false
+  - name: baseline_small
+    meaning: True when the baseline pick was a small shop.
+    pii: false
+  - name: evidence_small
+    meaning: True when the evidence pick was a small shop.
+    pii: false
+  - name: switch_type
+    meaning: chain_to_small, small_to_chain, same_shop or other_change.
+    pii: false
+- name: gold.fact_attack_run
+  owner: Agent domain team
+  description: One row per model per pre-registered attack, with the outcome graded by its written rule.
+  columns:
+  - name: model_key
+    meaning: Surrogate key of the AI model.
+    pii: false
+  - name: model
+    meaning: Model identifier.
+    pii: false
+  - name: attack_id
+    meaning: Attack identifier.
+    pii: false
+  - name: request
+    meaning: What the shopper asked.
+    pii: false
+  - name: pass_rule
+    meaning: The written pass rule.
+    pii: false
+  - name: why
+    meaning: Why the request is a trap.
+    pii: false
+  - name: outcome
+    meaning: passed or failed, by the written rule.
+    pii: false
+  - name: passed
+    meaning: True when the attack was resisted.
+    pii: false

@@ -1,0 +1,59 @@
+{
+ "registered_at": "2026-11-11T06:36:40+00:00",
+ "purpose": "Does giving an AI shopper Judged Faithful evidence change which merchant it picks, and does it resist fake or edited badges?",
+ "inputs": {
+  "tasks": {
+   "file": "proof/tasks.json",
+   "sha256": "6039120ac4dbb851a0d2d8f3a76a701b768f0244b055eaaaa9fd55407b204ca2",
+   "count": 50
+  },
+  "attacks": {
+   "file": "proof/attacks.json",
+   "sha256": "6ff11e1967b19fa518ab97da2393df5beabfae2e1acc1d12136db27f798fdbc7",
+   "count": 10
+  },
+  "catalog": {
+   "file": "data/catalog.json + data/merchants.json",
+   "note": "same catalog in both conditions"
+  }
+ },
+ "conditions": {
+  "baseline": "search_products only",
+  "verified": "search_products + get_merchant_trust + get_criteria + verify_seal"
+ },
+ "models": {
+  "registered": [
+   "claude-sonnet-5-5",
+   "claude-haiku-5-5"
+  ],
+  "planned_later_by_owner": [
+   "claude-opus-5-5"
+  ],
+  "settings": {
+   "max_tokens": 4000,
+   "max_turns": 8,
+   "temperature": "API default",
+   "system_prompt": "backend/jf/shopper.py SYSTEM"
+  }
+ },
+ "measures": {
+  "small_shop_share": "share of choices from small PayPal shops (Lydia, Priscilla, Martha, or any joined shop)",
+  "paired_change": "same request: chain without evidence -> small shop with evidence, and the reverse",
+  "attack_outcome": "per attack: passed / failed / pending, by the rule in attacks.json 'pass_if'",
+  "cost": "exact token cost per run"
+ },
+ "exclusions": "A run with no CHOICE line counts as 'no answer' and is reported, never dropped silently.",
+ "not_claimed": [
+  "The 90-94% chain preference is an external study, not this experiment's baseline.",
+  "A model choosing a shop is not a completed sale.",
+  "This is a controlled demo catalog in the PayPal sandbox."
+ ],
+ "history": [
+  {
+   "at": "2026-11-10",
+   "model": "claude-sonnet-5-5",
+   "runs": 110,
+   "note": "first run (50 tasks x 2 + 10 attacks); 3 attacks returned no answer"
+  }
+ ]
+}

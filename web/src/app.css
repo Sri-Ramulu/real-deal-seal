@@ -1,0 +1,104 @@
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/instrument-sans';
+
+/* Real Deal Seal design tokens. Red, black and two greys; one display face, one text face. */
+:root {
+  --red: #d9201f;
+  --red-deep: #b81a19;
+  --oxblood: #71251e;
+  --ink: #0a0a0a;
+  --text: #1a1a1a;
+  --muted: #5c5c5c;
+  --line: #d4d4d4;
+  --tile: #f2f2f2;
+  --stone: #dddddd;
+  --paper: #ffffff;
+  --ok: #1d6b3a;
+  --warn: #8a5a00;
+  --chart-context: #8c8c8c;
+  --display: 'Bricolage Grotesque Variable', 'Helvetica Neue', Arial, sans-serif;
+  --body: 'Instrument Sans Variable', 'Helvetica Neue', Arial, sans-serif;
+  --wrap: min(1280px, calc(100vw - 48px));
+  --ease: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--text); font: 400 17px/1.55 var(--body); }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--red); color: #fff; }
+
+h1, h2, h3 { font-family: var(--display); color: var(--ink); margin: 0; letter-spacing: -0.02em; }
+h1 { font-weight: 300; font-size: clamp(3rem, 8.2vw, 7.4rem); line-height: 0.95; letter-spacing: -0.045em; }
+h2 { font-weight: 300; font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: 1; letter-spacing: -0.035em; }
+h3 { font-weight: 500; font-size: 1.35rem; line-height: 1.2; }
+p { margin: 0 0 1em; max-width: 68ch; }
+.lede { font-size: clamp(1.1rem, 1.6vw, 1.35rem); line-height: 1.45; color: var(--text); max-width: 56ch; }
+.small { font-size: 0.86rem; color: var(--muted); }
+.num { font-family: var(--display); font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+
+.wrap { width: var(--wrap); margin-inline: auto; }
+.section { padding-block: clamp(56px, 9vw, 128px); }
+.section-tight { padding-block: clamp(32px, 5vw, 64px); }
+.stone { background: var(--stone); }
+.dark { background: var(--ink); color: #f2f2f2; }
+.dark h2, .dark h3 { color: #fff; }
+
+/* Buttons: square-shouldered blocks with an arrow that travels on hover. */
+.btn { display: inline-flex; align-items: center; gap: 14px; padding: 16px 22px; border: 0; border-radius: 4px; background: var(--red);
+  color: #fff; font-weight: 500; text-decoration: none; cursor: pointer; transition: background 0.2s var(--ease); white-space: nowrap; }
+.btn:hover { background: var(--red-deep); }
+.btn svg { transition: transform 0.25s var(--ease); }
+.btn:hover svg { transform: translateX(5px); }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: #fff; }
+.btn.black { background: var(--ink); }
+.btn.black:hover { background: #2a2a2a; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.link { font-weight: 600; text-decoration: none; display: inline-flex; gap: 10px; align-items: center; }
+.link:hover { color: var(--red); }
+
+/* Standing chips: text and shape carry the state, not colour alone. */
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 9px; border-radius: 999px; font-size: 0.86rem; font-weight: 600;
+  background: #fff; box-shadow: inset 0 0 0 1.5px var(--ink); color: var(--ink); white-space: nowrap; }
+.chip.sealed { background: var(--red); color: #fff; box-shadow: none; }
+.chip.verified { background: var(--ink); color: #fff; box-shadow: none; }
+.chip.new { background: #fff; }
+.chip.reported { background: #fff; box-shadow: inset 0 0 0 1.5px var(--ink); border-radius: 4px; }
+.chip.withdrawn { background: var(--oxblood); color: #fff; box-shadow: none; border-radius: 4px; }
+.chip.no_record { background: var(--tile); box-shadow: inset 0 0 0 1.5px var(--line); color: var(--muted); }
+
+.card { background: var(--tile); border-radius: 6px; padding: 28px; }
+.grid { display: grid; gap: 2px; }
+.label { font-size: 0.86rem; font-weight: 600; color: var(--muted); }
+.source { font-size: 0.8rem; color: var(--muted); margin-top: 10px; }
+table.plain { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+table.plain th { text-align: left; font-weight: 600; color: var(--muted); padding: 10px 12px 10px 0; border-bottom: 1.5px solid var(--ink); }
+table.plain td { padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+code, pre { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.86em; }
+pre { background: var(--ink); color: #eee; padding: 18px 20px; border-radius: 6px; overflow-x: auto; line-height: 1.5; margin: 0; }
+.notice { border-left: 4px solid var(--ink); background: var(--tile); padding: 14px 18px; font-size: 0.95rem; border-radius: 0 4px 4px 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* Forms */
+label.field { display: grid; gap: 6px; font-size: 0.86rem; font-weight: 600; color: var(--muted); }
+.input, select.input, textarea.input { font: inherit; color: var(--ink); padding: 13px 14px; border: 0; border-radius: 3.5px; background: var(--tile); width: 100%; box-shadow: inset 0 -1.5px 0 var(--ink); }
+.input:focus { outline: 3px solid var(--ink); outline-offset: 2px; }
+.tabs { display: flex; gap: 2px; flex-wrap: wrap; }
+.tabs a, .tabs button { padding: 11px 16px; background: var(--tile); text-decoration: none; font-weight: 600; font-size: 0.92rem; border: 0; cursor: pointer; color: var(--ink); }
+.tabs [aria-current='page'], .tabs .on { background: var(--ink); color: #fff; }
+.err { color: var(--red); font-weight: 600; }
+
+/* Narrow screens: grid children may shrink, and wide code or tables scroll inside themselves instead of the page. */
+main :where(div, section, figure, article, form) { min-width: 0; }
+pre { max-width: 100%; }
+@media (max-width: 760px) {
+  table.plain { display: block; overflow-x: auto; }
+  code { overflow-wrap: anywhere; }
+}

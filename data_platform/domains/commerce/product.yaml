@@ -1,0 +1,9 @@
+name: Commerce Record
+id: commerce.record
+owner: Commerce domain team
+purpose: The analytics star. Every order, payment event and fulfilment event from every source system, modelled once so every number downstream agrees.
+consumers: [trust domain, Merchant Studio, business scorecard, sales statement]
+output_ports: [gold.fact_orders, gold.fact_payment_events, gold.fact_fulfillment_events, gold.fact_monthly_sales, gold.dim_date, gold.dim_product, gold.dim_source_system, gold.market_price_context]
+input_ports: [landing/paypal/*.orders.json, landing/catalog/catalog.json, landing/market/channel3_cache.json]
+refresh: on every pipeline run
+status: active

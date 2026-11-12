@@ -1,0 +1,1149 @@
+{
+ "info": {
+  "name": "Real Deal Seal API",
+  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+ },
+ "variable": [
+  {
+   "key": "baseUrl",
+   "value": "http://localhost:8000"
+  },
+  {
+   "key": "token",
+   "value": ""
+  }
+ ],
+ "item": [
+  {
+   "name": "Did Json",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/.well-known/did.json",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      ".well-known",
+      "did.json"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Rotate Key",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/admin/keys/rotate",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "admin",
+      "keys",
+      "rotate"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Reinstate Seal",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/admin/merchants/:merchant_id/reinstate",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "admin",
+      "merchants",
+      ":merchant_id",
+      "reinstate"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Withdraw Seal",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/admin/merchants/:merchant_id/withdraw",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "admin",
+      "merchants",
+      ":merchant_id",
+      "withdraw"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Demo Accounts",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/auth/demo",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "auth",
+      "demo"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Login",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/auth/login",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "auth",
+      "login"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Me",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/auth/me",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "auth",
+      "me"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Business Types",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/business-types",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "business-types"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Chat",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/chat",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "chat"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Checkout Create",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/checkout",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "checkout"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Checkout Session",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/checkout/session/:session_id",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "checkout",
+      "session",
+      ":session_id"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Checkout Cancel",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/checkout/:paypal_order_id/cancel",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "checkout",
+      ":paypal_order_id",
+      "cancel"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Checkout Complete",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/checkout/:paypal_order_id/complete",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "checkout",
+      ":paypal_order_id",
+      "complete"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Credential Status",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/credentials/status",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "credentials",
+      "status"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Criteria",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/criteria",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "criteria"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Evidence Pack",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/evidence-pack",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "evidence-pack"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Health",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/health",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "health"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Issuer Key",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/issuer-key",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "issuer-key"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Merchants",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/merchants",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "merchants"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Merchant",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/merchants/:merchant_id",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "merchants",
+      ":merchant_id"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Seal",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/merchants/:merchant_id/seal",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "merchants",
+      ":merchant_id",
+      "seal"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Create Workspace",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/onboarding/workspaces",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "onboarding",
+      "workspaces"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Platform",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/platform",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "platform"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Platform Metric",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/platform/metric",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "platform",
+      "metric"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Products",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/products",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "products"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Proof",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/proof",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "proof"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Get Scorecard",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/scorecard",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "scorecard"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Shared Statement",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/statements/:token",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "statements",
+      ":token"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Studio Home",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Studio Catalog Import",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/catalog/import",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "catalog",
+      "import"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Add Tracking",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/coach/add-tracking",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "coach",
+      "add-tracking"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Connect",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/connect/:provider",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "connect",
+      ":provider"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Disclosure",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/disclosure",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "disclosure"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Studio Set Disclosure",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/disclosure",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "disclosure"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Evidence",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/evidence",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "evidence"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Studio Operations",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/operations",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "operations"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Studio Orders Import",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/orders/import",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "orders",
+      "import"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Refund",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/orders/:order_id/refund",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "orders",
+      ":order_id",
+      "refund"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Refresh",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/refresh",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "refresh"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Statement",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/statement",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "statement"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Studio Share",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/statement/share",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "statement",
+      "share"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Studio Revoke Share",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "Authorization",
+      "value": "Bearer {{token}}"
+     }
+    ],
+    "url": {
+     "raw": "{{baseUrl}}/api/studio/:merchant_id/statement/shares/:grant_id/revoke",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "studio",
+      ":merchant_id",
+      "statement",
+      "shares",
+      ":grant_id",
+      "revoke"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Tool Specs",
+   "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/tools",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "tools"
+     ]
+    }
+   }
+  },
+  {
+   "name": "Tool",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/tools/:name",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "tools",
+      ":name"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Verify",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/verify",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "verify"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Paypal Webhook",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/api/webhooks/paypal",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "api",
+      "webhooks",
+      "paypal"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  },
+  {
+   "name": "Chat Completions",
+   "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+     "raw": "{{baseUrl}}/v1/chat/completions",
+     "host": [
+      "{{baseUrl}}"
+     ],
+     "path": [
+      "v1",
+      "chat",
+      "completions"
+     ]
+    },
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   }
+  }
+ ]
+}

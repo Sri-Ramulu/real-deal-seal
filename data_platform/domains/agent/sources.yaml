@@ -1,0 +1,16 @@
+sources:
+  - table: agent_eval_results
+    files: landing/agent/results.jsonl
+    format: jsonl
+  - table: agent_eval_tasks
+    files: landing/agent/tasks.json
+    format: json_key_array
+    key: tasks
+  - table: agent_eval_attacks
+    files: landing/agent/attacks.json
+    format: json_key_array
+    key: attacks
+  - table: agent_eval_summary
+    files: landing/agent/summary.json
+    format: json_key_map
+    key: by_model

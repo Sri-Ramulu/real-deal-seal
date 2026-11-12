@@ -1,0 +1,34 @@
+apiVersion: v3.0.2
+kind: DataContract
+id: merchant.directory
+name: Merchant Directory
+version: 2.0.0
+status: active
+domain: merchant
+description:
+  purpose: One row per business with its type, rule set, connection and publication state.
+  limitations: Babel Home and Linen Palace are fictional comparison shops with no record.
+  usage: Join facts on merchant_key. Treat self_claim as untrusted seller text.
+schema:
+  - name: dim_merchant
+    physicalName: gold.dim_merchant
+    properties:
+      - {name: merchant_key, physicalType: INTEGER, required: true, unique: true}
+      - {name: merchant_id, physicalType: VARCHAR, required: true, unique: true}
+      - {name: merchant_name, physicalType: VARCHAR, required: true}
+      - {name: business_type, physicalType: VARCHAR, required: true, acceptedValues: [physical, services, digital, local]}
+      - {name: ruleset, physicalType: VARCHAR, required: true, acceptedValues: [physical, services, digital]}
+      - {name: merchant_kind, physicalType: VARCHAR, required: true, acceptedValues: [paypal_merchant, national_chain, unknown_seller]}
+      - {name: origin, physicalType: VARCHAR, required: true, acceptedValues: [demo, workspace, external]}
+      - {name: is_connected, physicalType: BOOLEAN, required: true}
+      - {name: passport_published, physicalType: BOOLEAN, required: true}
+      - {name: seal_withdrawn_by, physicalType: VARCHAR, required: false, acceptedValues: [issuer, business]}
+      - {name: seal_withdrawn_at, physicalType: TIMESTAMP, required: false}
+      - {name: seal_withdrawn_reason, physicalType: VARCHAR, required: false}
+      - {name: seller_text_has_instructions, physicalType: BOOLEAN, required: true}
+    quality:
+      - {name: every business in silver reaches the dimension, query: "SELECT (SELECT count(*) FROM silver.merchant_merchants) - (SELECT count(*) FROM gold.dim_merchant)", mustBe: 0}
+slaProperties:
+  - {property: availability, value: every pipeline run that passes all four gates}
+support:
+  - {channel: merchant-domain, role: owner}

@@ -1,0 +1,17 @@
+sources:
+  - table: merchant_merchants
+    files: landing/merchant/merchants.json
+    format: json_key_map
+    key: merchants
+  - table: merchant_external
+    files: landing/catalog/catalog.json
+    format: json_key_map
+    key: merchants
+  - table: merchant_workspaces          # businesses created through onboarding (operational store extract)
+    files: extract/ops/merchants.jsonl
+    format: jsonl
+    optional: true
+  - table: merchant_business_types
+    files: landing/reference/criteria.json
+    format: json_key_array
+    key: business_types
