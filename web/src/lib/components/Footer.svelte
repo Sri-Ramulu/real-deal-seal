@@ -41,7 +41,7 @@
 
 <style>
   .band { height: 44px; background: linear-gradient(90deg, #7c2426, var(--oxblood) 40%, #5e2420); }
-  .inner { padding: 90px 0 36px; }
+  .inner { padding: 64px 0 36px; }
   .lockup { display: grid; justify-items: center; gap: 6px; }
   .lockup strong { font: 600 clamp(1.3rem, 2.4vw, 2rem) var(--display); letter-spacing: -0.03em; color: var(--red); margin-top: 8px; }
   .lockup span { color: var(--oxblood); font-weight: 600; }
