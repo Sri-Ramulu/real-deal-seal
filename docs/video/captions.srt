@@ -1,180 +1,172 @@
 1
-0:00:00,400 --> 0:00:03,550
-I asked an AI shopping assistant for a purple table runner.
+0:00:00,400 --> 0:00:04,390
+So, I asked an AI shopping assistant for a purple table runner.
 
 2
-0:00:03,430 --> 0:00:04,890
-Twice, at the same moment.
+0:00:04,270 --> 0:00:04,760
+Twice.
 
 3
-0:00:06,420 --> 0:00:09,310
-On the left, it sees only the listings.
+0:00:06,620 --> 0:00:11,130
+On the left, it only sees the listings, and it goes with Violet and Vine.
 
 4
-0:00:09,190 --> 0:00:13,080
-It picks Violet and Vine: linen, cheaper, ships fast.
+0:00:11,010 --> 0:00:12,750
+Cheaper, and fast shipping.
 
 5
-0:00:13,430 --> 0:00:17,240
-On the right, it can check each shop's record. It picks Lydia.
+0:00:13,100 --> 0:00:16,760
+On the right, it can check each shop's track record first.
 
 6
-0:00:17,590 --> 0:00:19,920
-What the left side could not see:
+0:00:16,640 --> 0:00:17,670
+It picks Lydia.
 
 7
-0:00:19,800 --> 0:00:22,390
-Violet and Vine's seal was withdrawn.
+0:00:18,020 --> 0:00:20,030
+Here's what the left side missed:
 
 8
-0:00:22,270 --> 0:00:25,070
-Buyers got polyester, or nothing at all.
+0:00:19,910 --> 0:00:25,070
+Violet and Vine lost its seal, because buyers were getting polyester, or nothing at all.
 
 9
-0:00:25,600 --> 0:00:27,680
-We ran fifty requests like that.
+0:00:25,450 --> 0:00:26,790
+And that wasn't a one-off.
 
 10
-0:00:28,030 --> 0:00:31,860
-Without evidence, shops like that won thirty-four times.
+0:00:27,030 --> 0:00:33,000
+Across fifty requests, shops like that won thirty-four times without evidence, and zero times with it.
 
 11
-0:00:31,740 --> 0:00:33,190
-With evidence, zero.
-
-12
-0:00:33,540 --> 0:00:36,550
+0:00:33,350 --> 0:00:36,390
 Honest small shops went from nine wins to thirty-five.
 
+12
+0:00:36,740 --> 0:00:42,370
+That matters, because a recent study found AI assistants pick the big chain about nine times out of ten.
+
 13
-0:00:36,900 --> 0:00:41,680
-A study this fall found AI assistants choose the big chain about nine times in ten.
+0:00:43,000 --> 0:00:48,140
+So how does it work? Real Deal Seal turns a small shop's PayPal history into a passport.
 
 14
-0:00:43,000 --> 0:00:44,570
-This is Real Deal Seal.
+0:00:48,700 --> 0:00:51,880
+It's not a score. It simply counts what happened:
 
 15
-0:00:44,450 --> 0:00:48,030
-It turns a small shop's PayPal history into a passport.
+0:00:51,760 --> 0:00:55,070
+orders completed, shipments tracked, refunds given.
 
 16
-0:00:48,700 --> 0:00:51,580
-It is not a score. It counts what happened:
+0:00:55,420 --> 0:00:58,010
+And every fact tells you where it came from:
 
 17
-0:00:51,460 --> 0:00:54,470
-orders completed, shipments tracked, refunds.
-
-18
-0:00:54,820 --> 0:00:57,150
-Every fact says where it came from:
-
-19
-0:00:57,030 --> 0:01:01,070
+0:00:57,890 --> 0:01:01,500
 PayPal's records, the shop itself, or simulated for this demo.
 
+18
+0:01:05,000 --> 0:01:08,030
+The passport is signed, so anyone can check it.
+
+19
+0:01:07,910 --> 0:01:09,200
+This one's genuine.
+
 20
-0:01:05,000 --> 0:01:08,730
-The passport is signed, so anyone can check it. Genuine.
+0:01:10,600 --> 0:01:14,450
+Now watch. I change one number, and the check fails.
 
 21
-0:01:10,600 --> 0:01:12,630
-Change one number, and the check fails.
+0:01:15,190 --> 0:01:18,690
+This badge? We never signed it. It's a forgery.
 
 22
-0:01:15,090 --> 0:01:17,820
-This badge was never signed by us: forged.
+0:01:19,040 --> 0:01:22,450
+And if we withdraw a seal, the old badge stops working.
 
 23
-0:01:18,170 --> 0:01:21,670
-And when we withdraw a seal, the old badge stops working.
+0:01:22,800 --> 0:01:25,670
+All of this is plain code. No AI gets a vote.
 
 24
-0:01:22,020 --> 0:01:25,670
-Plain code decides this. No AI model is involved.
+0:01:26,200 --> 0:01:27,870
+Now let's actually buy it.
 
 25
-0:01:26,200 --> 0:01:27,980
-The agent finishes the job.
+0:01:27,750 --> 0:01:32,110
+I ask the assistant, and it opens a PayPal checkout for Lydia's runner.
 
 26
-0:01:27,860 --> 0:01:30,800
-It opens a PayPal checkout for Lydia's runner.
+0:01:32,460 --> 0:01:34,170
+But it can't pay for me.
 
 27
-0:01:31,150 --> 0:01:34,250
-But only I can approve the payment, on PayPal's own page.
+0:01:34,050 --> 0:01:36,880
+Only I can approve, on PayPal's own page.
 
 28
-0:01:34,600 --> 0:01:38,930
-Then our server asks PayPal whether that exact amount was captured.
+0:01:37,230 --> 0:01:42,730
+Then our server checks with PayPal that the exact amount was captured, and only then is it marked paid.
 
 29
-0:01:38,810 --> 0:01:40,250
-Only then is it paid.
+0:01:43,080 --> 0:01:46,280
+It's the PayPal sandbox, so test money only.
 
 30
-0:01:40,600 --> 0:01:43,360
-This is the PayPal sandbox, with test money.
+0:01:46,160 --> 0:01:50,210
+And a shop that lost its seal? Checkout is switched off.
 
 31
-0:01:43,240 --> 0:01:47,090
-For a shop whose seal was withdrawn, checkout is switched off.
+0:01:52,000 --> 0:01:53,840
+Shop owners get their own studio.
 
 32
-0:01:52,000 --> 0:01:53,470
-Shop owners get a studio.
+0:01:55,800 --> 0:01:57,680
+Martha is missing four rules.
 
 33
-0:01:55,800 --> 0:01:57,510
-Martha misses four rules.
+0:01:57,560 --> 0:02:02,640
+One click, and she sees the exact orders behind the number, right here in AG Grid.
 
 34
-0:01:57,390 --> 0:02:01,760
-One click shows the exact orders behind each number, in an AG Grid.
+0:02:05,400 --> 0:02:10,650
+So she adds a tracking number, and her count goes up by one, with a before and after on the record.
 
 35
-0:02:05,400 --> 0:02:08,580
-She adds a tracking number, and her count goes up by one.
+0:02:12,800 --> 0:02:15,050
+We didn't just build it. We tested it:
 
 36
-0:02:08,460 --> 0:02:10,560
-The record shows it before and after.
+0:02:14,930 --> 0:02:20,370
+fifty requests and eleven attacks, written before any run, on two models, three full runs each.
 
 37
-0:02:12,800 --> 0:02:14,000
-We tested it hard.
+0:02:21,560 --> 0:02:25,570
+Forged seals, edited seals, hidden instructions, even pressure.
 
 38
-0:02:13,880 --> 0:02:19,720
-Fifty requests and eleven attacks, written before any run, on two models, three full runs each.
+0:02:25,920 --> 0:02:30,190
+And every run is published in an AG Grid you can search, sort and export.
 
 39
-0:02:22,200 --> 0:02:26,070
-Forged seals, edited seals, hidden instructions, pressure.
+0:02:30,070 --> 0:02:34,570
+All six hundred picks, including the ones we re-ran after fixing our own bug.
 
 40
-0:02:26,420 --> 0:02:30,320
-Every single run is published in an AG Grid you can filter and export:
+0:02:35,100 --> 0:02:36,030
+Under the hood:
 
 41
-0:02:30,200 --> 0:02:34,260
-six hundred picks, including the ones we re-ran after fixing our own bug.
+0:02:35,910 --> 0:02:40,840
+eight agent tools over MCP, and a data platform that checks every promise on every build.
 
 42
-0:02:35,100 --> 0:02:35,730
-Under it:
+0:02:45,000 --> 0:02:51,650
+For PayPal, payment history becomes a reason for shops to stay, and a reason for AI agents to check out with PayPal.
 
 43
-0:02:35,610 --> 0:02:41,080
-eight agent tools over MCP, and a data platform where every promise is checked on every build.
-
-44
-0:02:45,000 --> 0:02:50,920
-For PayPal, payment history becomes a reason for shops to stay, and for AI agents to check out with PayPal.
-
-45
-0:02:51,950 --> 0:02:54,770
+0:02:52,080 --> 0:02:54,770
 Real Deal Seal. Proof beats brand.
 
