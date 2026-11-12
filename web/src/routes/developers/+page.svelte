@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { api } from '$lib/api.js';
+  import Lineage from '$lib/components/Lineage.svelte';
   import QualityHeat from '$lib/components/QualityHeat.svelte';
   let c = $state(null), tools = $state([]), pick = $state('gold.merchant_passport'), fact = $state('gold.fact_orders'), metric = $state(null), q = $state({ view: 'commerce_metrics', measure: 'net_usd', dim: 'merchant_id' });
   onMount(async () => { [c, tools] = await Promise.all([api('/api/platform'), api('/api/tools')]); run(); });
@@ -113,17 +114,8 @@ GROUP BY ALL`}</pre>{/if}</div>
     </div>
 
     <h2 id="lineage">Lineage</h2>
-    <p class="lede sub">Read from the <code>-- reads:</code> and <code>-- writes:</code> lines of each SQL file, never drawn by hand. Pick a table to light up everything it depends on.</p>
-    <div class="lineage">
-      {#each layers as l}
-        <div class="lane"><h3>{l}</h3>
-          {#each c.lineage.nodes.filter((n) => n.layer === l) as n}
-            <button class="node {n.domain}" class:lit={up.has(n.id)} class:sel={pick === n.id} onclick={() => (pick = n.id)} disabled={l === 'landing' || l === 'bronze'}>{short(n.id)}<span>{n.domain}</span></button>
-          {/each}
-        </div>
-      {/each}
-    </div>
-    <p class="source">{up.size - 1} upstream sources and tables feed <code>{pick}</code>.</p>
+    <p class="lede sub">Read from the <code>-- reads:</code> and <code>-- writes:</code> lines of each SQL file, never drawn by hand. Pick any file or table. Everything it is built from lights up, and so does everything built from it, joined by lines that run the way the data flows.</p>
+    <Lineage nodes={c.lineage.nodes} edges={c.lineage.edges} bind:pick />
 
     {#if table}
       <h2>Metadata: <code class="h">{table.name}</code></h2>
@@ -179,18 +171,11 @@ GROUP BY ALL`}</pre>{/if}</div>
   .ports button.on, .ports button:hover { background: var(--red); color: #fff; box-shadow: none; }
   .gates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 2px; }
   .gates div { background: var(--ink); color: #fff; padding: 18px 22px; display: grid; } .gates .num { font-size: 1.8rem; font-weight: 300; }
-  .lineage { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
-  .lane { background: var(--tile); padding: 16px; display: grid; gap: 5px; align-content: start; }
-  .lane h3 { font-size: 1rem; margin-bottom: 8px; text-transform: capitalize; }
-  .node { text-align: left; border: 0; background: #fff; padding: 7px 10px; border-radius: 3px; font: 0.78rem ui-monospace, Menlo, monospace; cursor: pointer; display: flex; justify-content: space-between; gap: 8px;
-    color: var(--muted); transition: 0.25s var(--ease); word-break: break-all; }
-  .node span { font: 600 0.68rem var(--body); opacity: 0.7; white-space: nowrap; }
-  .node.lit { background: var(--ink); color: #fff; } .node.sel { background: var(--red); color: #fff; } .node:disabled { cursor: default; }
   .star { display: grid; grid-template-columns: 0.9fr 1.3fr 0.9fr; gap: 2px; } .centre { background: var(--ink); color: #e6e6e6; padding: 28px; display: grid; gap: 10px; align-content: start; } .centre h3 { color: #fff; font-size: 1.6rem; } .centre .label, .centre .small { color: #bbb; } .centre pre { background: #1c1c1c; font-size: 0.78rem; } .centre p { margin: 0; } .mt { margin-top: 18px; }
   .q { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; } .q label { display: grid; gap: 4px; font-size: 0.82rem; font-weight: 600; color: var(--muted); }
   select { font: inherit; padding: 10px 12px; border: 0; background: var(--tile); border-radius: 4px; color: var(--ink); }
   .res { max-height: 300px; }
   details { border-top: 1px solid var(--line); padding: 14px 0; } summary { cursor: pointer; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
   details table { margin-top: 10px; }
-  @media (max-width: 960px) { .two, .products, .star { grid-template-columns: 1fr; } .lineage, .gates { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 960px) { .two, .products, .star { grid-template-columns: 1fr; } .gates { grid-template-columns: 1fr 1fr; } }
 </style>
