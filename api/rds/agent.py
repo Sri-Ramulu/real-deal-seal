@@ -76,6 +76,9 @@ def _summary(name: str, result: dict) -> str:
     return "ok"
 
 
+# Room for the model to pass a pasted seal (a few thousand characters) to verify_seal and still answer. At 1200 a
+# pasted seal ran out of room mid tool call and the answer came back empty.
+MAX_OUTPUT_TOKENS = 4096
 BUSY = {429, 500, 503}  # Gemini's "high demand" and quota answers; worth a retry, then another model
 BUSY_WAITS = (2, 5)     # seconds before each retry
 
@@ -117,7 +120,7 @@ def _claude(model: str, system: str, messages: list[dict], run: _Run, max_turns:
     convo = [{"role": m["role"], "content": m["content"]} for m in messages]
     text = ""
     for _ in range(max_turns):
-        resp = client.messages.create(model=model, max_tokens=1200, system=system, tools=_specs(run.evidence), messages=convo)
+        resp = client.messages.create(model=model, max_tokens=MAX_OUTPUT_TOKENS, system=system, tools=_specs(run.evidence), messages=convo)
         run.usage["input_tokens"] += resp.usage.input_tokens
         run.usage["output_tokens"] += resp.usage.output_tokens
         text = "".join(b.text for b in resp.content if b.type == "text")
@@ -154,7 +157,7 @@ def _gemini(model: str, system: str, messages: list[dict], run: _Run, max_turns:
     with httpx.Client(timeout=90) as http:
         for _ in range(max_turns):
             payload = {"systemInstruction": {"parts": [{"text": system}]}, "contents": contents,
-                       "tools": [{"functionDeclarations": decls}], "generationConfig": {"maxOutputTokens": 1200}}
+                       "tools": [{"functionDeclarations": decls}], "generationConfig": {"maxOutputTokens": MAX_OUTPUT_TOKENS}}
             for wait in (*BUSY_WAITS, None):
                 r = http.post(url, headers={"x-goog-api-key": config.GEMINI_API_KEY}, json=payload)
                 if r.status_code not in BUSY or wait is None:
