@@ -19,7 +19,7 @@ services:
       - {key: RDS_ISSUER_SEED_HEX, sync: false}       # keep it stable, or every issued seal stops verifying
       - {key: GEMINI_API_KEY, sync: false}
       - {key: ANTHROPIC_API_KEY, sync: false}
-      - {key: RDS_ASSISTANT, value: gemini}           # default model: gemini, claude-sonnet or claude-haiku
+      - {key: RDS_ASSISTANT, value: claude-sonnet}         # default while judging (Gemini quota ran out on 12 Nov); gemini, claude-sonnet or claude-haiku
       - {key: PAYPAL_LYDIA_CLIENT_ID, sync: false}
       - {key: PAYPAL_LYDIA_CLIENT_SECRET, sync: false}
       - {key: PAYPAL_MARTHA_CLIENT_ID, sync: false}

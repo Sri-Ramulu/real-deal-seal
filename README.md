@@ -99,7 +99,7 @@ Checked in this repository (`make test`, `make evidence`):
   times. One candidate question ("cheapest lavender napkins") was dropped because evidence on still chose the
   unverifiable cheapest listing.
 - The eval harness: a scripted correct agent passes 12 of 12 tasks, and a scripted bad agent passes 0 of 12.
-- 6 browser tests (`make e2e`) walk the main journeys in Chrome: the home page, product images and card layout,
+- 7 browser tests (`make e2e`) walk the main journeys in Chrome: the home page and its side-by-side Evidence demo, product images and card layout,
   the assistant with evidence on and off, the seal check, checkout, and Merchant Studio.
 
 Checked by hand on 12 Nov 2026:

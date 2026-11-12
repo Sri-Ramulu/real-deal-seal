@@ -7,6 +7,7 @@
   import Slope from '$lib/components/Slope.svelte';
   import SealMark from '$lib/components/SealMark.svelte';
   import LightspeedStudy from '$lib/components/LightspeedStudy.svelte';
+  import SideBySide from '$lib/components/SideBySide.svelte';
 
   let shops = $state([]), score = $state(null), proof = $state(null), error = $state('');
   onMount(async () => {
@@ -34,7 +35,8 @@
     <h1>Small shops deliver.<br />Now AI can check.</h1>
     <p class="lede">AI shopping assistants tend to recommend brands they already know. Real Deal Seal helps small shops compete by turning their PayPal sales history into a signed record any assistant can check.</p>
     <div class="actions">
-      <a class="btn" href="/assistant">Ask the assistant <Arrow /></a>
+      <a class="btn" href="#difference">See the difference <Arrow /></a>
+      <a class="btn ghost" href="/assistant">Ask the assistant <Arrow /></a>
       <a class="btn ghost" href="/verify">Check a seal <Arrow /></a>
     </div>
   </div>
@@ -56,6 +58,12 @@
 </section>
 
 {#if error}<div class="wrap"><p class="notice">The API is not reachable: {error} Start it with <code>make api</code>.</p></div>{/if}
+
+<section class="wrap section-tight" id="difference">
+  <h2>See the difference</h2>
+  <p class="lede diff">One question, asked twice at the same moment. The only thing that changes is whether the assistant can read each shop’s record.</p>
+  <SideBySide {shops} pairs={proof?.pairs ?? []} model={ns?.model} recordedOn={ns?.recorded_on} />
+</section>
 
 <section class="wrap section-tight facts">
   {#if ns}
@@ -136,6 +144,8 @@
   @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
   @keyframes stamp { from { transform: scale(2.6) rotate(-25deg); opacity: 0; } }
   .note { margin-top: 12px; }
+  .diff { margin: 14px 0 26px; }
+  #difference { scroll-margin-top: 90px; }
   .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 4vw, 56px); border-top: 1.5px solid var(--ink); padding-top: 28px; }
   .facts .big { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 300; color: var(--ink); line-height: 1; display: block; margin-bottom: 10px; }
   .facts i { font-style: normal; font-size: 0.45em; color: var(--muted); letter-spacing: 0; }

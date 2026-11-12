@@ -1,6 +1,6 @@
 <script>
   import { onMount, tick } from 'svelte';
-  import { api, usd } from '$lib/api.js';
+  import { api, usd, rich } from '$lib/api.js';
   import Arrow from '$lib/components/Arrow.svelte';
   import SealMark from '$lib/components/SealMark.svelte';
 
@@ -78,7 +78,7 @@
         {:else}
           <div class="msg bot">
             <div class="who"><SealMark size={26} /> Assistant <span class="small">{t.mode === 'offline' ? 'offline search' : t.model_label}{t.evidence === false ? ' · evidence off' : ''}</span></div>
-            <div class="text">{t.content}</div>
+            <div class="text">{@html rich(t.content)}</div>
             {#if t.offers?.length}
               <div class="offers">
                 {#each t.offers.slice(0, 6) as o}

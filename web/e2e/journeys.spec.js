@@ -89,3 +89,16 @@ test('Merchant Studio opens a demo shop with only the story tabs, and the coach 
   await add.click();
   await expect(page.locator('body')).toContainText(/40 of 48|recorded/);
 });
+
+test('the home page shows the same question answered with Evidence off and on, and can run it live', async ({ page }) => {
+  await page.goto('/');
+  const sbs = page.locator('#difference');
+  await expect(sbs.locator('article.off .shop')).toHaveText('Violet & Vine Home');
+  await expect(sbs.locator('article.off')).toContainText('Seal withdrawn');
+  await expect(sbs.locator('article.on .shop')).toHaveText('Lydia Linen Co.');
+  await sbs.getByRole('button', { name: 'A white enamel tea kettle.' }).click();
+  await expect(sbs.locator('article.off .shop')).toHaveText('Juniper & Oak Goods');
+  await sbs.getByRole('button', { name: /Run it live/ }).click();
+  await expect(sbs.getByRole('button', { name: /Run it again/ })).toBeVisible({ timeout: 30000 });
+  await expect(sbs.locator('article.on')).toContainText(/It picked|no pick/);
+});
