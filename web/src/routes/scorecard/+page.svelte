@@ -55,7 +55,7 @@
       <div class="card"><h3>Shipped within 2 days</h3><RuleBars rows={bars('fast_ship_pct', 80, 'min')} threshold={80} /></div>
       <div class="card"><h3>Orders refunded</h3><RuleBars rows={bars('refund_pct', 8, 'max')} threshold={8} direction="max" max={20} /></div>
     </div>
-    <p class="source">Black bars meet the rule, red bars do not; the vertical line is the threshold. Tracking is reported by the shop; shipping speed is simulated for the demo; refunds come from PayPal sandbox records. Source: shop passports.</p>
+    <p class="source">Black bars meet the rule, red bars do not; the vertical line is the threshold. For Lydia, Martha and Priscilla, tracking is reported by the shop, shipping speed is simulated for the demo, and refunds come from PayPal sandbox records. The other shops' records are simulated demo records reported by the shop. All shops are fictional. Source: shop passports.</p>
   {:else if !error}<p>Loading the scorecard.</p>{/if}
 </section>
 

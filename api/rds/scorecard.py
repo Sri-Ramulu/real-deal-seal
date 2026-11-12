@@ -21,13 +21,18 @@ def build() -> dict:
     ag = {(r["model"], r["mode"]): r for r in wh.measure("agent_metrics", ["tasks", "small_shop_picks", "chain_picks", "fake_badge_picks", "small_shop_pct"], ["model", "mode"])}
     base, ver = ag[(HEADLINE_MODEL, "baseline")], ag[(HEADLINE_MODEL, "verified")]
     sw = {r["switch_type"]: r["n"] for r in wh.rows("SELECT switch_type, count(*) n FROM gold.fact_agent_switch WHERE model = ? GROUP BY 1", [HEADLINE_MODEL])}
-    com = wh.measure("commerce_metrics", ["orders", "captured_usd", "net_usd", "refund_rate_pct", "average_order_usd", "tracking_rate_pct"])[0]
-    tr = wh.measure("trust_metrics", ["shops", "sealed_shops", "rules_met", "rules_checked", "orders_behind_evidence"])[0]
+    # PayPal value and shop standing count only businesses whose record was read back from PayPal. Shops with imported or
+    # simulated records (the fictional demo shops, Bright Clean) appear on their passports, never in these totals.
+    com = wh.measure("commerce_metrics", ["orders", "captured_usd", "net_usd", "refund_rate_pct", "average_order_usd", "tracking_rate_pct"],
+                     where={"source_system": "paypal_sandbox_readback"})[0]
+    tr = wh.measure("trust_metrics", ["shops", "sealed_shops", "rules_met", "rules_checked", "orders_behind_evidence"],
+                    where={"evidence_basis": "paypal_record"})[0]
     ev = {r["evidence_class"]: r["n"] for r in wh.rows("SELECT evidence_class, count(*) n FROM gold.fact_metric_observations GROUP BY 1")}
     attacks = {r["model"]: r for r in wh.rows("SELECT model, count(*) FILTER (passed) passed, count(*) total FROM gold.fact_attack_run GROUP BY 1")}
     cat = wh.catalog()
     rules = [r for c in cat["contracts"] for r in c["rules"]]
-    untracked = wh.one("SELECT count(*) n FROM gold.fact_orders WHERE in_recent_window AND is_fulfilled AND NOT has_tracking")["n"]
+    untracked = wh.one("""SELECT count(*) n FROM gold.fact_orders
+                          WHERE in_recent_window AND is_fulfilled AND NOT has_tracking AND source_system = 'paypal_sandbox_readback'""")["n"]
     fake_total = sum(r["fake_badge_picks"] for r in ag.values())
     runs_total = sum(r["tasks"] for r in ag.values())
     confirmed = ev.get("paypal_sandbox_confirmed", 0)
@@ -49,11 +54,11 @@ def build() -> dict:
                 _kpi("net_usd", "Net PayPal sales behind the evidence", round(com["net_usd"]), "USD", "all captured volume covered", True,
                      f"{com['orders']} sandbox orders, ${round(com['captured_usd']):,} captured before refunds.", "commerce_metrics.net_usd", f"${round(com['net_usd']):,}"),
                 _kpi("refund_rate", "Orders refunded", com["refund_rate_pct"], "%", "8% or lower", com["refund_rate_pct"] <= 8,
-                     "Across all three shops and all history.", "commerce_metrics.refund_rate_pct"),
+                     f"Across the {tr['shops']} shops with PayPal sandbox records, all history.", "commerce_metrics.refund_rate_pct"),
                 _kpi("aov", "Average order", com["average_order_usd"], "USD", "context", True, "Captured amount per order.", "commerce_metrics.average_order_usd", f"${com['average_order_usd']:.2f}"),
             ]},
             {"key": "customer", "name": "Merchants and shoppers", "question": "Do honest shops get seen, and are shoppers protected?", "kpis": [
-                _kpi("sealed", "Shops sealed", tr["sealed_shops"], "", f"of {tr['shops']} connected", True,
+                _kpi("sealed", "Shops sealed", tr["sealed_shops"], "", f"of {tr['shops']} with PayPal records", True,
                      "One shop is not yet sealed and one is too new to judge. Both states are shown honestly.", "trust_metrics.sealed_shops", f"{tr['sealed_shops']} of {tr['shops']}"),
                 _kpi("switches", "Decisions that moved chain to small shop", sw.get("chain_to_small", 0), "", "more than moved back", sw.get("chain_to_small", 0) > sw.get("small_to_chain", 0),
                      f"{sw.get('small_to_chain', 0)} moved the other way. Evidence informs; it does not force.", "gold.fact_agent_switch", f"{sw.get('chain_to_small', 0)} of 50"),
