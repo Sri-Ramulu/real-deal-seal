@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 
 import httpx
 
@@ -73,6 +74,14 @@ def _summary(name: str, result: dict) -> str:
     if name == "compare_market_prices":
         return f"typical ${result['typical_price_usd']}" if result.get("available") else "no cached prices"
     return "ok"
+
+
+BUSY = {429, 500, 503}  # Gemini's "high demand" and quota answers; worth a retry, then another model
+BUSY_WAITS = (2, 5)     # seconds before each retry
+
+
+class ModelBusy(RuntimeError):
+    """The model provider is overloaded; another provider may answer instead."""
 
 
 class _Run:
@@ -144,9 +153,15 @@ def _gemini(model: str, system: str, messages: list[dict], run: _Run, max_turns:
     text = ""
     with httpx.Client(timeout=90) as http:
         for _ in range(max_turns):
-            r = http.post(url, headers={"x-goog-api-key": config.GEMINI_API_KEY},
-                          json={"systemInstruction": {"parts": [{"text": system}]}, "contents": contents,
-                                "tools": [{"functionDeclarations": decls}], "generationConfig": {"maxOutputTokens": 1200}})
+            payload = {"systemInstruction": {"parts": [{"text": system}]}, "contents": contents,
+                       "tools": [{"functionDeclarations": decls}], "generationConfig": {"maxOutputTokens": 1200}}
+            for wait in (*BUSY_WAITS, None):
+                r = http.post(url, headers={"x-goog-api-key": config.GEMINI_API_KEY}, json=payload)
+                if r.status_code not in BUSY or wait is None:
+                    break
+                time.sleep(wait)
+            if r.status_code in BUSY:
+                raise ModelBusy(f"Gemini answered {r.status_code}: {r.text[:300]}")
             if r.status_code >= 400:
                 raise RuntimeError(f"Gemini answered {r.status_code}: {r.text[:300]}")
             body = r.json()
@@ -183,12 +198,22 @@ def chat(messages: list[dict], evidence: bool = True, model: str | None = None, 
     choice = config.resolve_model(model)
     if choice is None:
         return _offline(messages, evidence)
-    run = _Run(evidence)
     system = SYSTEM if evidence else BASELINE_SYSTEM
-    loop = _gemini if choice["provider"] == "gemini" else _claude
-    text = loop(choice["model"], system, messages, run, max_turns)
+    busy_from = None
+    run = _Run(evidence)
+    try:
+        loop = _gemini if choice["provider"] == "gemini" else _claude
+        text = loop(choice["model"], system, messages, run, max_turns)
+    except ModelBusy:
+        # Gemini is overloaded even after retries: answer with Claude Sonnet if it is set up, and say so.
+        if choice["provider"] != "gemini" or not config.ANTHROPIC_API_KEY:
+            raise
+        busy_from, choice = choice["label"], {"key": "claude-sonnet", **config.MODEL_CHOICES["claude-sonnet"]}
+        run = _Run(evidence)
+        text = _claude(choice["model"], system, messages, run, max_turns)
     m = re.search(r"^PICK:\s*(\S+)", text, re.M)
     pick = m.group(1) if m and m.group(1).lower() != "none" else None
-    return {"mode": choice["provider"], "model": choice["model"], "model_label": choice["label"], "evidence": evidence,
+    label = f'{choice["label"]} ({busy_from} was busy)' if busy_from else choice["label"]
+    return {"mode": choice["provider"], "model": choice["model"], "model_label": label, "busy_from": busy_from, "evidence": evidence,
             "answer": re.sub(r"\n?^PICK:.*$", "", text, flags=re.M).strip(), "pick": pick, "offers": list(run.offers.values()),
             "trace": run.trace, "checkout": run.checkout, "usage": run.usage}

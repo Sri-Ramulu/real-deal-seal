@@ -137,10 +137,68 @@ def test_gemini_loop_follows_the_function_calling_protocol(gemini, evidence):
 
 
 def test_gemini_error_becomes_a_clear_api_message(monkeypatch, client):
+    monkeypatch.setattr(agent, "BUSY_WAITS", (0, 0))
     real = httpx.Client
     monkeypatch.setattr(agent.httpx, "Client", lambda **kw: real(transport=httpx.MockTransport(lambda req: httpx.Response(429, text="quota")), **kw))
     monkeypatch.setattr(config, "GEMINI_API_KEY", "k")
     r = client.post("/api/chat", json={"messages": [{"role": "user", "content": "napkins"}]})
+    assert r.status_code == 502 and "did not answer" in r.json()["detail"]
+
+
+def _fake_claude(monkeypatch, seen):
+    class FakeMessages:
+        def create(self, **kw):
+            seen.update(kw)
+            return SimpleNamespace(usage=SimpleNamespace(input_tokens=5, output_tokens=3), stop_reason="end_turn",
+                                   content=[SimpleNamespace(type="text", text="The runner.\nPICK: JF-RUN-PL")])
+
+    import anthropic
+    monkeypatch.setattr(anthropic, "Anthropic", lambda **kw: SimpleNamespace(messages=FakeMessages()))
+
+
+def _gemini_answers(monkeypatch, statuses):
+    """Gemini answers with each status in turn; a 200 is a final answer."""
+    calls = []
+
+    def handler(req):
+        status = statuses[min(len(calls), len(statuses) - 1)]
+        calls.append(status)
+        if status != 200:
+            return httpx.Response(status, text='{"error": {"message": "This model is currently experiencing high demand."}}')
+        parts = [{"text": "I'd pick the runner.\nPICK: JF-RUN-PL"}]
+        return httpx.Response(200, json={"candidates": [{"content": {"role": "model", "parts": parts}}]})
+
+    real = httpx.Client
+    monkeypatch.setattr(agent.httpx, "Client", lambda **kw: real(transport=httpx.MockTransport(handler), **kw))
+    monkeypatch.setattr(agent, "BUSY_WAITS", (0, 0))
+    monkeypatch.setattr(config, "GEMINI_API_KEY", "k")
+    return calls
+
+
+def test_busy_gemini_is_retried_before_giving_up(monkeypatch, client):
+    calls = _gemini_answers(monkeypatch, [503, 503, 200])
+    monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "")
+    r = agent.chat([{"role": "user", "content": "runner"}])
+    assert calls == [503, 503, 200] and r["mode"] == "gemini" and r["busy_from"] is None and r["pick"] == "JF-RUN-PL"
+
+
+@pytest.mark.parametrize("evidence", [True, False])
+def test_gemini_still_busy_hands_over_to_claude_sonnet_and_says_so(monkeypatch, client, evidence):
+    calls = _gemini_answers(monkeypatch, [503])
+    seen = {}
+    _fake_claude(monkeypatch, seen)
+    monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "a")
+    r = client.post("/api/chat", json={"messages": [{"role": "user", "content": "runner"}], "evidence": evidence}).json()
+    assert calls == [503, 503, 503], "two retries, then hand over"
+    assert r["mode"] == "claude" and r["model"] == config.MODEL and r["busy_from"] == "Google Gemini"
+    assert r["model_label"] == "Claude Sonnet (Google Gemini was busy)" and r["evidence"] is evidence
+    assert ("passport" in seen["system"]) is evidence, "the hand-over keeps the Evidence setting"
+
+
+def test_busy_gemini_without_claude_is_a_clear_error(monkeypatch, client):
+    _gemini_answers(monkeypatch, [503])
+    monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "")
+    r = client.post("/api/chat", json={"messages": [{"role": "user", "content": "runner"}]})
     assert r.status_code == 502 and "did not answer" in r.json()["detail"]
 
 

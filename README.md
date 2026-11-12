@@ -51,7 +51,7 @@ installs what it needs and opens the site.
 
 ```bash
 make setup      # Python environment and web dependencies
-make test       # builds the warehouse, runs 150 tests and the eval harness check
+make test       # builds the warehouse, runs 154 tests and the eval harness check
 make test-pg DATABASE_URL=postgresql://...   # the API tests on PostgreSQL, with row-level security
 make web        # builds the site
 make api        # http://localhost:8000 (reads .env by itself)
@@ -80,7 +80,7 @@ Render dashboard. Keep `RDS_ISSUER_SEED_HEX` the same across deploys, or every i
 
 Checked in this repository (`make test`, `make evidence`):
 
-- 150 automated tests pass on SQLite (55 on the data platform, 95 on the API, assistant and client). The API suite
+- 154 automated tests pass on SQLite (55 on the data platform, 99 on the API, assistant and client). The API suite
   also passes on PostgreSQL 16, plus 2 tests there that check row-level security between businesses.
 - All 175 PayPal sandbox orders reach the gold layer; 4 gates and 319 data contract rules pass, including every
   star-schema foreign key.
@@ -88,6 +88,8 @@ Checked in this repository (`make test`, `make evidence`):
 - Withdrawing a seal: the seal fails its check, the AI is told, checkout is refused, and nobody else is affected.
 - The Gemini tool-calling loop is tested against a stand-in for Google's API, including sending the model's turn
   back unchanged; the Claude Opus and Sonnet choices are tested against a stand-in for Anthropic's API.
+- When Gemini is overloaded, the assistant retries twice, then answers with Claude Sonnet and labels the reply
+  "Claude Sonnet (Google Gemini was busy)", keeping the Evidence setting.
 - The eval harness: a scripted correct agent passes 12 of 12 tasks, and a scripted bad agent passes 0 of 12.
 - 6 browser tests (`make e2e`) walk the main journeys in Chrome: the home page, product images and card layout,
   the assistant with evidence on and off, the seal check, checkout, and Merchant Studio.

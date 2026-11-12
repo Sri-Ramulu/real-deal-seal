@@ -6,7 +6,7 @@ setup:            ## one-time: Python env and web dependencies
 	cd web && npm install
 build:            ## landing -> bronze -> silver -> gold, behind four gates
 	$(PY) data_platform/run/build.py
-test: build       ## 150 tests: pipeline, star schema, contracts, passports, withdrawals, evidence switch, models, checkout, webhooks, SDK
+test: build       ## 154 tests: pipeline, star schema, contracts, passports, withdrawals, evidence switch, models, checkout, webhooks, SDK
 	$(PY) -m pytest data_platform/tests api/tests -q
 	$(PY) evals/tau/run.py --agent oracle
 web:              ## build the site into web/build (served by the API)
