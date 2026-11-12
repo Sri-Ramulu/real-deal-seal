@@ -1,6 +1,6 @@
 # Evidence pack
 
-Generated 2026-11-12T13:21:26+00:00 by `scripts/evidence_pack.py`. 164 of 166 automated tests passed.
+Generated 2026-11-12T13:55:01+00:00 by `scripts/evidence_pack.py`. 166 of 168 automated tests passed.
 
 ## Claims
 
@@ -56,7 +56,7 @@ Generated 2026-11-12T13:21:26+00:00 by `scripts/evidence_pack.py`. 164 of 166 au
 
 ## Runs
 
-- data_platform/tests: 55 passed in 4.49s
-- api/tests: 109 passed, 2 skipped in 59.53s
+- data_platform/tests: 55 passed in 5.03s
+- api/tests: 111 passed, 2 skipped in 63.15s (0:01:03)
 - evals/tau harness: oracle: pass rate 1.0, pass^1 1.0 over 12 tasks
 - evals/tau harness: naive: pass rate 0.0, pass^1 0.0 over 12 tasks

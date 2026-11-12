@@ -134,3 +134,19 @@ SQLite rather than PostgreSQL, so no database-level row security. No PayPal sign
 No managed secret store: the key ring is a file under `RDS_VAR_DIR` with owner-only permissions. Roles are owner
 and staff labels without separate permissions. The refresh job runs in-process and rebuilds the whole warehouse,
 which is right for this size and wrong for a large one.
+
+## Shops and how each one sells
+
+| Shops | Record | Checkout |
+|---|---|---|
+| Lydia Linen Co., Martha's Kitchen, Priscilla Canvas Works | PayPal sandbox orders read back from PayPal | PayPal sandbox, approved by the shopper |
+| Copper Kettle Supply, Sage & Stone Studio | Simulated records imported through onboarding (`api/rds/demo_shops.py`) | Simulated PayPal checkout, labelled on the button |
+| Violet & Vine Home, Juniper & Oak Goods | Simulated records; seal withdrawn for cause | Off while the seal is withdrawn |
+| Babel Home, Hearthline Home, Linen Palace | None (never joined) | Not through PayPal here; the shop's own website (fictional, no link) |
+
+All ten are fictional. The first seven have a Merchant Studio with a public demo login (`GET /api/auth/demo`).
+With evidence off, an offer's `paypal_checkout` says only whether the shop takes PayPal, and a refused checkout does
+not mention the seal, so the baseline cannot learn about a withdrawal.
+
+Deploys: the disk keeps the warehouse between deploys, so at startup `refresh.stale()` compares a fingerprint of the
+pipeline code and landing files with the last good build and rebuilds when they differ.

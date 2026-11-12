@@ -3,10 +3,10 @@
   import { api, usd } from '$lib/api.js';
   import Arrow from '$lib/components/Arrow.svelte';
 
-  let all = $state([]), q = $state(''), found = $state(null), open = $state(null), detail = $state(null), market = $state(null), error = $state(''), busy = $state(false);
-  onMount(async () => (all = await api('/api/products')));
+  let all = $state([]), q = $state(''), found = $state(null), open = $state(null), detail = $state(null), market = $state(null), error = $state(''), busy = $state(false), health = $state(null);
+  onMount(async () => { [all, health] = await Promise.all([api('/api/products'), api('/api/health').catch(() => null)]); });
   const list = $derived(found ?? all);
-  const cls = (h) => (h.includes('Real Deal') ? 'sealed' : h.includes('Verified') ? 'verified' : h.includes('Self-reported') ? 'reported' : h.includes('history') ? 'new' : 'no_record');
+  const cls = (h) => (h.includes('withdrawn') ? 'withdrawn' : h.includes('Real Deal') ? 'sealed' : h.includes('Verified') ? 'verified' : h.includes('Self-reported') ? 'reported' : h.includes('history') ? 'new' : 'no_record');
   async function search() { found = q.trim() ? await api(`/api/products?q=${encodeURIComponent(q)}`) : null; }
   async function show(o) {
     open = o; detail = null; market = null; error = '';
@@ -51,9 +51,10 @@
     {:else}<p class="small">Reading the business's record.</p>{/if}
     {#if market?.available}<p class="small ctx">Price context: similar items on the web typically cost about {usd(market.typical_price_usd)} ({usd(market.range_usd[0])} to {usd(market.range_usd[1])}). {market.note}</p>{/if}
     {#if error}<p class="notice err">{error}</p>{/if}
-    {#if open.paypal_checkout}<button class="btn" onclick={buy} disabled={busy || !open.in_stock}>{open.in_stock ? 'Buy with PayPal' : 'Out of stock'} <Arrow /></button>
-    {:else}<p class="notice">This shop has no PayPal connection here, so no checkout can be opened.</p>{/if}
-    <p class="small">You approve the payment yourself in PayPal, and our server sets the price.</p>
+    {#if open.paypal_checkout}<button class="btn" onclick={buy} disabled={busy || !open.in_stock}>{!open.in_stock ? 'Out of stock' : health?.checkout?.[open.shop_id] === 'simulated' ? 'Buy (simulated PayPal checkout)' : 'Buy with PayPal'} <Arrow /></button>
+      <p class="small">{health?.checkout?.[open.shop_id] === 'simulated' ? 'This demo shop has no PayPal sandbox app, so the checkout is simulated and no PayPal call is made.' : 'You approve the payment yourself in PayPal (sandbox, test money), and our server sets the price.'}</p>
+    {:else if cls(open.shop_standing) === 'withdrawn'}<p class="notice">Real Deal Seal withdrew this shop's seal, so checkout through this site is turned off.</p>
+    {:else}<p class="notice">This shop doesn't take PayPal through Real Deal Seal. A shopper would buy on the shop's own website. The shops here are fictional, so there is no link.</p>{/if}
   </div>
 {/if}
 

@@ -371,8 +371,10 @@ def me(authorization: str | None = Header(default=None)):
 
 @app.get("/api/auth/demo")
 def demo_accounts():
-    """The demo owners are public on purpose: they open studios that hold PayPal sandbox data only."""
-    return {"password": config.DEMO_PASSWORD, "accounts": [f"{m}@demo.realdealseal.example" for m in ("lydia", "martha", "priscilla")]}
+    """The demo owners are public on purpose: their studios hold PayPal sandbox data or simulated demo records only.
+    Seven of the ten shops have joined; Babel Home, Hearthline Home and Linen Palace never did, so they have no studio."""
+    joined = ["lydia", "martha", "priscilla"] + [m for m in demo_shops.ids() if store.one("SELECT 1 FROM merchant_users WHERE email = ?", [f"{m}@demo.realdealseal.example"])]
+    return {"password": config.DEMO_PASSWORD, "accounts": [f"{m}@demo.realdealseal.example" for m in joined]}
 
 
 @app.post("/api/onboarding/workspaces")

@@ -82,3 +82,11 @@ def test_every_new_product_has_its_own_picture(client, shops):
 def test_offline_assistant_still_answers_with_the_new_shops(client, shops):
     r = agent.chat([{"role": "user", "content": "lavender napkins"}], evidence=False)
     assert r["offers"]
+
+
+def test_all_seven_joined_shops_have_a_public_demo_login(client, shops):
+    d = client.get("/api/auth/demo").json()
+    ids = [a.split("@")[0] for a in d["accounts"]]
+    assert ids == ["lydia", "martha", "priscilla", *demo_shops.ids()], "the three shops that never joined have no studio"
+    r = client.post("/api/auth/login", json={"email": "violet-vine-home@demo.realdealseal.example", "password": d["password"]})
+    assert r.status_code == 200

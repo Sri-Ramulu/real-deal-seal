@@ -42,6 +42,32 @@
     <table class="plain"><thead><tr><th>Tool</th><th>Use it to</th></tr></thead><tbody>{#each tools as t}<tr><td><code>{t.name}</code></td><td class="small">{t.description.split('. ')[0]}.</td></tr>{/each}</tbody></table>
   </div>
 
+  <h2>Shops, checkout and the Evidence switch</h2>
+  <div class="two">
+    <div>
+      <p>The demo has ten fictional shops. Every listing says how a shopper can buy it:</p>
+      <table class="plain"><thead><tr><th>Shops</th><th>Record</th><th>How a shopper buys</th></tr></thead><tbody>
+        <tr><td>Lydia Linen Co., Martha's Kitchen, Priscilla Canvas Works</td><td class="small">PayPal sandbox orders read back from PayPal</td><td class="small">PayPal sandbox checkout (test money); the shopper approves in PayPal</td></tr>
+        <tr><td>Copper Kettle Supply, Sage &amp; Stone Studio</td><td class="small">Simulated records the business imported</td><td class="small">Simulated PayPal checkout (no sandbox app for these shops)</td></tr>
+        <tr><td>Violet &amp; Vine Home, Juniper &amp; Oak Goods</td><td class="small">Simulated records; seal withdrawn for cause</td><td class="small">Checkout off while the seal is withdrawn</td></tr>
+        <tr><td>Babel Home, Hearthline Home, Linen Palace</td><td class="small">None: they never joined</td><td class="small">Not through PayPal here; on the shop's own website (fictional, no link)</td></tr>
+      </tbody></table>
+      <p class="small">The first seven have a Merchant Studio with a public demo login. The last three never joined, so they have no studio.</p>
+    </div>
+    <div>
+      <p><code>POST /api/chat</code> takes <code>messages</code>, <code>evidence</code> (default <code>true</code>), <code>model</code> (<code>gemini</code>, <code>claude-sonnet</code> or <code>claude-haiku</code>) and <code>fallback</code> (default <code>true</code>: a busy Gemini is retried twice, then Claude Sonnet answers and the reply is labelled; set <code>false</code> in evaluations).</p>
+      <p>Each offer carries <code>paypal_checkout</code>. With evidence on it means checkout can be opened now (false for a withdrawn seal); with evidence off it only says whether the shop takes PayPal, so the baseline never learns about a withdrawal. <code>GET /api/health</code> gives each shop's checkout mode: <code>paypal_sandbox</code> or <code>simulated</code>.</p>
+      <p>The two lines at the foot of every passport have one fixed layout, 36 characters each:</p>
+      <pre>{`RDS<<SHOP<NAME<<<<<<<<<<<<<<<<<<<<<<
+STANDING<<C2<YYYYMMDD<NNNN<<<<<<<<<<
+standing (9): SEALED, VERIFIED, REPORTED, NEW,
+              WITHDRAWN or NORECORD
+C2: published rule set, version 2 (C0: none)
+YYYYMMDD: data date; NNNN: completed orders`}</pre>
+      <p class="small">The evaluation runner and grader are in <code>evals/live/</code>; the graded run is in <code>data_platform/landing/agent/</code> and every result page reads from it.</p>
+    </div>
+  </div>
+
   {#if c}
     <h2>Data products</h2>
     <p class="lede sub">A data mesh of four domains. Each owns its own bronze, silver and gold tables; a shared platform runs them behind four gates. Pipeline run {c.run_id}.</p>
@@ -120,6 +146,7 @@ GROUP BY ALL`}</pre>{/if}</div>
   .top { margin: 24px 0 0; } .sub { margin-bottom: 30px; }
   h2 { font-size: clamp(1.9rem, 3.6vw, 3rem); margin: 88px 0 16px; } .h { font-size: 0.7em; }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .two table td { vertical-align: top; }
   .products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
   .products h3 { margin: 4px 0 10px; font-size: 1.5rem; } .products p { font-size: 0.97rem; }
   .ports { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }

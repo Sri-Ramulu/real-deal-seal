@@ -14,7 +14,7 @@
   <div class="grid3">
     {#each shops as shop}<PassportCard {shop} href="/shops/{shop.merchant_id}" />{/each}
   </div>
-  <p class="notice">Babel Home and Linen Palace have no record here, so we can’t vouch for them either way. Linen Palace also displays a badge that no published key verifies; <a href="/verify?shop=palace">check it yourself</a>.</p>
+  <p class="notice">Babel Home, Hearthline Home and Linen Palace never joined, so we have no record and can’t vouch for them either way. Violet &amp; Vine Home and Juniper &amp; Oak Goods joined, but their seals were withdrawn for cause. Linen Palace also displays a badge that no published key verifies; <a href="/verify?shop=palace">check it yourself</a>.</p>
 </section>
 
 <style>

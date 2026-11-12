@@ -16,7 +16,12 @@
     catch (err) { error = err.message; }
     busy = false;
   }
-  const names = { lydia: ['Lydia Linen Co.', 'Sealed. See what a full record looks like.'], martha: ["Martha's Kitchen", 'Four rules to fix. Try the coach.'], priscilla: ['Priscilla Canvas Works', 'Too new to judge. See how that is shown.'] };
+  const names = { lydia: ['Lydia Linen Co.', 'Sealed. See what a full record looks like.'], martha: ["Martha's Kitchen", 'Four rules to fix. Try the coach.'],
+    priscilla: ['Priscilla Canvas Works', 'Too new to judge. See how that is shown.'],
+    'copper-kettle-supply': ['Copper Kettle Supply', 'Self-reported record. See what it takes to be confirmed.'],
+    'sage-stone-studio': ['Sage & Stone Studio', 'A new maker with a short, clean record.'],
+    'violet-vine-home': ['Violet & Vine Home', 'Seal withdrawn for cause. See what the business sees.'],
+    'juniper-oak-goods': ['Juniper & Oak Goods', 'Seal withdrawn after orders that never shipped.'] };
 </script>
 
 <svelte:head><title>Merchant Studio | Real Deal Seal</title></svelte:head>
@@ -27,7 +32,7 @@
     <p class="lede">Each shop's private workspace: what's verified, what to fix next to earn the seal, and what shoppers and AI assistants see.</p>
     {#if demo}
       <h2>Open a demo shop</h2>
-      <p class="small">These demo logins are public, and their studios hold PayPal sandbox data only.</p>
+      <p class="small">These demo logins are public. The first three studios hold PayPal sandbox records; the other four hold simulated demo records. Babel Home, Hearthline Home and Linen Palace have no studio because they never joined.</p>
       <div class="demos">
         {#each demo.accounts as a}
           {@const id = a.split('@')[0]}

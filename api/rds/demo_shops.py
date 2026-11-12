@@ -125,19 +125,36 @@ def _withdrawal_reason(shop: dict, rows: list[dict]) -> str:
             "(fictional shop, simulated demo records).")
 
 
+def merchant_id(shop: dict) -> str:
+    return "-".join(shop["name"].lower().replace("&", "").split())
+
+
+def ids() -> list[str]:
+    return [merchant_id(s) for s in SHOPS]
+
+
+def _demo_owner(mid: str) -> None:
+    """A public demo login, like the PayPal demo shops have, so anyone can open this shop's studio."""
+    from . import auth, config
+    store.insert("merchant_users", {"user_id": secrets.token_hex(16), "merchant_id": mid, "email": f"{mid}@demo.realdealseal.example",
+                                    "password_hash": auth.hash_password(config.DEMO_PASSWORD), "role": "owner", "created_at": store.now()},
+                 or_ignore=True)
+
+
 def ensure(today: datetime.date | None = None) -> list[str]:
-    """Create any demo shop that is missing. Returns the ids created."""
+    """Create any demo shop that is missing, and make sure each has its public demo login. Returns the ids created."""
     today = today or datetime.date.today()
     created, withdraw = [], []
     for shop in SHOPS:
-        slug = shop["name"].lower().replace("&", "").split()
-        mid = "-".join(slug)
+        mid = merchant_id(shop)
         if store.one("SELECT 1 FROM merchants WHERE merchant_id = ?", [mid]):
+            _demo_owner(mid)
             continue
         ws = onboarding.create_workspace({"name": shop["name"], "business_type": "physical", "category": "Home & Garden", "region": "US",
                                           "sells": shop["sells"], "ships_from": shop["ships_from"], "returns_policy": shop["returns"],
                                           "email": f"owner@{mid}.example", "password": secrets.token_urlsafe(24)})
         mid = ws["merchant_id"]
+        _demo_owner(mid)
         onboarding.connect(mid, "records_import")
         onboarding.connect(mid, "paypal")  # no sandbox app for these shops: recorded and labelled as a simulated connection
         onboarding.import_catalog(mid, [{"sku": s, "name": n, "price_usd": p, "stock": 25, "tags": t, "description": d}

@@ -835,7 +835,7 @@
   "/api/auth/demo": {
    "get": {
     "summary": "Demo Accounts",
-    "description": "The demo owners are public on purpose: they open studios that hold PayPal sandbox data only.",
+    "description": "The demo owners are public on purpose: their studios hold PayPal sandbox data or simulated demo records only.\nSeven of the ten shops have joined; Babel Home, Hearthline Home and Linen Palace never did, so they have no studio.",
     "operationId": "demo_accounts_api_auth_demo_get",
     "responses": {
      "200": {

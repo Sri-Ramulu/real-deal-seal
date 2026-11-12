@@ -55,7 +55,9 @@
     {#if health}
       <p class="notice small">
         {#if health.assistant === 'offline'}<strong>Offline mode.</strong> No AI model is set up on this server, so answers are a plain catalog search.{:else if evidence}The assistant can search, read shop passports and check seals.{:else}Evidence is off: the assistant can only search listings and open a checkout.{/if}
-        {#if Object.values(health.checkout).includes('simulated')}<br /><strong>Simulated checkout.</strong> No PayPal sandbox keys are set on this server, so no PayPal call is made.{:else}<br />Checkout runs in the PayPal sandbox with test money.{/if}
+        {#if !Object.values(health.checkout).includes('paypal_sandbox')}<br /><strong>Simulated checkout.</strong> No PayPal sandbox keys are set on this server, so no PayPal call is made.
+        {:else if Object.values(health.checkout).includes('simulated')}<br />Lydia, Martha and Priscilla check out in the PayPal sandbox with test money. The four demo shops without a sandbox app use a simulated checkout, and their button says so. Shops that don't take PayPal here sell on their own websites.
+        {:else}<br />Checkout runs in the PayPal sandbox with test money.{/if}
       </p>
     {/if}
   </aside>
@@ -89,8 +91,9 @@
                       {#if o.seller_text?.contains_instructions_for_ai}<p class="warn small">This listing contains text aimed at AI assistants. It was ignored.</p>{/if}
                     {/if}
                     <div class="row"><span class="num price">{usd(o.price_usd)}</span>
-                      {#if o.paypal_checkout}<button class="btn" onclick={() => buy(o)}>Buy with PayPal <Arrow size={12} /></button>
-                      {:else}<span class="small">No PayPal checkout here</span>{/if}</div>
+                      {#if o.paypal_checkout}<button class="btn" onclick={() => buy(o)}>{health?.checkout?.[o.shop_id] === 'simulated' ? 'Buy (simulated PayPal)' : 'Buy with PayPal'} <Arrow size={12} /></button>
+                      {:else if t.evidence !== false && standingClass(o.shop_standing) === 'withdrawn'}<span class="small route" title="Real Deal Seal withdrew this shop's seal, so checkout through this site is turned off.">Checkout off: seal withdrawn</span>
+                      {:else}<span class="small route" title="This shop does not take PayPal through Real Deal Seal. A shopper would buy on the shop's own website; the shops here are fictional, so there is no link.">Sold on the shop's own website</span>{/if}</div>
                     {#if t.evidence !== false}<a class="small" href="/shops/{o.shop_id}">Open the shop's passport</a>{/if}
                   </article>
                 {/each}
@@ -135,13 +138,16 @@
   .who { display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 10px; }
   .text { white-space: pre-wrap; max-width: 70ch; }
   .offers { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin-top: 18px; }
-  article { position: relative; background: var(--tile); border-radius: 6px; padding: 18px; display: grid; gap: 8px; align-content: start; justify-items: start; }
+  article { position: relative; min-width: 0; background: var(--tile); border-radius: 6px; padding: 18px; display: grid; gap: 8px; align-content: start; justify-items: start; }
+  article .chip { max-width: 100%; white-space: normal; line-height: 1.25; }
+  article h3, .shop { overflow-wrap: anywhere; }
+  .route { color: var(--muted); text-align: right; max-width: 60%; line-height: 1.3; }
   article.pick { background: #fff; box-shadow: inset 0 0 0 2px var(--red); }
   .flag { position: absolute; top: -10px; right: 12px; background: var(--red); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 3px; }
   .pic { width: 100%; height: auto; aspect-ratio: 320/190; background: #fff; border-radius: 4px; }
   article h3 { font: 600 1.02rem/1.25 var(--display); }
   .shop { margin: 0; font-size: 0.9rem; color: var(--muted); }
-  .row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 6px; gap: 8px; }
+  .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; width: 100%; margin-top: 6px; gap: 8px; }
   .price { font-size: 1.5rem; font-weight: 500; color: var(--ink); }
   article .btn { padding: 9px 12px; font-size: 0.86rem; gap: 8px; }
   .warn { color: var(--red); font-weight: 600; margin: 0; }
