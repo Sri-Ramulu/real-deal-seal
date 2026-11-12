@@ -1,6 +1,8 @@
 # Demo video script (2:55, under the 3:00 limit)
 
-**Status: draft for approval. The video is not recorded until the script is approved.**
+**Status: recorded on 12 November 2026 from the live site.** The footage is a real screen capture with a visible pointer;
+the voice-over is a synthetic voice (Piper, "Ryan"); captions are in `docs/video/captions.srt`. Two waits were cut
+for length (the assistant thinking, and the record rebuilding in the coach); no answer was edited.
 
 Eight scenes, 175 seconds, about 385 spoken words (a calm 130 words a minute, with pauses while the screen changes).
 The first 25 seconds are the whole argument: one question, two answers, side by side.
@@ -10,18 +12,18 @@ Rules that shape it: under 3 minutes; shows the project working; public on YouTu
 Say numbers exactly as they appear on screen. The assistant's answers are live and can vary; never edit footage to
 change what it said.
 
-| # | Time | Length | On screen | What to say |
+| # | Time | Length | On screen | Narration |
 |---|---|---|---|---|
-| 1 | 0:00-0:25 | 25 s | Home page, "See the difference". Press **Run it live** on the purple table runner question. Both columns fill. | "I asked an AI shopping assistant for a purple table runner. Twice, at the same moment. On the left, it sees only the listings. It picks Violet and Vine: linen, cheaper, ships fast. On the right, it can check each shop's record. It picks Lydia. What the left side could not see: Violet and Vine's seal was withdrawn. Buyers got polyester, or nothing at all." |
-| 2 | 0:25-0:42 | 17 s | Scroll to the three numbers under the demo, then the study panel. Hold on the source line. | "We ran fifty requests like that. Without evidence, shops like that won thirty-four times. With evidence, zero. Honest small shops went from nine wins to thirty-five. A study this fall found AI assistants choose the big chain about nine times in ten." |
-| 3 | 0:42-1:02 | 20 s | Passports, then Lydia Linen Co. Point at the facts and their source labels. | "This is Real Deal Seal. It turns a small shop's PayPal history into a passport. It is not a score. It counts what happened: orders completed, shipments tracked, refunds. Every fact says where it came from: PayPal's records, the shop itself, or simulated for this demo." |
-| 4 | 1:02-1:25 | 23 s | Check a seal: load Lydia (Genuine). Press "Change one number, then check" (Edited). Load Linen Palace (Forged). Load Violet & Vine Home (Withdrawn). | "The passport is signed, so anyone can check it. Genuine. Change one number, and the check fails. This badge was never signed by us: forged. And when we withdraw a seal, the old badge stops working. Plain code decides this. No AI model is involved." |
-| 5 | 1:25-1:52 | 27 s | Assistant page: ask it to buy Lydia's runner. The PayPal sandbox page opens; approve as the sandbox buyer; the paid page. | "The agent finishes the job. It opens a PayPal checkout for Lydia's runner. But only I can approve the payment, on PayPal's own page. Then our server asks PayPal whether that exact amount was captured. Only then is it paid. This is the PayPal sandbox, with test money. For a shop whose seal was withdrawn, checkout is switched off." |
-| 6 | 1:52-2:13 | 21 s | Merchant Studio, Martha's Kitchen. Click the red tracking tile; the AG Grid filters. In Coach, add one tracking number. | "Shop owners get a studio. Martha misses four rules, and one click shows the exact orders behind each number. She adds a tracking number, and her count goes up by one. The record shows it before and after." |
-| 7 | 2:13-2:35 | 22 s | Proof lab: the dot grids, the table of three full runs, the attacks table, then the grid of every recorded pick. | "We tested it hard. Fifty requests and eleven attacks, written before any run, on two models, three full runs each. Forged seals, edited seals, hidden instructions, pressure. Every single run is published here, six hundred picks, including the ones we re-ran after fixing our own bug." |
-| 8 | 2:35-2:55 | 20 s | Developer pages: the platform strip and the quality heatmap for two seconds. Then "Why PayPal wins". End on the footer scene. | "Under it: eight agent tools over MCP, and a data platform where every promise is checked on every build. For PayPal, payment history becomes a reason for shops to stay, and for AI agents to check out with PayPal. Real Deal Seal. Proof beats brand." |
+| 1 | 0:00-0:25 | 25.3 s | Home page: “See the difference”, run live | "I asked an AI shopping assistant for a purple table runner. Twice, at the same moment. On the left, it sees only the listings. It picks Violet and Vine: linen, cheaper, ships fast. On the right, it can check each shop's record. It picks Lydia. What the left side could not see: Violet and Vine's seal was withdrawn. Buyers got polyester, or nothing at all." |
+| 2 | 0:25-0:42 | 17.3 s | The numbers and the outside study | "We ran fifty requests like that. Without evidence, shops like that won thirty-four times. With evidence, zero. Honest small shops went from nine wins to thirty-five. A study this fall found AI assistants choose the big chain about nine times in ten." |
+| 3 | 0:42-1:02 | 20.0 s | Passports, then Lydia Linen Co. | "This is Real Deal Seal. It turns a small shop's PayPal history into a passport. It is not a score. It counts what happened: orders completed, shipments tracked, refunds. Every fact says where it came from: PayPal's records, the shop itself, or simulated for this demo." |
+| 4 | 1:02-1:25 | 23.3 s | Check a seal: genuine, edited, forged, withdrawn | "The passport is signed, so anyone can check it. Genuine. Change one number, and the check fails. This badge was never signed by us: forged. And when we withdraw a seal, the old badge stops working. Plain code decides this. No AI model is involved." |
+| 5 | 1:25-1:51 | 25.3 s | The assistant opens a PayPal checkout; a withdrawn shop can't be bought from | "The agent finishes the job. It opens a PayPal checkout for Lydia's runner. But only I can approve the payment, on PayPal's own page. Then our server asks PayPal whether that exact amount was captured. Only then is it paid. This is the PayPal sandbox, with test money. For a shop whose seal was withdrawn, checkout is switched off." |
+| 6 | 1:51-2:12 | 21.3 s | Merchant Studio: Martha's Kitchen, AG Grid, the coach | "Shop owners get a studio. Martha misses four rules. One click shows the exact orders behind each number, in an AG Grid. She adds a tracking number, and her count goes up by one. The record shows it before and after." |
+| 7 | 2:12-2:34 | 22.3 s | Proof lab: three full runs, attacks, AG Grid of every pick | "We tested it hard. Fifty requests and eleven attacks, written before any run, on two models, three full runs each. Forged seals, edited seals, hidden instructions, pressure. Every single run is published in an AG Grid you can filter and export: six hundred picks, including the ones we re-ran after fixing our own bug." |
+| 8 | 2:34-2:55 | 20.2 s | Developers, Why PayPal wins, the footer | "Under it: eight agent tools over MCP, and a data platform where every promise is checked on every build. For PayPal, payment history becomes a reason for shops to stay, and for AI agents to check out with PayPal. Real Deal Seal. Proof beats brand." |
 
-Total: 25 + 17 + 20 + 23 + 27 + 21 + 22 + 20 = 175 seconds = 2:55.
+Total: 175.0 seconds = 2:55.
 
 ## Notes for recording
 
