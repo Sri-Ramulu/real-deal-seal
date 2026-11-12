@@ -53,8 +53,8 @@
     {#if error}<p class="notice err">{error}</p>{/if}
     {#if open.paypal_checkout}<button class="btn" onclick={buy} disabled={busy || !open.in_stock}>{!open.in_stock ? 'Out of stock' : health?.checkout?.[open.shop_id] === 'simulated' ? 'Buy (simulated PayPal checkout)' : 'Buy with PayPal'} <Arrow /></button>
       <p class="small">{health?.checkout?.[open.shop_id] === 'simulated' ? 'This demo shop has no PayPal sandbox app, so the checkout is simulated and no PayPal call is made.' : 'You approve the payment yourself in PayPal (sandbox, test money), and our server sets the price.'}</p>
-    {:else if cls(open.shop_standing) === 'withdrawn'}<p class="notice">Real Deal Seal withdrew this shop's seal, so checkout through this site is turned off.</p>
-    {:else}<p class="notice">This shop doesn't take PayPal through Real Deal Seal. A shopper would buy on the shop's own website. The shops here are fictional, so there is no link.</p>{/if}
+    {:else if cls(open.shop_standing) === 'withdrawn'}<p class="notice"><strong>Can't buy here: seal withdrawn.</strong> Real Deal Seal withdrew this shop's seal for cause, so checkout is turned off.</p>
+    {:else}<p class="notice"><strong>Can't buy here: doesn't take PayPal.</strong> This shop has no PayPal connection with Real Deal Seal, so neither you nor an AI assistant can check out with it here.</p>{/if}
   </div>
 {/if}
 

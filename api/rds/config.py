@@ -80,8 +80,9 @@ SEAL_VALID_DAYS = 45
 
 
 def paypal_credentials(merchant_id: str) -> tuple[str, str] | None:
-    """Each shop has its own PayPal sandbox app: PAYPAL_<SHOP>_CLIENT_ID / _CLIENT_SECRET."""
-    p = f"PAYPAL_{merchant_id.upper()}"
+    """Each shop has its own PayPal sandbox app: PAYPAL_<SHOP>_CLIENT_ID / _CLIENT_SECRET, where <SHOP> is the shop id in
+    capitals with hyphens as underscores (copper-kettle-supply -> PAYPAL_COPPER_KETTLE_SUPPLY_CLIENT_ID)."""
+    p = f"PAYPAL_{merchant_id.upper().replace('-', '_')}"
     cid, sec = os.environ.get(f"{p}_CLIENT_ID"), os.environ.get(f"{p}_CLIENT_SECRET")
     return (cid, sec) if cid and sec else None
 
@@ -97,6 +98,6 @@ PAYPAL_WEBHOOK_ID = os.environ.get("PAYPAL_WEBHOOK_ID", "")
 
 def paypal_webhook_id(merchant_id: str) -> str:
     """Each shop's PayPal app has its own webhook: PAYPAL_<SHOP>_WEBHOOK_ID, falling back to PAYPAL_WEBHOOK_ID."""
-    return os.environ.get(f"PAYPAL_{merchant_id.upper()}_WEBHOOK_ID") or PAYPAL_WEBHOOK_ID
+    return os.environ.get(f"PAYPAL_{merchant_id.upper().replace('-', '_')}_WEBHOOK_ID") or PAYPAL_WEBHOOK_ID
 SESSION_HOURS = 12
 CONSENT_VERSION = "rds-consent-1"

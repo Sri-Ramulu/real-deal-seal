@@ -27,10 +27,11 @@
     busy = false;
     await tick(); log?.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
   }
-  async function buy(o) {
+  async function buy(o, evidenceOn = true) {
     error = '';
     try { const s = await api('/api/checkout', { sku: o.sku, quantity: 1 }); window.location.href = s.approve_url; }
-    catch (e) { error = e.message; }
+    // With evidence off the page must not reveal why a shop is refused (that would leak a withdrawn seal).
+    catch (e) { error = evidenceOn ? e.message : "This shop can't take orders right now."; }
   }
   const standingClass = (h = '') => (h.includes('withdrawn') ? 'withdrawn' : h.includes('sealed') && h.includes('Real') ? 'sealed' : h.includes('Verified') ? 'verified' : h.includes('Self-reported') ? 'reported' : h.includes('history') ? 'new' : 'no_record');
 </script>
@@ -56,8 +57,8 @@
       <p class="notice small">
         {#if health.assistant === 'offline'}<strong>Offline mode.</strong> No AI model is set up on this server, so answers are a plain catalog search.{:else if evidence}The assistant can search, read shop passports and check seals.{:else}Evidence is off: the assistant can only search listings and open a checkout.{/if}
         {#if !Object.values(health.checkout).includes('paypal_sandbox')}<br /><strong>Simulated checkout.</strong> No PayPal sandbox keys are set on this server, so no PayPal call is made.
-        {:else if Object.values(health.checkout).includes('simulated')}<br />Lydia, Martha and Priscilla check out in the PayPal sandbox with test money. The four demo shops without a sandbox app use a simulated checkout, and their button says so. Shops that don't take PayPal here sell on their own websites.
-        {:else}<br />Checkout runs in the PayPal sandbox with test money.{/if}
+        {:else if Object.values(health.checkout).includes('simulated')}<br />Shops with a PayPal sandbox app check out in the sandbox with test money. A shop without one uses a simulated checkout, and its button says so.
+        {:else}<br />Checkout runs in the PayPal sandbox with test money. You approve every payment yourself in PayPal.{/if}
       </p>
     {/if}
   </aside>
@@ -91,9 +92,9 @@
                       {#if o.seller_text?.contains_instructions_for_ai}<p class="warn small">This listing contains text aimed at AI assistants. It was ignored.</p>{/if}
                     {/if}
                     <div class="row"><span class="num price">{usd(o.price_usd)}</span>
-                      {#if o.paypal_checkout}<button class="btn" onclick={() => buy(o)}>{health?.checkout?.[o.shop_id] === 'simulated' ? 'Buy (simulated PayPal)' : 'Buy with PayPal'} <Arrow size={12} /></button>
-                      {:else if t.evidence !== false && standingClass(o.shop_standing) === 'withdrawn'}<span class="small route" title="Real Deal Seal withdrew this shop's seal, so checkout through this site is turned off.">Checkout off: seal withdrawn</span>
-                      {:else}<span class="small route" title="This shop does not take PayPal through Real Deal Seal. A shopper would buy on the shop's own website; the shops here are fictional, so there is no link.">Sold on the shop's own website</span>{/if}</div>
+                      {#if o.paypal_checkout}<button class="btn" onclick={() => buy(o, t.evidence !== false)}>{health?.checkout?.[o.shop_id] === 'simulated' ? 'Buy (simulated PayPal)' : 'Buy with PayPal'} <Arrow size={12} /></button>
+                      {:else if t.evidence !== false && standingClass(o.shop_standing) === 'withdrawn'}<span class="small route">Can't buy here: seal withdrawn</span>
+                      {:else}<span class="small route">Can't buy here: doesn't take PayPal</span>{/if}</div>
                     {#if t.evidence !== false}<a class="small" href="/shops/{o.shop_id}">Open the shop's passport</a>{/if}
                   </article>
                 {/each}

@@ -141,6 +141,18 @@ def _demo_owner(mid: str) -> None:
                  or_ignore=True)
 
 
+def _upgrade_paypal(mid: str) -> None:
+    """When a sandbox app for this shop is configured after it joined, replace its simulated PayPal connection with the
+    real one. Its records stay as imported and labelled; only checkout becomes a real PayPal sandbox checkout."""
+    from . import config
+    simulated = store.one("SELECT 1 FROM merchant_connections WHERE merchant_id = ? AND provider = 'paypal_simulated'", [mid])
+    if simulated and config.paypal_credentials(mid):
+        try:
+            onboarding.connect(mid, "paypal")
+        except Exception as e:  # PayPal refused the keys: keep the labelled simulated connection and record why
+            store.audit("system", "connection.upgrade", "paypal", result="failed", merchant_id=mid, detail={"error": str(e)[:300]})
+
+
 def ensure(today: datetime.date | None = None) -> list[str]:
     """Create any demo shop that is missing, and make sure each has its public demo login. Returns the ids created."""
     today = today or datetime.date.today()
@@ -149,6 +161,7 @@ def ensure(today: datetime.date | None = None) -> list[str]:
         mid = merchant_id(shop)
         if store.one("SELECT 1 FROM merchants WHERE merchant_id = ?", [mid]):
             _demo_owner(mid)
+            _upgrade_paypal(mid)
             continue
         ws = onboarding.create_workspace({"name": shop["name"], "business_type": "physical", "category": "Home & Garden", "region": "US",
                                           "sells": shop["sells"], "ships_from": shop["ships_from"], "returns_policy": shop["returns"],
