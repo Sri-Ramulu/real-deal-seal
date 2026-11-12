@@ -1,7 +1,7 @@
 # Demo video script (2:55, under the 3:00 limit)
 
 **Status: recorded on 12 November 2026 from the live site.** The footage is a real screen capture with a visible pointer;
-the voice-over is a synthetic voice (Piper, "Ryan"); captions are in `docs/video/captions.srt`. Two waits were cut
+the voice-over is a synthetic voice (Piper, "Lessac") over an original synthesised music bed; captions are in `docs/video/captions.srt`. Two waits were cut
 for length (the assistant thinking, and the record rebuilding in the coach); no answer was edited.
 
 Eight scenes, 175 seconds, about 385 spoken words (a calm 130 words a minute, with pauses while the screen changes).
