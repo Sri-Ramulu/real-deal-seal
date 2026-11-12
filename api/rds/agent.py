@@ -95,7 +95,7 @@ class _Run:
         if not self.evidence and name not in BASELINE_TOOLS:
             out = {"error": f"Tool '{name}' is not available."}
         else:
-            extra = {"evidence": self.evidence} if name == "search_products" else {}
+            extra = {"evidence": self.evidence} if name in ("search_products", "create_checkout") else {}
             out = tools.call(name, args, **extra)
         self.trace.append({"tool": name, "input": args, "summary": _summary(name, out)})
         for o in (out.get("offers", []) + out.get("alternatives", [])) if isinstance(out, dict) else []:

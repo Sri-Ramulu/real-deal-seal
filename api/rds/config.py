@@ -43,6 +43,7 @@ GEMINI_BASE = os.environ.get("GEMINI_BASE", "https://generativelanguage.googleap
 GEMINI_MODEL = os.environ.get("RDS_GEMINI_MODEL", "gemini-flash-latest")
 OPUS_MODEL = os.environ.get("RDS_OPUS_MODEL", "claude-opus-5-5")
 DEFAULT_ASSISTANT = os.environ.get("RDS_ASSISTANT", "gemini")
+DEMO_SHOPS = os.environ.get("RDS_DEMO_SHOPS", "1") == "1"  # the four fictional shops in demo_shops.py join at startup
 REFRESH_HOURS = float(os.environ.get("RDS_REFRESH_HOURS", "24"))  # 0 turns the scheduled refresh off
 
 MODEL_CHOICES = {

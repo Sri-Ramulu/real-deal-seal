@@ -412,6 +412,9 @@ tables:
   - name: has_paypal_record
     meaning: True when every recent payment was read back from PayPal.
     pii: false
+  - name: accepts_paypal
+    meaning: True when the shop takes PayPal here. A listing fact, independent of standing; the Evidence-off baseline shows only this.
+    pii: false
   - name: paypal_checkout_available
     meaning: True when a PayPal checkout can be opened for this business.
     pii: false

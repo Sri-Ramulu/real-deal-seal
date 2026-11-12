@@ -71,6 +71,7 @@ schema:
       - {name: price_usd, physicalType: DECIMAL, required: true}
       - {name: merchant_id, physicalType: VARCHAR, required: true}
       - {name: standing, physicalType: VARCHAR, required: true, acceptedValues: [sealed, verified, reported, new, no_record, withdrawn]}
+      - {name: accepts_paypal, physicalType: BOOLEAN, required: true}
       - {name: paypal_checkout_available, physicalType: BOOLEAN, required: true}
       - {name: seller_text_has_instructions, physicalType: BOOLEAN, required: true}
     quality:

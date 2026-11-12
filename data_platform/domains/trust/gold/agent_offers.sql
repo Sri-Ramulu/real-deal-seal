@@ -21,6 +21,7 @@ SELECT
     m.standing,
     m.headline            AS standing_headline,
     m.has_paypal_record,
+    m.is_connected        AS accepts_paypal,
     m.is_connected AND m.standing <> 'withdrawn' AS paypal_checkout_available,
     m.shows_unverifiable_badge,
     m.seller_text_has_instructions

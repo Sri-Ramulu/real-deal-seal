@@ -70,7 +70,7 @@ test('a seal checks out, fails when edited, and the forged badge is caught', asy
 
 test('buying opens a checkout that is clearly labeled as simulated without PayPal keys', async ({ page }) => {
   await page.goto('/shop');
-  await page.locator('button.offer', { hasText: 'Cushion cover 18in, Plum' }).click();
+  await page.locator('button.offer', { hasText: 'Cushion cover 18in, Plum' }).filter({ hasText: 'Lydia Linen' }).click();
   await page.locator('.sheet button.btn').click();
   await expect(page).toHaveURL(/checkout\/simulated/);
   await expect(page.locator('body')).toContainText(/simulated/i);

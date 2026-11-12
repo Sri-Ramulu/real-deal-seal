@@ -16,13 +16,19 @@ COLORS = [  # most specific first
     ("lavender", "#b8a2d6"), ("indigo", "#33407a"), ("navy", "#24305c"), ("plum", "#6b2a5a"), ("mulberry", "#7a2348"),
     ("heather", "#9b8aaa"), ("purple", "#6e3fa0"), ("harvest", "#c8752a"), ("orange", "#c8752a"), ("sage", "#8fa58a"),
     ("sand", "#d8c39a"), ("canvas", "#d6c8ab"), ("natural", "#d6c8ab"), ("linen", "#ddd2bd"), ("waterproof", "#3f6f8f"),
-    ("blue", "#33407a"),
+    ("blue", "#33407a"), ("terracotta", "#c46a43"), ("walnut", "#6b4a2e"), ("acacia", "#a0703f"), ("copper", "#b87333"),
+    ("cream", "#efe6d2"), ("ivory", "#f1ead8"), ("charcoal", "#3d3d3d"), ("lilac", "#c3a6d6"), ("rose", "#d48a9a"),
+    ("olive", "#6f7a3a"), ("mustard", "#d4a62a"), ("teal", "#2f7a7a"), ("white", "#f4f1ea"), ("gray", "#9a9a9a"),
+    ("grey", "#9a9a9a"), ("green", "#4d7a4a"),
 ]
 PATTERNS = ("checked", "gingham", "stripe", "scallop")
 
 TYPES = [  # (type, words that identify it), most specific first
+    ("kettle", ("kettle",)), ("mug", ("mug",)), ("planter", ("planter", "plant pot")), ("candle", ("candle",)),
+    ("board", ("cutting board", "serving board")), ("rug", ("rug",)), ("vase", ("vase",)), ("bathtowel", ("bath towel", "hand towel")),
+    ("sheets", ("sheet set", "duvet", "pillowcase", "quilt")),
     ("picnic", ("picnic blanket",)), ("kneeling", ("kneeling pad", "kneeler")), ("shade", ("shade sail", "shade cloth")),
-    ("tote", ("tote",)), ("bread", ("bread basket",)), ("mitts", ("oven mitt",)), ("towels", ("dish towel", "tea towel")),
+    ("tote", ("tote",)), ("bread", ("bread basket",)), ("basket", ("storage basket",)), ("mitts", ("oven mitt",)), ("towels", ("dish towel", "tea towel")),
     ("apron", ("apron",)), ("placemats", ("placemat",)), ("runner", ("table runner",)), ("tablecloth", ("tablecloth",)),
     ("curtain", ("curtain",)), ("napkins", ("napkin",)), ("cushion", ("cushion", "pillow")), ("throw", ("throw", "blanket")),
 ]
@@ -48,7 +54,9 @@ def classify(name: str, tags: list[str] | None = None) -> tuple[str, str, str | 
     color = next((c for word, c in COLORS if word in name.lower()), None) or next((c for word, c in COLORS if word in text), None)
     if not color:
         color = {"apron": "#5c5c5c", "mitts": RED, "towels": PAPER, "bread": "#c9a46b", "tablecloth": PAPER,
-                 "kneeling": "#4d6b4a", "tote": "#d6c8ab", "shade": "#d8c39a"}.get(kind, "#8c8c8c")
+                 "kneeling": "#4d6b4a", "tote": "#d6c8ab", "shade": "#d8c39a", "mug": "#efe6d2", "planter": "#c46a43",
+                 "candle": "#efe6d2", "board": "#a0703f", "rug": "#9a9a9a", "vase": "#efe6d2", "bathtowel": "#f4f1ea",
+                 "sheets": "#f4f1ea", "kettle": "#9a9a9a", "basket": "#c9a46b"}.get(kind, "#8c8c8c")
     if pattern == "checked" and color == PAPER:
         color = RED
     return kind, color, pattern
@@ -197,8 +205,87 @@ def _shade_sail(c, p):
             f'<path d="M60 44 72 50M262 64 250 70M150 128 150 166" stroke="{INK}" stroke-width="2"/>')
 
 
+def _mug(c, p):
+    d = _shade(c, 0.72)
+    return (f'<path d="M196 94c32 0 32 46 0 46" fill="none" stroke="{d}" stroke-width="11"/>'
+            f'<rect x="112" y="72" width="86" height="88" rx="10" fill="{_fill(c, p)}" stroke="{d}" stroke-width="2"/>'
+            f'<ellipse cx="155" cy="73" rx="43" ry="8" fill="{d}"/>'
+            f'<path d="M140 58c-7-8 7-14 0-24M168 58c-7-8 7-14 0-24" stroke="#bdbdbd" stroke-width="4" fill="none" stroke-linecap="round"/>')
+
+
+def _planter(c, p):
+    d = _shade(c, 0.72)
+    return (f'<path d="M160 100c-4-30-30-46-48-48 6 24 24 42 48 48z" fill="#4d6b4a"/><path d="M160 100c2-36 22-58 46-62-2 28-20 50-46 62z" fill="#6b8f5e"/>'
+            f'<path d="M160 102V46" stroke="#3d5a3a" stroke-width="4"/>'
+            f'<path d="M116 112h88l-12 54h-64z" fill="{c}"/><rect x="106" y="98" width="108" height="18" rx="4" fill="{d}"/>')
+
+
+def _candle(c, p):
+    d = _shade(c, 0.78)
+    return (f'<path d="M160 80V64" stroke="{INK}" stroke-width="3"/><path d="M160 36c11 13 11 24 0 30-11-6-11-17 0-30z" fill="#f2a33a"/>'
+            f'<rect x="116" y="80" width="88" height="82" rx="8" fill="{c}" stroke="{d}" stroke-width="2"/><rect x="116" y="80" width="88" height="14" rx="4" fill="{d}"/>'
+            f'<rect x="132" y="112" width="56" height="28" rx="3" fill="{PAPER}" opacity="0.85"/>')
+
+
+def _board(c, p):
+    d = _shade(c, 0.75)
+    grain = "".join(f'<path d="M90 {y}c40-6 90 6 136 0" stroke="{d}" stroke-width="2" fill="none" opacity="0.6"/>' for y in range(86, 142, 14))
+    return (f'<path d="M232 108h40" stroke="{c}" stroke-width="24" stroke-linecap="round"/><circle cx="266" cy="108" r="5" fill="{PAPER}"/>'
+            f'<rect x="66" y="66" width="176" height="84" rx="18" fill="{c}"/>{grain}<rect x="66" y="66" width="176" height="84" rx="18" fill="none" stroke="{d}" stroke-width="3"/>')
+
+
+def _rug(c, p):
+    d, l = _shade(c, 0.7), _shade(c, 1.3)
+    fringe = "".join(f'<path d="M{x} {y}h-12" stroke="{d}" stroke-width="2.5"/>' for x in (60,) for y in range(58, 156, 8))
+    fringe += "".join(f'<path d="M{x} {y}h12" stroke="{d}" stroke-width="2.5"/>' for x in (260,) for y in range(58, 156, 8))
+    return (f'{fringe}<rect x="60" y="54" width="200" height="104" rx="3" fill="{_fill(c, p)}"/>'
+            f'<rect x="74" y="66" width="172" height="80" fill="none" stroke="{l}" stroke-width="5"/>'
+            f'<path d="M160 82l34 24-34 24-34-24z" fill="none" stroke="{d}" stroke-width="4"/>')
+
+
+def _vase(c, p):
+    d = _shade(c, 0.75)
+    return (f'<path d="M150 54c-6-20-16-30-28-34M170 54c4-22 16-32 28-34M160 54V22" stroke="#4d6b4a" stroke-width="3" fill="none"/>'
+            f'<circle cx="122" cy="20" r="6" fill="#d48a9a"/><circle cx="198" cy="20" r="6" fill="#d4a62a"/><circle cx="160" cy="18" r="6" fill="#b8a2d6"/>'
+            f'<path d="M138 54h44v14c0 10 26 26 26 56 0 26-20 38-48 38s-48-12-48-38c0-30 26-46 26-56z" fill="{c}" stroke="{d}" stroke-width="2"/>'
+            f'<path d="M136 56h48" stroke="{d}" stroke-width="6" stroke-linecap="round"/>')
+
+
+def _bathtowel(c, p):
+    d, l = _shade(c, 0.86), _shade(c, 0.7)
+    return (f'<rect x="80" y="106" width="160" height="50" rx="12" fill="{d}" stroke="{GREY}" stroke-width="2"/>'
+            f'<rect x="90" y="60" width="140" height="50" rx="12" fill="{c}" stroke="{GREY}" stroke-width="2"/>'
+            f'<rect x="90" y="94" width="140" height="6" fill="{l}" opacity="0.6"/><rect x="80" y="140" width="160" height="6" fill="{l}" opacity="0.6"/>')
+
+
+def _sheets(c, p):
+    d, l = _shade(c, 0.82), _shade(c, 1.15)
+    return (f'<rect x="74" y="112" width="172" height="40" rx="6" fill="{d}" stroke="{GREY}" stroke-width="2"/>'
+            f'<rect x="68" y="80" width="184" height="40" rx="6" fill="{_fill(c, p)}" stroke="{GREY}" stroke-width="2"/>'
+            f'<rect x="80" y="50" width="160" height="38" rx="6" fill="{l}" stroke="{GREY}" stroke-width="2"/>'
+            f'<path d="M160 50v102" stroke="{RED}" stroke-width="5" opacity="0.8"/><rect x="146" y="58" width="28" height="14" rx="2" fill="{PAPER}"/>')
+
+
+def _kettle(c, p):
+    d = _shade(c, 0.7)
+    return (f'<path d="M128 90c0-34 64-34 64 0" fill="none" stroke="{INK}" stroke-width="7"/>'
+            f'<path d="M106 120c-20-6-32-22-40-36" stroke="{c}" stroke-width="12" stroke-linecap="round"/>'
+            f'<path d="M102 162c-8-40 2-74 58-74s66 34 58 74z" fill="{c}" stroke="{d}" stroke-width="3"/>'
+            f'<ellipse cx="160" cy="90" rx="22" ry="6" fill="{d}"/><circle cx="160" cy="82" r="5" fill="{INK}"/>')
+
+
+def _basket(c, p):
+    d = _shade(c, 0.72)
+    weave = "".join(f'<path d="M{x} 86v70" stroke="{d}" stroke-width="3"/>' for x in range(92, 232, 14))
+    weave += "".join(f'<path d="M80 {y}h160" stroke="{d}" stroke-width="2" opacity="0.6"/>' for y in range(100, 156, 12))
+    return (f'<path d="M80 84h160l-10 76H90z" fill="{c}"/>{weave}<rect x="74" y="78" width="172" height="12" rx="4" fill="{d}"/>'
+            f'<path d="M96 84c0-18 20-18 20 0M204 84c0-18 20-18 20 0" fill="none" stroke="{d}" stroke-width="5"/>')
+
+
 DRAW = {"napkins": _napkins, "runner": _runner, "curtain": _curtain, "throw": _throw, "picnic": _picnic, "placemats": _placemats,
-        "mitts": _mitts, "bread": _bread, "tote": _tote, "kneeling": _kneeling, "shade": _shade_sail}
+        "mitts": _mitts, "bread": _bread, "tote": _tote, "kneeling": _kneeling, "shade": _shade_sail, "mug": _mug, "planter": _planter,
+        "candle": _candle, "board": _board, "rug": _rug, "vase": _vase, "bathtowel": _bathtowel, "sheets": _sheets, "kettle": _kettle,
+        "basket": _basket}
 DRAW_NAMED = {"tablecloth": _tablecloth, "cushion": _cushion, "apron": _apron, "towels": _towels}
 
 

@@ -33,7 +33,7 @@ warns shoppers, and checkout is turned off for that shop.
 - **AI:** one tool-using assistant with eight tools, on Google Gemini or Anthropic Claude. Code, not the model, decides
   prices, seal validity and payment status. The same tools are available to any agent over MCP.
 - **Data:** a data mesh of four domains on DuckDB, each with bronze, silver and gold layers, column metadata, an ODCS
-  data contract and governed metrics. Gold is a star schema. Four quality gates and 319 contract rules run on every build.
+  data contract and governed metrics. Gold is a star schema. Four quality gates and 322 contract rules run on every build.
 - **App:** Python and FastAPI, SvelteKit, AG Grid for the evidence explorer, Docker on Render.
 
 ## Challenges we ran into

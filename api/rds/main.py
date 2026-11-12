@@ -17,7 +17,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import agent, auth, checkout, coach, config, onboarding, passport, product_art, refresh, scorecard, statement, store, studio, tools, webhooks, warehouse as wh
+from . import agent, auth, checkout, coach, config, demo_shops, onboarding, passport, product_art, refresh, scorecard, statement, store, studio, tools, webhooks, warehouse as wh
 from .mcp_server import http_app as mcp_app, mcp
 
 
@@ -26,6 +26,8 @@ async def lifespan(app: FastAPI):
     wh.con()
     store.db()
     auth.seed_demo_owners()
+    if config.DEMO_SHOPS:
+        demo_shops.ensure()
     refresh.reconcile_credentials()
     task = asyncio.create_task(_scheduled_refresh()) if config.REFRESH_HOURS > 0 else None
     async with mcp.session_manager.run():

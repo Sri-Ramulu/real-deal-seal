@@ -39,7 +39,7 @@ def _plain_offer(o: dict) -> dict:
     text = " ".join(t for t in (o.get("self_claim"), o["seller_description"]) if t)
     return {"sku": o["sku"], "product": o["product_name"], "price_usd": o["price_usd"], "in_stock": o["in_stock"], "image_url": _image(o["sku"]),
             "shop_id": o["merchant_id"], "shop": o["merchant_name"], "ships_from": o["ships_from"], "returns": o["returns_policy"],
-            "paypal_checkout": o["paypal_checkout_available"], "seller_text": {"text": text}}
+            "paypal_checkout": o["accepts_paypal"], "seller_text": {"text": text}}
 
 
 def search_products(query: str, max_price_usd: float | None = None, limit: int = 8, evidence: bool = True) -> dict:
@@ -160,10 +160,12 @@ def compare_market_prices(query: str) -> dict:
             "note": "Web offers for price context only. None has a PayPal record behind it."}
 
 
-def create_checkout(sku: str, quantity: int = 1) -> dict:
+def create_checkout(sku: str, quantity: int = 1, evidence: bool = True) -> dict:
     try:
         s = checkout.create(sku, int(quantity), actor="agent")
     except checkout.CheckoutError as e:
+        if not evidence and e.code == "seal_withdrawn":  # the baseline must not learn about seals from a refusal
+            return {"created": False, "reason": "checkout_unavailable", "message": "Checkout is not available for this product right now."}
         return {"created": False, "reason": e.code, "message": e.message}
     return {"created": True, "approve_url": s["approve_url"], "amount_usd": s["amount_usd"], "product": s["product_name"],
             "shop": s["merchant_name"], "mode": s["mode"], "note": s["note"],
