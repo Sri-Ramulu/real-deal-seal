@@ -171,6 +171,13 @@ GROUP BY ALL`}</pre>{/if}</div>
   .ports button.on, .ports button:hover { background: var(--red); color: #fff; box-shadow: none; }
   .gates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 2px; }
   .gates div { background: var(--ink); color: #fff; padding: 18px 22px; display: grid; } .gates .num { font-size: 1.8rem; font-weight: 300; }
+  .lane { background: var(--tile); padding: 16px; display: grid; gap: 5px; align-content: start; }
+  .lane h3 { font-size: 1rem; margin-bottom: 8px; }
+  .node { text-align: left; border: 0; background: #fff; padding: 8px 10px; border-radius: 3px; font: 0.78rem ui-monospace, Menlo, monospace; cursor: pointer; display: flex; justify-content: space-between; gap: 8px;
+    color: var(--ink); transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease); word-break: break-all; }
+  .node:hover { transform: translateX(3px); box-shadow: inset 0 0 0 2px var(--ink); }
+  .node span { font: 600 0.68rem var(--body); opacity: 0.7; white-space: nowrap; }
+  .node.lit { background: var(--ink); color: #fff; } .node.sel { background: var(--red); color: #fff; }
   .star { display: grid; grid-template-columns: 0.9fr 1.3fr 0.9fr; gap: 2px; } .centre { background: var(--ink); color: #e6e6e6; padding: 28px; display: grid; gap: 10px; align-content: start; } .centre h3 { color: #fff; font-size: 1.6rem; } .centre .label, .centre .small { color: #bbb; } .centre pre { background: #1c1c1c; font-size: 0.78rem; } .centre p { margin: 0; } .mt { margin-top: 18px; }
   .q { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; } .q label { display: grid; gap: 4px; font-size: 0.82rem; font-weight: 600; color: var(--muted); }
   select { font: inherit; padding: 10px 12px; border: 0; background: var(--tile); border-radius: 4px; color: var(--ink); }

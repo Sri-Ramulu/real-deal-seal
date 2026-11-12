@@ -12,9 +12,9 @@
   const maps = $derived.by(() => { const parents = {}, children = {}; for (const e of edges) { (parents[e.to] ??= []).push(e.from); (children[e.from] ??= []).push(e.to); } return { parents, children }; });
   const up = $derived(walk(pick, maps.parents));
   const down = $derived(walk(pick, maps.children));
-  const kind = (id) => (id === pick ? 'sel' : up.has(id) ? 'up' : down.has(id) ? 'down' : 'off');
-  const shown = $derived(focus ? nodes.filter((n) => kind(n.id) !== 'off') : nodes);
-  const live = $derived(edges.filter((e) => (e.to === pick || up.has(e.to)) && (e.from === pick || up.has(e.from)) ? true : (e.from === pick || down.has(e.from)) && (e.to === pick || down.has(e.to))));
+  const kind = (id) => (!pick ? 'plain' : id === pick ? 'sel' : up.has(id) ? 'up' : down.has(id) ? 'down' : 'off');
+  const shown = $derived(focus && pick ? nodes.filter((n) => kind(n.id) !== 'off') : nodes);
+  const live = $derived(!pick ? [] : edges.filter((e) => (e.to === pick || up.has(e.to)) && (e.from === pick || up.has(e.from)) ? true : (e.from === pick || down.has(e.from)) && (e.to === pick || down.has(e.to))));
   const edgeKind = (e) => (e.to === pick || up.has(e.to) ? 'up' : 'down');
   const selected = $derived(nodes.find((n) => n.id === pick));
   const direct = $derived({ from: maps.parents[pick] ?? [], to: maps.children[pick] ?? [] });
@@ -23,9 +23,9 @@
     await tick(); if (!box) return;
     const o = box.getBoundingClientRect(); size = { w: box.scrollWidth, h: box.scrollHeight };
     const at = {}; box.querySelectorAll('[data-id]').forEach((el) => { const r = el.getBoundingClientRect(); at[el.dataset.id] = { l: r.left - o.left + box.scrollLeft, r: r.right - o.left + box.scrollLeft, y: r.top - o.top + r.height / 2 }; });
-    lines = (focus ? live : edges).filter((e) => at[e.from] && at[e.to]).map((e) => {
+    lines = (focus && pick ? live : edges).filter((e) => at[e.from] && at[e.to]).map((e) => {
       const a = at[e.from], b = at[e.to], on = live.includes(e);
-      const d = b.l > a.r ? `M${a.r} ${a.y}C${(a.r + b.l) / 2} ${a.y} ${(a.r + b.l) / 2} ${b.y} ${b.l} ${b.y}` : `M${a.r} ${a.y}C${a.r + 20 + Math.min(24, Math.abs(b.y - a.y) / 8)} ${a.y} ${b.r + 20 + Math.min(24, Math.abs(b.y - a.y) / 8)} ${b.y} ${b.r} ${b.y}`;
+      const d = b.l > a.r ? `M${a.r} ${a.y}C${(a.r + b.l) / 2} ${a.y} ${(a.r + b.l) / 2} ${b.y} ${b.l} ${b.y}` : `M${a.r} ${a.y}C${a.r + 14 + Math.min(30, Math.abs(b.y - a.y) / 10)} ${a.y} ${b.r + 14 + Math.min(30, Math.abs(b.y - a.y) / 10)} ${b.y} ${b.r} ${b.y}`;
       return { d, on, kind: on ? edgeKind(e) : 'off', key: e.from + '>' + e.to, from: e.from, to: e.to };
     }).sort((x, y) => x.on - y.on);
   }
@@ -38,6 +38,7 @@
     <button class:on={focus} onclick={() => (focus = true)}>Only what is connected</button>
     <button class:on={!focus} onclick={() => (focus = false)}>All {nodes.length} files and tables</button>
   </div>
+  {#if pick}<button class="clear" onclick={() => (pick = null)}>✕ Clear selection</button>{/if}
   <span class="small key"><i class="k up"></i> feeds the pick <i class="k sel"></i> your pick <i class="k down"></i> built from the pick</span>
 </div>
 
@@ -48,14 +49,16 @@
   {#each layers as layer}
     <div class="lane"><h3>{layer}<span>{shown.filter((n) => n.layer === layer).length}</span></h3>
       {#each shown.filter((n) => n.layer === layer) as n (n.id)}
-        <button class="node {kind(n.id)}" data-id={n.id} aria-pressed={pick === n.id} onclick={() => (pick = n.id)}
-          onmouseenter={() => (hover = n.id)} onmouseleave={() => (hover = null)} title="Show what {short(n.id)} reads and what reads it">{short(n.id)}<span>{n.domain}</span></button>
+        <button class="node {kind(n.id)}" data-id={n.id} aria-pressed={pick === n.id} onclick={() => (pick = pick === n.id ? null : n.id)}
+          onmouseenter={() => (hover = n.id)} onmouseleave={() => (hover = null)} title={pick === n.id ? 'Click again to clear the selection' : `Show what ${short(n.id)} reads and what reads it`}>{short(n.id)}<span>{n.domain}</span></button>
       {:else}<p class="small none">Nothing in this layer is connected.</p>{/each}
     </div>
   {/each}
 </div>
 
-{#if selected}
+{#if !pick}
+  <p class="notice hint">Nothing is selected, so every file and table is shown. Pick one to trace it. Click it again, or press “Clear selection”, to come back here.</p>
+{:else if selected}
   <div class="summary">
     <div><span class="label">Your pick</span><strong><code>{pick}</code></strong><span class="small">{selected.layer} layer · {selected.domain} domain</span></div>
     <div><span class="label">Reads directly from ({direct.from.length})</span>
@@ -68,6 +71,8 @@
 
 <style>
   .bar { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 2px; } .key { margin-left: auto; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .clear { border: 0; background: var(--red); color: #fff; padding: 11px 16px; font-weight: 600; font-size: 0.92rem; cursor: pointer; border-radius: 3px; } .clear:hover { background: var(--red-deep); }
+  .hint { margin-top: 2px; } .node.plain { color: var(--ink); }
   .k { width: 14px; height: 14px; display: inline-block; margin-left: 10px; } .k.up { background: var(--ink); } .k.sel { background: var(--red); } .k.down { background: var(--oxblood); }
   .graph { position: relative; display: grid; grid-template-columns: repeat(4, minmax(190px, 1fr)); gap: clamp(40px, 6vw, 96px); background: var(--tile); padding: 20px 56px 20px 20px; overflow-x: auto; }
   .wires { position: absolute; left: 0; top: 0; pointer-events: none; }
