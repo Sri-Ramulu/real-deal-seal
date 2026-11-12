@@ -37,4 +37,3 @@ Total: 175.0 seconds = 2:55.
   not claim a perfect attack record.
 - No background music. If any is added later, it must be a track you hold the rights to.
 
-`docs/video/walkthrough.mp4` is an older silent rehearsal recorded in offline mode; it is not the submission video.

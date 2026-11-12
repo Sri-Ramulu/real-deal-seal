@@ -1,13 +1,70 @@
-# Real Deal Seal
+<p align="center">
+  <a href="https://real-deal-seal.onrender.com"><img src="docs/assets/banner.png" alt="Real Deal Seal. Proof beats brand. Three small shops, a shop owner showing her passport to an AI assistant, checked parcels, a courier and a shopper at the door." width="100%"></a>
+</p>
 
-**Proof beats brand.** AI shopping assistants tend to recommend brands they already know. Real Deal Seal helps small
-shops compete: it turns a shop's PayPal sales history into a signed Merchant Passport that any AI shopping assistant
-can read and check, so a shop gets chosen for what it actually delivers.
+<h1 align="center">Real Deal Seal</h1>
 
-**Demo video (2:55):** https://youtu.be/nQ7Zxm2F7a0 · **Live site:** https://real-deal-seal.onrender.com
+<p align="center"><strong>Proof beats brand.</strong><br>
+Turn a small shop's PayPal sales history into a signed record that any AI shopping assistant can check before it recommends the shop.</p>
 
-Built for the PayPal AI Hackathon 2026. Real Deal Seal is a hackathon project, not a PayPal product. PayPal supplies
-the sandbox records, and Real Deal Seal signs the passport. PayPal does not issue or endorse the seal.
+<p align="center">
+  <a href="https://real-deal-seal.onrender.com"><img alt="Live demo" src="https://img.shields.io/badge/live%20demo-real--deal--seal.onrender.com-d9201f?style=for-the-badge"></a>
+  <a href="https://youtu.be/nQ7Zxm2F7a0"><img alt="Watch the video, 2:55" src="https://img.shields.io/badge/video-2%3A55-0a0a0a?style=for-the-badge&logo=youtube&logoColor=white"></a>
+  <a href="https://real-deal-seal.onrender.com/judges"><img alt="Judges: start here" src="https://img.shields.io/badge/judges-start%20here-71251e?style=for-the-badge"></a>
+</p>
+
+<p align="center">
+  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-0a0a0a">
+  <img alt="171 backend tests" src="https://img.shields.io/badge/backend%20tests-171%20passing-1d6b3a">
+  <img alt="9 browser journeys" src="https://img.shields.io/badge/browser%20journeys-9%20passing-1d6b3a">
+  <img alt="379 data contract rules" src="https://img.shields.io/badge/data%20contract%20rules-379%20passing-1d6b3a">
+  <img alt="PayPal sandbox" src="https://img.shields.io/badge/PayPal-sandbox-0a0a0a">
+  <img alt="AG Grid" src="https://img.shields.io/badge/AG%20Grid-community-0a0a0a">
+</p>
+
+> Built for the **PayPal AI Hackathon 2026**. Real Deal Seal is a hackathon project, not a PayPal product. PayPal supplies
+> the sandbox records, and Real Deal Seal signs the passport. PayPal does not issue or endorse the seal. Every shop on the
+> site is fictional.
+
+## The result
+
+The same 50 shopping requests, asked of the same model twice: once with product listings only, once with the evidence
+tools. The model had no instruction to favor small shops.
+
+| Claude Sonnet, first full run | Listings only | With evidence |
+|---|---:|---:|
+| Picks that went to a shop whose seal was withdrawn | **34 of 50** | **0 of 50** |
+| Picks that went to an honest small shop | 9 of 50 | 35 of 50 |
+
+Three full runs on each of two models are published, with every one of the 600 picks, on the
+[Proof page](https://real-deal-seal.onrender.com/proof). These are controlled tests with fictional shops, not a
+measurement of real shoppers.
+
+## Watch it
+
+<p align="center">
+  <a href="https://youtu.be/nQ7Zxm2F7a0"><img src="docs/assets/video-thumbnail.png" alt="Watch the 2:55 demo video on YouTube" width="720"></a>
+</p>
+
+## See it
+
+| | |
+|---|---|
+| [![The same question answered twice: listings only picks a shop whose seal was withdrawn, evidence picks an honest shop](docs/assets/side-by-side.jpg)](https://real-deal-seal.onrender.com/#difference) | [![A seal checked step by step: genuine](docs/assets/seal-check.jpg)](https://real-deal-seal.onrender.com/verify) |
+| **One question, two answers.** Listings only, then with evidence. Run it live on the home page. | **Check a seal.** Genuine, edited, forged or withdrawn, decided by plain code. |
+| [![Merchant Studio: the exact orders behind a number, in AG Grid](docs/assets/studio-ag-grid.jpg)](https://real-deal-seal.onrender.com/studio) | [![Every recorded pick in an AG Grid you can search, sort and export](docs/assets/proof-ag-grid.jpg)](https://real-deal-seal.onrender.com/proof) |
+| **Merchant Studio.** The exact orders behind each number, in AG Grid. | **Proof lab.** All 600 recorded picks in an AG Grid you can search, sort and export. |
+
+<p align="center">
+  <a href="https://real-deal-seal.onrender.com/developers#lineage"><img src="docs/assets/lineage.jpg" alt="Data lineage: pick any file or table and follow it from landing to gold" width="720"></a><br>
+  <em>Data lineage, read from the SQL: pick any file or table and follow it from landing to gold.</em>
+</p>
+
+## Contents
+
+[The problem](#the-problem) · [How it works](#how-it-works) · [What's in it](#whats-in-it) · [Run it](#run-it) ·
+[What is checked](#what-is-checked-and-what-isnt) · [Real and simulated](#what-is-real-and-what-is-simulated) ·
+[Layout](#layout) · [Built with](#built-with)
 
 ## The problem
 
@@ -187,7 +244,7 @@ docs/                 architecture, plan coverage, CRISP-A walk-through, design 
 
 PayPal Orders v2 (create, get, capture, track), refunds and webhook signature verification, all in the sandbox.
 The shopping assistant runs on Google Gemini or Anthropic Claude. Built with Claude Code (Anthropic) as a coding
-assistant, credited as co-author on the commits. Sponsor tools: AG Grid (evidence explorer), Channel3 (cached price context) and Render (hosting).
+assistant, credited as co-author on the commits. Sponsor tools: AG Grid (the evidence explorer in Merchant Studio and the run explorer on the Proof page), Channel3 (cached price context) and Render (hosting).
 Open source: DuckDB, FastAPI, SvelteKit, the MCP Python SDK and cryptography.
 
 MIT license. See `LICENSE`.
