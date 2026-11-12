@@ -6,9 +6,9 @@
 </script>
 
 <!-- Footer scene, read left to right: a seal checks the incoming stacks, parcels ride the belt under the seal mark and come
-     out sealed, and a second seal, facing out, tows the sealed parcels away to the right. Motion stops for people who ask for reduced motion. -->
+     out sealed, and a second seal, facing out, pushes a cart of sealed parcels away to the right. Motion stops for people who ask for reduced motion. -->
 <div class="scene">
-  <svg viewBox="0 0 1200 330" role="img" aria-label="A seal in a red cap checks stacked parcels. Parcels ride a belt under the Real Deal Seal mark and come out sealed. Another seal tows the sealed parcels away.">
+  <svg viewBox="0 0 1200 330" role="img" aria-label="A seal in a red cap checks stacked parcels. Parcels ride a belt under the Real Deal Seal mark and come out sealed. Another seal pushes a cart of sealed parcels away.">
     <defs><clipPath id="beltclip"><rect x="486" y="230" width="228" height="70" /></clipPath></defs>
 
     <!-- far background: warehouse shelving, kept pale so the figures stay in front -->
@@ -42,16 +42,20 @@
     <path d="M500 308v14M700 308v14" stroke="#0a0a0a" stroke-width="6" />
     <g class="flash"><circle cx="600" cy="280" r="26" fill="none" stroke="#d9201f" stroke-width="3" /></g>
 
-    <path class="speed" d="M722 250h18M716 270h24M724 290h16" stroke="#9a9a9a" stroke-width="3" stroke-linecap="round" />
+    <!-- the way out: a seal pushes a platform cart of sealed parcels off to the right, away from the belt -->
+    <path class="speed" d="M728 236h22M720 262h30M730 288h20" stroke="#9a9a9a" stroke-width="3" stroke-linecap="round" />
     <g class="haul">
-      <g transform="translate(760 0)">
-        {#each [0, 1, 2] as r}{#each [0, 1] as c}<Parcel x={c * 92} y={296 - r * 50} w={88} h={48} tone={(r + c) % 2 ? 'black' : 'red'} mark />{/each}{/each}
-        <path d="M-14 300h206l10-170h22" fill="none" stroke="#9a9a9a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
-        {#each [18, 170] as cx}
-          <g class="wheel"><circle {cx} cy="306" r="13" fill="#0a0a0a" /><circle {cx} cy="306" r="5" fill="#d9201f" /><path d="M{cx} 297v18M{cx - 9} 306h18" stroke="#fff" stroke-width="1.6" /></g>
-        {/each}
-      </g>
-      <SealFigure x={978} y={120} />
+      <SealFigure x={752} y={120} />
+      <!-- parcels on the deck: two, two, and one on top -->
+      {#each [0, 1] as r}{#each [0, 1] as c}<Parcel x={978 + c * 100} y={288 - r * 48} w={96} h={46} tone={(r + c) % 2 ? 'black' : 'red'} mark />{/each}{/each}
+      <Parcel x={1028} y={192} w={96} h={46} tone="red" mark />
+      <!-- cart: push handle with a grip, a flat deck with a toe lip, a big fixed wheel and a small caster -->
+      <path d="M944 246h8c9 0 14 5 14 14v28" fill="none" stroke="#9a9a9a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M936 246h14" stroke="#0a0a0a" stroke-width="10" stroke-linecap="round" />
+      <path d="M960 292h226v-10" fill="none" stroke="#0a0a0a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M1160 296v6" stroke="#0a0a0a" stroke-width="6" />
+      <g class="wheel"><circle cx="990" cy="304" r="15" fill="#0a0a0a" /><circle cx="990" cy="304" r="6" fill="#d9201f" /><path d="M990 291v26M977 304h26" stroke="#fff" stroke-width="1.6" /></g>
+      <g class="wheel fast"><circle cx="1160" cy="310" r="9" fill="#0a0a0a" /><circle cx="1160" cy="310" r="3.5" fill="#d9201f" /><path d="M1160 302v16M1152 310h16" stroke="#fff" stroke-width="1.4" /></g>
     </g>
     <path d="M0 322h1200" stroke="#0a0a0a" stroke-width="6" />
   </svg>
@@ -66,6 +70,7 @@
   .rollers { animation: rollers 0.9s linear infinite; }
   .flash { transform-box: fill-box; transform-origin: center; opacity: 0; animation: flash 3s ease-out infinite; }
   .checked { opacity: 0; transform-box: fill-box; transform-origin: center; animation: checked 8s infinite; }
+  .wheel.fast { animation-duration: 1.4s; }
   .speed { animation: speed 1.2s linear infinite; }
   .haul { animation: haul 6s ease-in-out infinite alternate; }
   .wheel { transform-box: fill-box; transform-origin: center; animation: wheel 2.4s linear infinite; }
